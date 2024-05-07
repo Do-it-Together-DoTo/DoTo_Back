@@ -2,6 +2,7 @@ package site.doto.global.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 import site.doto.global.common.code.ErrorCode;
 import site.doto.global.common.code.SuccessCode;
 
@@ -19,4 +20,9 @@ public class ResponseDto<T> {
     public static <T> ResponseDto<T> fail(ErrorCode e) {
         return new ResponseDto<>(new ApiResponseHeader(e), null);
     }
+
+    public static <T> ResponseDto<T> fail(String errorMessage) {
+        return new ResponseDto<>(new ApiResponseHeader(HttpStatus.BAD_REQUEST.value(), errorMessage), null);
+    }
+
 }
