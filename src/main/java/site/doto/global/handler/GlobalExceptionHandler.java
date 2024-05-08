@@ -2,7 +2,7 @@ package site.doto.global.handler;
 
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import site.doto.global.common.dto.ResponseDto;
+import site.doto.global.dto.ResponseDto;
 import site.doto.global.exception.CustomException;
 
 @RestControllerAdvice

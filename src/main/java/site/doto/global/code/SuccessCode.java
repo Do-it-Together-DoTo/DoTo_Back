@@ -1,11 +1,11 @@
-package site.doto.global.common.code;
+package site.doto.global.code;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ErrorCode {
+public enum SuccessCode {
     ;
 
     private final int httpStatusCode;
