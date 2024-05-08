@@ -1,4 +1,4 @@
-package site.doto.global.common.dto;
+package site.doto.global.dto;
 
 import lombok.Data;
 import org.springframework.data.domain.Slice;

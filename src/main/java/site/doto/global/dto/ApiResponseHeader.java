@@ -1,9 +1,9 @@
-package site.doto.global.common.dto;
+package site.doto.global.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import site.doto.global.common.code.ErrorCode;
-import site.doto.global.common.code.SuccessCode;
+import site.doto.global.code.ErrorCode;
+import site.doto.global.code.SuccessCode;
 
 @Data
 @AllArgsConstructor
