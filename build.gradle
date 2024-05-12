@@ -1,6 +1,9 @@
+import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+
 buildscript {
 	ext {
 		queryDslVersion = "5.0.0"
+		restdocsApiSpecVersion = '0.16.2'
 	}
 }
 
@@ -9,6 +12,8 @@ plugins {
 	id 'org.springframework.boot' version '2.7.11'
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 	id "com.ewerk.gradle.plugins.querydsl" version "1.0.10"
+	id 'com.epages.restdocs-api-spec' version "0.16.2"
+	id 'org.hidetake.swagger.generator' version '2.18.2'
 }
 
 apply plugin: 'io.spring.dependency-management'
@@ -26,6 +31,12 @@ configurations {
 
 repositories {
 	mavenCentral()
+}
+
+swaggerSources {
+	sample {
+		setInputFile(file("$buildDir/api-spec/openapi3.yaml"))
+	}
 }
 
 dependencies {
@@ -47,7 +58,7 @@ dependencies {
 	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
 	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 	implementation 'javax.xml.bind:jaxb-api:2.3.1'
-	implementation 'com.google.code.gson:gson:2.8.7'
+	implementation 'com.google.code.gson:gson:2.8.9'
 	implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
 	implementation 'io.springfox:springfox-boot-starter:3.0.0'
 	implementation 'io.springfox:springfox-swagger-ui:3.0.0'
@@ -62,23 +73,53 @@ dependencies {
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'io.projectreactor:reactor-test'
-}
+	testImplementation 'org.springframework.restdocs:spring-restdocs-mockmvc'
+	testImplementation 'com.epages:restdocs-api-spec-mockmvc:0.16.2'
+	swaggerUI 'org.webjars:swagger-ui:4.11.1'
+ }
+
+
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+tasks.withType(GenerateSwaggerUI).configureEach {
+	dependsOn 'openapi3'
+}
+
+tasks.register('copySwaggerUI', Copy) {
+	dependsOn 'generateSwaggerUISample'
+
+	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
+
+	from("${generateSwaggerUISampleTask.outputDir}")
+	into("${buildDir}/resources/main/static/docs")
+}
+
+openapi3 {
+	setServer("${System.getenv('dotoURI')}")
+	title = "restdocs-swagger API Documentation"
+	description = "Spring REST Docs with SwaggerUI."
+	version = "0.0.1"
+	format = "yaml"
+}
+
 //querydsl 추가 시작
-def querydslDir = "$buildDir/generated/querydsl"
+def querydslDir = "${buildDir}/generated/querydsl"
 
 querydsl {
 	jpa = true
 	querydslSourcesDir = querydslDir
 }
+
 sourceSets {
 	main.java.srcDir querydslDir
 }
+
 compileQuerydsl{
 	options.annotationProcessorPath = configurations.querydsl
 }
+
 configurations {
 	compileOnly {
 		extendsFrom annotationProcessor
