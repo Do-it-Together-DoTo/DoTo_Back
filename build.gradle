@@ -95,14 +95,6 @@ tasks.register('copySwaggerUI', Copy) {
 	into("${buildDir}/resources/main/static/docs")
 }
 
-tasks.named('jar').configure {
-	dependsOn 'copySwaggerUI'
-}
-
-tasks.named('bootJarMainClassName').configure {
-	dependsOn 'copySwaggerUI'
-}
-
 openapi3 {
 	setServer("${System.getenv('dotoURI')}")
 	title = "restdocs-swagger API Documentation"
