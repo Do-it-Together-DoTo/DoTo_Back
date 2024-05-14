@@ -2,7 +2,7 @@ package site.doto.global.exception;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import site.doto.global.code.ErrorCode;
+import site.doto.global.status_code.ErrorCode;
 
 @AllArgsConstructor
 @Getter
