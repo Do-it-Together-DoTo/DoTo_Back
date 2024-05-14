@@ -23,6 +23,11 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.H2Dialect
         format_sql: true
-        show_sql: false
+    defer-datasource-initialization: true #script 파일이 hibernate 초기화 이후 동작하게 하기 위한 설정
+
+  sql:
+    init:
+      mode: always # 서버 시작시 항상 classpath의 sql문을 실행하도록 설정
+      data-locations: classpath:sql/member_data.sql # 서버 시작시 dml sql문을 실행할 위치 및 파일 지정
 
 logTracer: true

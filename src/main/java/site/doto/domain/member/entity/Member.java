@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.doto.domain.member.type.MemberType;
 
 import javax.persistence.*;
 
@@ -28,7 +29,9 @@ public class Member {
 
     private int coin;
 
-    private int type;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private MemberType type;
 
     private String lastUpload;
 
