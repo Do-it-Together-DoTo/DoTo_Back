@@ -6,6 +6,8 @@ spring:
     pathmatch:
       matching-strategy: ant_path_matcher
 
+    throw-exception-if-no-handler-found: true
+
   jpa:
     properties:
       hibernate:
@@ -14,3 +16,6 @@ spring:
   redis:
     host: localhost
     port: 6379
+
+  resources:
+    add-mappings: false
