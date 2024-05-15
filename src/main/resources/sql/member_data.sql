@@ -1,1 +1,0 @@
-insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
