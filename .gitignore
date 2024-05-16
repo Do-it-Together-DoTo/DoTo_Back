@@ -1,3 +1,13 @@
-../DoTo_BackBefore/.idea
 out
 build
+
+.gradle
+.idea
+.idea/*.xml
+*.iml
+out
+gen
+rebel.xml
+
+/build/
+.gradletasknamecache
