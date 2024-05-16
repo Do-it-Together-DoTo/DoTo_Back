@@ -17,5 +17,6 @@ spring:
     host: localhost
     port: 6379
 
-  resources:
-    add-mappings: false
+  web:
+    resources:
+      add-mappings: false
