@@ -1,4 +1,5 @@
 import org.hidetake.gradle.swagger.generator.GenerateSwaggerUI
+import org.springframework.boot.gradle.tasks.bundling.BootJar
 
 buildscript {
 	ext {
@@ -78,12 +79,11 @@ dependencies {
 	swaggerUI 'org.webjars:swagger-ui:4.11.1'
  }
 
-
 tasks.named('test') {
 	useJUnitPlatform()
 }
 
-tasks.withType(GenerateSwaggerUI).configureEach {
+tasks.withType(GenerateSwaggerUI) {
 	dependsOn 'openapi3'
 }
 
@@ -93,7 +93,19 @@ tasks.register('copySwaggerUI', Copy) {
 	def generateSwaggerUISampleTask = tasks.named('generateSwaggerUISample', GenerateSwaggerUI).get()
 
 	from("${generateSwaggerUISampleTask.outputDir}")
-	into("${buildDir}/resources/main/static/docs")
+	into("${buildDir}/resources/main/static")
+}
+
+tasks.withType(BootJar) {
+	dependsOn 'copySwaggerUI'
+}
+
+tasks.named('jar').configure {
+	dependsOn 'copySwaggerUI'
+}
+
+tasks.named('bootJarMainClassName').configure {
+	dependsOn 'copySwaggerUI'
 }
 
 openapi3 {
