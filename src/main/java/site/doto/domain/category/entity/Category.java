@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.doto.domain.category.enums.Color;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -29,8 +30,8 @@ public class Category {
 
     private boolean isActivated;
 
-    private int color;
+    @Enumerated(EnumType.STRING)
+    private Color color;
 
     private int seq;
-
 }
