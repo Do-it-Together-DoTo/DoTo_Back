@@ -1,7 +1,7 @@
 package site.doto.domain.member.dto;
 
 import lombok.Data;
-경
+
 import javax.validation.constraints.NotNull;
 
 @Data
