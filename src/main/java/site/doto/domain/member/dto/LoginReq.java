@@ -6,7 +6,7 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class MemberDetailsReq {
+public class LoginReq {
     @Email
     @NotNull
     private String email;

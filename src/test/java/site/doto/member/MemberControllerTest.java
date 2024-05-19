@@ -158,11 +158,11 @@ class MemberControllerTest {
     @DisplayName("로그인_성공")
     public void login_success() throws Exception {
         //given
-        MemberDetailsReq memberDetailsReq = new MemberDetailsReq();
-        memberDetailsReq.setEmail("doto@naver.com");
-        memberDetailsReq.setPassword("1234");
+        LoginReq loginReq = new LoginReq();
+        loginReq.setEmail("doto@naver.com");
+        loginReq.setPassword("1234");
 
-        String content = gson.toJson(memberDetailsReq);
+        String content = gson.toJson(loginReq);
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -234,8 +234,8 @@ class MemberControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임"),
-                                                fieldWithPath("description").type(JsonFieldType.STRING).description("회원 한줄소개")
+                                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임").optional(),
+                                                fieldWithPath("description").type(JsonFieldType.STRING).description("회원 한줄소개").optional()
                                         )
                                 )
                                 .responseFields(

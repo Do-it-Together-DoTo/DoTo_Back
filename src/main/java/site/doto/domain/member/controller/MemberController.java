@@ -30,9 +30,9 @@ public class MemberController {
     }
 
     @PostMapping("login")
-    public ResponseDto<MemberDetailRes> memberDetail(
-            @RequestBody MemberDetailsReq memberDetailsReq) {
-        MemberDetailRes result = new MemberDetailRes(jwtToken);
+    public ResponseDto<LoginRes> login(
+            @RequestBody LoginReq loginReq) {
+        LoginRes result = new LoginRes(jwtToken);
         return ResponseDto.success(LOGIN_OK, result);
     }
 

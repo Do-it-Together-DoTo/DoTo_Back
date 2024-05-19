@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class MemberDetailRes {
+public class LoginRes {
     String token;
 
 }
