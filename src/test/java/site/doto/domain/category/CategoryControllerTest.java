@@ -218,11 +218,11 @@ class CategoryControllerTest {
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
-                                                        .description("카테고리 내용"),
+                                                        .description("카테고리 내용(Optional)"),
                                                 fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("공개 여부"),
+                                                        .description("공개 여부(Optional)"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING)
-                                                        .description("카테고리 색상")
+                                                        .description("카테고리 색상(Optional)")
                                         )
                                 )
                                 .responseFields(
