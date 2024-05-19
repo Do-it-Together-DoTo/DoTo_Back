@@ -234,8 +234,8 @@ class MemberControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임").optional(),
-                                                fieldWithPath("description").type(JsonFieldType.STRING).description("회원 한줄소개").optional()
+                                                fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임(Optional)").optional(),
+                                                fieldWithPath("description").type(JsonFieldType.STRING).description("회원 한줄소개(Optional)").optional()
                                         )
                                 )
                                 .responseFields(
