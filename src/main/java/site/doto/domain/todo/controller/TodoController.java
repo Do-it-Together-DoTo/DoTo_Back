@@ -14,8 +14,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 public class TodoController {
     @PostMapping
     public ResponseDto<TodoDetailsRes> todoAdd(
-            @RequestBody TodoAddReq todoAddReq
-    ) {
+            @RequestBody TodoAddReq todoAddReq) {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(10001L)
                 .contents(todoAddReq.getContents())
@@ -29,8 +28,7 @@ public class TodoController {
     @GetMapping("/{memberId}")
     public  ResponseDto<TodoListRes> todoList(
             @PathVariable long memberId,
-            @RequestBody TodoListReq todoListReq
-    ) {
+            @RequestBody TodoListReq todoListReq) {
         List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
 
         for(int i = 1; i <= 10; i++) {
@@ -51,8 +49,7 @@ public class TodoController {
     @PatchMapping("/{todoId}")
     public ResponseDto<TodoDetailsRes> todoModify(
             @PathVariable long todoId,
-            @RequestBody TodoModifyReq todoModifyReq
-    ) {
+            @RequestBody TodoModifyReq todoModifyReq) {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(todoId)
                 .contents("Modified Mock Todo")
@@ -65,15 +62,13 @@ public class TodoController {
 
     @DeleteMapping("/{todoId}")
     public ResponseDto<?> todoRemove(
-            @PathVariable long todoId
-    ) {
+            @PathVariable long todoId) {
         return ResponseDto.success(TODO_DELETED, null);
     }
 
     @PatchMapping("/check/{todoId}")
     public ResponseDto<TodoDetailsRes> todoChangeDone(
-            @PathVariable long todoId
-    ) {
+            @PathVariable long todoId) {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(todoId)
                 .contents("Modified Done Mock Todo")
@@ -86,8 +81,7 @@ public class TodoController {
 
     @PostMapping("/date")
     public ResponseDto<TodoDetailsRes> todoRedo(
-            @RequestBody TodoRedoReq todoRedoReq
-    ) {
+            @RequestBody TodoRedoReq todoRedoReq) {
         return ResponseDto.success(TODO_RE_CREATED, null);
     }
 }
