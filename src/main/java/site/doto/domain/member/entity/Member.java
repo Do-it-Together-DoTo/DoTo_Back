@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.member.type.MemberType;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -33,6 +34,6 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private MemberType type;
 
-    private String lastUpload;
+    private LocalDateTime lastUpload;
 
 }
