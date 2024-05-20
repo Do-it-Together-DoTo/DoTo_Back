@@ -13,7 +13,7 @@ public class TodoDetailsRes {
 
     private String date;
 
-    private boolean isDone;
+    private Boolean isDone;
 
     public static TodoDetailsRes toDto(Todo todo) {
         return TodoDetailsRes.builder()
