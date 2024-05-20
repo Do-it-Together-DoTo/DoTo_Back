@@ -220,9 +220,9 @@ class TodoControllerTest {
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
-                                                        .description("Todo 변경 내용"),
+                                                        .description("Todo 변경 내용(Optional)").optional(),
                                                 fieldWithPath("date").type(JsonFieldType.STRING)
-                                                        .description("Todo 변경 날짜")
+                                                        .description("Todo 변경 날짜(Optional)").optional()
                                         )
                                 )
                                 .responseFields(
