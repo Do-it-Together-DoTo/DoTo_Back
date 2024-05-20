@@ -52,7 +52,6 @@ class TodoControllerTest {
         // given
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10001L);
-        todoAddReq.setDate("2024-05-19 00:00:00");
         todoAddReq.setContents("투두 생성");
 
         String content = gson.toJson(todoAddReq);
@@ -74,7 +73,7 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.body.id").value(10001L))
                 .andExpect(jsonPath("$.body.contents").value("투두 생성"))
                 .andExpect(jsonPath("$.body.date").value("2024-05-19 00:00:00"))
-                .andExpect(jsonPath("$.body.done").value(false))
+                .andExpect(jsonPath("$.body.isDone").value(false))
                 .andDo(document(
                         "Todo 생성",
                         preprocessRequest(prettyPrint()),
@@ -89,8 +88,6 @@ class TodoControllerTest {
                                         List.of(
                                                 fieldWithPath("categoryId").type(JsonFieldType.NUMBER)
                                                         .description("카테고리 Id"),
-                                                fieldWithPath("date").type(JsonFieldType.STRING)
-                                                        .description("Todo 생성 날짜"),
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
                                                         .description("Todo 내용")
                                         )
@@ -107,7 +104,7 @@ class TodoControllerTest {
                                                         .description("Todo 내용"),
                                                 fieldWithPath("body.date").type(JsonFieldType.STRING)
                                                         .description("Todo 생성 날짜"),
-                                                fieldWithPath("body.done").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
                                 )
@@ -172,7 +169,7 @@ class TodoControllerTest {
                                                         .description("Todo 수정 내용"),
                                                 fieldWithPath("body.*[].date").type(JsonFieldType.STRING)
                                                         .description("Todo 수정 날짜"),
-                                                fieldWithPath("body.*[].done").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.*[].isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
                                 )
@@ -240,7 +237,7 @@ class TodoControllerTest {
                                                         .description("Todo 내용"),
                                                 fieldWithPath("body.date").type(JsonFieldType.STRING)
                                                         .description("Todo 생성 날짜"),
-                                                fieldWithPath("body.done").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
                                 )
@@ -335,7 +332,7 @@ class TodoControllerTest {
                                                         .description("Todo 내용"),
                                                 fieldWithPath("body.date").type(JsonFieldType.STRING)
                                                         .description("Todo 생성 날짜"),
-                                                fieldWithPath("body.done").type(JsonFieldType.BOOLEAN)
+                                                fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
                                 )
