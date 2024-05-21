@@ -44,6 +44,7 @@ public enum SuccessCode {
     FRIEND_BLOCK_OK(200, "친구 차단 성공"),
     FRIEND_CREATED(201, "친구 수락 성공"),
     FRIEND_REQUEST_CREATED(201, "친구 신청 성공"),
+    FRIEND_REQUEST_CANCELED(204, "친구 신청 취소 성공"),
     FRIEND_DELETED(204, "친구 삭제 성공"),
     FRIEND_REQUEST_DELETED(204, "친구 거절 성공"),
     CHATROOMS_INQUIRY_OK(200, "전체 채팅방 조회 성공"),
