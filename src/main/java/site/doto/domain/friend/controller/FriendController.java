@@ -65,4 +65,18 @@ public class FriendController {
 
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
+
+    @PostMapping("/block")
+    ResponseDto<?> friendBlock(
+            @RequestBody FriendBlockReq friendBlockReq) {
+
+        return ResponseDto.success(FRIEND_BLOCK_OK, null);
+    }
+
+    @DeleteMapping("/block")
+    ResponseDto<?> friendUnblock(
+            @RequestBody FriendUnblockReq friendUnblockReq) {
+
+        return ResponseDto.success(FRIEND_UNBLOCK_OK, null);
+    }
 }
