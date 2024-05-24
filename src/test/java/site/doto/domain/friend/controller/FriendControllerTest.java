@@ -375,4 +375,114 @@ class FriendControllerTest {
                         ))
                 );
     }
+
+    @Test
+    @DisplayName("유저 차단 성공")
+    public void friend_block_success() throws Exception {
+        // given
+        FriendBlockReq friendBlockReq = new FriendBlockReq();
+        friendBlockReq.setMemberId(2L);
+
+        String content = gson.toJson(friendBlockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/members/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_BLOCK_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_BLOCK_OK.getMessage()))
+                .andDo(document(
+                        "유저 차단",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("유저 차단 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("memberId").type(JsonFieldType.NUMBER)
+                                                        .description("유저 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("유저 차단 Request"))
+                                .responseSchema(Schema.schema("유저 차단 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    @DisplayName("유저 차단 취소 성공")
+    public void friend_unblock_success() throws Exception {
+        // given
+        FriendUnblockReq friendUnblockReq = new FriendUnblockReq();
+        friendUnblockReq.setMemberId(2L);
+
+        String content = gson.toJson(friendUnblockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/members/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_UNBLOCK_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_UNBLOCK_OK.getMessage()))
+                .andDo(document(
+                        "유저 차단 취소",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("유저 차단 취소 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("memberId").type(JsonFieldType.NUMBER)
+                                                        .description("유저 Id")
+                                        )
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("유저 차단 취소 Request"))
+                                .responseSchema(Schema.schema("유저 차단 취소 Response"))
+                                .build()
+                        ))
+                );
+    }
 }
