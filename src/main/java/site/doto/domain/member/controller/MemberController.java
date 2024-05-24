@@ -2,7 +2,11 @@ package site.doto.domain.member.controller;
 
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
+import site.doto.domain.member.enums.MemberRelation;
 import site.doto.global.dto.ResponseDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static site.doto.global.status_code.SuccessCode.*;
 
@@ -60,4 +64,21 @@ public class MemberController {
         return ResponseDto.success(MEMBER_DELETED, null);
     }
 
+    @GetMapping("/search")
+    public ResponseDto<?> membersSearch(
+            MembersSearchReq membersSearchReq) {
+        List<MembersSearchDto> members = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++) {
+            members.add(MembersSearchDto.builder()
+                    .nickname("닉네임" + i)
+                    .status(MemberRelation.FRIENDS)
+                    .build());
+        }
+
+        MembersSearchRes result = new MembersSearchRes();
+        result.setSearchResult(members);
+
+        return ResponseDto.success(MEMBERS_SEARCH_OK, result);
+    }
 }
