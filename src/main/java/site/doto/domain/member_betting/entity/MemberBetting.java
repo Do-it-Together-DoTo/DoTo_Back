@@ -27,8 +27,8 @@ public class MemberBetting implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Betting betting;
 
-    private int cost;
+    private Integer cost;
 
-    private boolean prediction;
+    private Boolean prediction;
 
 }

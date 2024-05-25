@@ -18,7 +18,7 @@ public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -26,12 +26,12 @@ public class Category {
 
     private String contents;
 
-    private boolean isPublic;
+    private Boolean isPublic;
 
-    private boolean isActivated;
+    private Boolean isActivated;
 
     @Enumerated(EnumType.STRING)
     private Color color;
 
-    private int seq;
+    private Integer seq;
 }

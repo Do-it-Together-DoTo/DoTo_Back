@@ -18,7 +18,7 @@ public class Todo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "todo_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -32,6 +32,6 @@ public class Todo {
 
     private String date;
 
-    private boolean isDone;
+    private Boolean isDone;
 
 }

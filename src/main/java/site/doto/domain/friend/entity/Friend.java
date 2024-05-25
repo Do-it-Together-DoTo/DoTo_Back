@@ -26,6 +26,6 @@ public class Friend implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member toMember;
 
-    private int status;
+    private Integer status;
 
 }

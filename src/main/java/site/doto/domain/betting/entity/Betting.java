@@ -18,7 +18,7 @@ public class Betting {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "betting_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -30,6 +30,6 @@ public class Betting {
 
     private String name;
 
-    private boolean isAchieved;
+    private Boolean isAchieved;
 
 }

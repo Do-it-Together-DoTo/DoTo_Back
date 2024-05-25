@@ -23,8 +23,8 @@ public class CategoryDetailsRes {
         return CategoryDetailsRes.builder()
                 .id(category.getId())
                 .contents(category.getContents())
-                .isPublic(category.isPublic())
-                .isActivated(category.isActivated())
+                .isPublic(category.getIsPublic())
+                .isActivated(category.getIsActivated())
                 .color(category.getColor().getColor())
                 .seq(category.getSeq())
                 .build();
