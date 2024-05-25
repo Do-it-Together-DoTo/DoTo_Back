@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class ItemType {
     @Id
     @Column(name = "item_type_id")
-    private long id;
+    private Long id;
 
     private String name;
 

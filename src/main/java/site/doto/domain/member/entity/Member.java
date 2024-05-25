@@ -18,7 +18,7 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "member_id")
-    private long id;
+    private Long id;
 
     private String email;
 
@@ -28,7 +28,7 @@ public class Member {
 
     private String description;
 
-    private int coin;
+    private Integer coin;
 
     @Column(name = "type")
     @Enumerated(EnumType.STRING)

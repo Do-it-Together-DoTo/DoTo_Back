@@ -24,6 +24,6 @@ public class Item implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private ItemType itemType;
 
-    private int count;
+    private Integer count;
 
 }
