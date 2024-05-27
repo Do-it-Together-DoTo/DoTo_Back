@@ -41,8 +41,9 @@ public class FriendController {
         return ResponseDto.success(FRIEND_REQUEST_CANCELED, null);
     }
 
-    @DeleteMapping("/{toMemberId}")
-    public ResponseDto<?> friendRemove() {
+    @DeleteMapping("/{memberId}")
+    public ResponseDto<?> friendRemove(
+            @PathVariable Long memberId) {
 
         return ResponseDto.success(FRIEND_DELETED, null);
     }
