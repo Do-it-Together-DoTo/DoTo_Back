@@ -11,3 +11,6 @@ rebel.xml
 
 /build/
 .gradletasknamecache
+
+gradlew
+spy.log

@@ -18,7 +18,7 @@ public class Character {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "character_id")
-    private long id;
+    private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
@@ -28,8 +28,8 @@ public class Character {
     @JoinColumn(name = "character_type_id")
     private CharacterType characterType;
 
-    private int exp;
+    private Integer exp;
 
-    private boolean isMain;
+    private Boolean isMain;
 
 }

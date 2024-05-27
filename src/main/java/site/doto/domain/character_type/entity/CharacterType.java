@@ -15,14 +15,14 @@ import javax.persistence.*;
 public class CharacterType {
     @Id
     @Column(name = "character_type_id")
-    private long id;
+    private Long id;
 
     private String name;
 
     private String img;
 
-    private int level;
+    private Integer level;
 
-    private int species;
+    private Integer species;
 
 }
