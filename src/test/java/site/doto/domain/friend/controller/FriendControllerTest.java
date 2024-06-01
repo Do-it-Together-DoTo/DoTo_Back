@@ -49,8 +49,7 @@ class FriendControllerTest {
     public void friend_request_success() throws Exception {
         // given
         FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setToMemberId(2L);
-        friendRequestReq.setStatus(FriendRelation.WAITING);
+        friendRequestReq.setFromMemberId(2L);
 
         String content = gson.toJson(friendRequestReq);
 
@@ -79,10 +78,8 @@ class FriendControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("toMemberId").type(JsonFieldType.NUMBER)
-                                                        .description("친구 Id"),
-                                                fieldWithPath("status").type(JsonFieldType.STRING)
-                                                        .description("친구 상태 코드")
+                                                fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
+                                                        .description("친구 Id")
                                         )
                                 )
                                 .responseFields(
@@ -107,7 +104,7 @@ class FriendControllerTest {
     public void friend_response_success() throws Exception {
         // given
         FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(2L);
+        friendResponseReq.setFromMemberId(2L);
 
         String content = gson.toJson(friendResponseReq);
 
@@ -136,7 +133,7 @@ class FriendControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("toMemberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
                                         )
                                 )
@@ -162,7 +159,7 @@ class FriendControllerTest {
     public void friend_declined_success() throws Exception {
         // given
         FriendDeclinedReq friendDeclinedReq = new FriendDeclinedReq();
-        friendDeclinedReq.setToMemberId(2L);
+        friendDeclinedReq.setFromMemberId(2L);
 
         String content = gson.toJson(friendDeclinedReq);
 
@@ -191,7 +188,7 @@ class FriendControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("toMemberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
                                         )
                                 )
@@ -274,7 +271,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/members/friends/{toMemberId}", 2L)
+                delete("/members/friends/{memberId}", 2L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -304,7 +301,7 @@ class FriendControllerTest {
                                                         .description("내용 없음")
                                         )
                                 )
-                                .pathParameters(parameterWithName("toMemberId").description("친구 Id"))
+                                .pathParameters(parameterWithName("memberId").description("친구 Id"))
                                 .responseSchema(Schema.schema("친구 삭제 Response"))
                                 .build()
                         ))
@@ -348,9 +345,9 @@ class FriendControllerTest {
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 친구 Id"),
+                                                        .description("마지막 친구 Id (Optional)").optional(),
                                                 fieldWithPath("lastFriendTodoDate").type(JsonFieldType.STRING)
-                                                        .description("마지막 친구의 Todo 생성 시간")
+                                                        .description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                         )
                                 )
                                 .responseFields(
@@ -361,12 +358,10 @@ class FriendControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.friends").type(JsonFieldType.ARRAY)
                                                         .description("친구 목록"),
-                                                fieldWithPath("body.*[].fromMemberId").type(JsonFieldType.NUMBER)
-                                                        .description("유저 Id"),
-                                                fieldWithPath("body.*[].toMemberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id"),
-                                                fieldWithPath("body.*[].status").type(JsonFieldType.STRING)
-                                                        .description("친구 상태 코드")
+                                                fieldWithPath("body.*[].mainCharacterId").type(JsonFieldType.NUMBER)
+                                                        .description("친구 메인 캐릭터 Id")
                                         )
                                 )
                                 .requestSchema(Schema.schema("친구 목록 Request"))
