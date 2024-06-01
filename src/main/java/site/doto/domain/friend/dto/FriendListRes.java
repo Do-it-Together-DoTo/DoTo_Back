@@ -12,9 +12,4 @@ import java.util.List;
 public class FriendListRes {
     List<FriendDto> friends = new ArrayList<>();
 
-    public FriendListRes(List<Friend> friends) {
-        friends.stream()
-                .map(FriendDto::toDto)
-                .forEach(this.friends::add);
-    }
 }

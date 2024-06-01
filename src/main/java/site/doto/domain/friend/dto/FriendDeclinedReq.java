@@ -7,5 +7,5 @@ import javax.validation.constraints.NotNull;
 @Data
 public class FriendDeclinedReq {
     @NotNull
-    private Long toMemberId;
+    private Long fromMemberId;
 }

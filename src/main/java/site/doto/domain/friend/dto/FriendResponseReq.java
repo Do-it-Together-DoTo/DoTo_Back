@@ -10,12 +10,12 @@ import javax.validation.constraints.NotNull;
 @Data
 public class FriendResponseReq {
     @NotNull
-    private Long toMemberId;
+    private Long fromMemberId;
 
-    public Friend toEntity(Member fromMember, Member toMember) {
+    public Friend toEntity(Member toMember, Member fromMember) {
         return Friend.builder()
-                .fromMember(fromMember)
                 .toMember(toMember)
+                .fromMember(fromMember)
                 .status(FriendRelation.ACCEPTED)
                 .build();
     }
