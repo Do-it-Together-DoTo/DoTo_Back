@@ -55,9 +55,8 @@ public class FriendController {
 
         for (int i = 1; i <= 10; i++) {
             friends.add(FriendDto.builder()
-                    .fromMemberId(10000L + i)
-                    .toMemberId(20000L + i)
-                    .status(FriendRelation.ACCEPTED)
+                    .memberId(10000L + i)
+                    .mainCharacterId(10000L + i)
                     .build());
         }
 
