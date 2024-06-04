@@ -8,5 +8,7 @@ import lombok.Data;
 public class FriendDto {
     private Long memberId;
 
+    private String nickname;
+
     private Long mainCharacterId;
 }

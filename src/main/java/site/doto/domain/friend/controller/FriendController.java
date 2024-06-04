@@ -56,6 +56,7 @@ public class FriendController {
         for (int i = 1; i <= 10; i++) {
             friends.add(FriendDto.builder()
                     .memberId(10000L + i)
+                    .nickname("닉네임" + i)
                     .mainCharacterId(10000L + i)
                     .build());
         }

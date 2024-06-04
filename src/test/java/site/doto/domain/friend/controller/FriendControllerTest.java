@@ -360,6 +360,8 @@ class FriendControllerTest {
                                                         .description("친구 목록"),
                                                 fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id"),
+                                                fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("친구 닉네임"),
                                                 fieldWithPath("body.*[].mainCharacterId").type(JsonFieldType.NUMBER)
                                                         .description("친구 메인 캐릭터 Id")
                                         )
