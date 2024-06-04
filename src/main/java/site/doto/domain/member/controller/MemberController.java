@@ -69,10 +69,30 @@ public class MemberController {
             MembersSearchReq membersSearchReq) {
         List<MembersSearchDto> members = new ArrayList<>();
 
-        for(int i = 1; i <= 10; i++) {
+        for(int i = 1; i <= 5; i++) {
             members.add(MembersSearchDto.builder()
+                    .memberId(10000L + i)
                     .nickname("닉네임" + i)
+                    .mainCharacterId(10000L + i)
                     .status(MemberRelation.FRIENDS)
+                    .build());
+        }
+
+        for(int i = 6; i <= 10; i++) {
+            members.add(MembersSearchDto.builder()
+                    .memberId(20000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterId(20000L + i)
+                    .status(MemberRelation.NOT_FRIENDS)
+                    .build());
+        }
+
+        for(int i = 11; i <= 15; i++) {
+            members.add(MembersSearchDto.builder()
+                    .memberId(30000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterId(30000L + i)
+                    .status(MemberRelation.WAITING_FRIEND_REQUEST)
                     .build());
         }
 

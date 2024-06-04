@@ -417,8 +417,12 @@ class MemberControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.searchResult").type(JsonFieldType.ARRAY)
                                                         .description("검색 결과"),
+                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                        .description("유저 Id"),
                                                 fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
                                                         .description("유저 닉네임"),
+                                                fieldWithPath("body.*[].mainCharacterId").type(JsonFieldType.NUMBER)
+                                                        .description("유저 대표 캐릭터 Id"),
                                                 fieldWithPath("body.*[].status").type(JsonFieldType.STRING)
                                                         .description("유저 관계 상태 코드")
                                         )

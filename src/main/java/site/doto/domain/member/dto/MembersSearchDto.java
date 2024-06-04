@@ -7,7 +7,11 @@ import site.doto.domain.member.enums.MemberRelation;
 @Data
 @Builder
 public class MembersSearchDto {
+    private Long memberId;
+
     private String nickname;
+
+    private Long mainCharacterId;
 
     private MemberRelation status;
 }
