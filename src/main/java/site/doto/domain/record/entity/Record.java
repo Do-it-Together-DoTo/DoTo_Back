@@ -7,13 +7,14 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Record {
+public class Record implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     @Id
