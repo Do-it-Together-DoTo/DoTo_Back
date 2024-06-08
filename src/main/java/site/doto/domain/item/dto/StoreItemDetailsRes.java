@@ -6,7 +6,12 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class StoreItemDetailsRes {
+    private String img;
+
+    private String name;
+
     private Integer exp;
 
     private String description;
+    
 }
