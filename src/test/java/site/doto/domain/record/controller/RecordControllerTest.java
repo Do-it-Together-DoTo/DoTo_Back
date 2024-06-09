@@ -74,6 +74,7 @@ class RecordControllerTest {
                 .andExpect(jsonPath("$.body.betParticipation").value(3))
                 .andExpect(jsonPath("$.body.betWins").value(2))
                 .andExpect(jsonPath("$.body.betProfit").value(100))
+                .andExpect(jsonPath("$.body.myBetOpen").value(3))
                 .andDo(document(
                         "Record 조회",
                         preprocessRequest(prettyPrint()),
@@ -109,7 +110,15 @@ class RecordControllerTest {
                                                 fieldWithPath("body.betWins").type(JsonFieldType.NUMBER)
                                                         .description("베팅 이긴 횟수"),
                                                 fieldWithPath("body.betProfit").type(JsonFieldType.NUMBER)
-                                                        .description("베팅 수익")
+                                                        .description("베팅 수익"),
+                                                fieldWithPath("body.myBetOpen").type(JsonFieldType.NUMBER)
+                                                        .description("내가 연 베팅 횟수"),
+                                                fieldWithPath("body.*[].name").type(JsonFieldType.STRING)
+                                                        .description("카테고리 이름"),
+                                                fieldWithPath("body.*[].total").type(JsonFieldType.NUMBER)
+                                                        .description("투두 등록 개수"),
+                                                fieldWithPath("body.*[].achieved").type(JsonFieldType.NUMBER)
+                                                        .description("투두 달성 개수")
                                         )
                                 )
                                 .requestSchema(Schema.schema("Record 조회 Request"))

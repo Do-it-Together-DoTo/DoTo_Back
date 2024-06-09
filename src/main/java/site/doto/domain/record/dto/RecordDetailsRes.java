@@ -3,6 +3,9 @@ package site.doto.domain.record.dto;
 import lombok.Builder;
 import lombok.Data;
 import site.doto.domain.record.entity.Record;
+import site.doto.domain.todo.dto.TodoRecordDto;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -23,7 +26,11 @@ public class RecordDetailsRes {
 
     private Integer betProfit;
 
-    public static RecordDetailsRes toDto(Record record) {
+    private Integer myBetOpen;
+
+    private List<TodoRecordDto> todoRecords;
+
+    public static RecordDetailsRes toDto(Record record, Integer openCount, List<TodoRecordDto> records) {
         return RecordDetailsRes.builder()
                 .year(record.getYear())
                 .month(record.getMonth())
@@ -33,6 +40,8 @@ public class RecordDetailsRes {
                 .betWins(record.getBetWins())
                 .betAmount(record.getBetAmount())
                 .betProfit(record.getBetProfit())
+                .myBetOpen(openCount)
+                .todoRecords(records)
                 .build();
     }
 }
