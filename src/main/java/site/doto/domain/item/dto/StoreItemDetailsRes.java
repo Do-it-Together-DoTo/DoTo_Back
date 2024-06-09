@@ -10,8 +10,6 @@ public class StoreItemDetailsRes {
 
     private String name;
 
-    private Integer exp;
-
     private String description;
     
 }

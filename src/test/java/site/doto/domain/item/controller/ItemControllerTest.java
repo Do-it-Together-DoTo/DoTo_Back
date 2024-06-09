@@ -262,7 +262,6 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.header.message").value(ITEM_INQUIRY_OK.getMessage()))
                 .andExpect(jsonPath("$.body.img").value("이미지 url"))
                 .andExpect(jsonPath("$.body.name").value("아이템 이름"))
-                .andExpect(jsonPath("$.body.exp").value(300))
                 .andExpect(jsonPath("$.body.description").value("아이템 설명"))
                 .andDo(document(
                         "아이템 개별 조회 조회",
@@ -286,8 +285,6 @@ public class ItemControllerTest {
                                                 .description("ItemType 이름"),
                                         fieldWithPath("body.img").type(JsonFieldType.STRING)
                                                 .description("ItemType 이미지 Url"),
-                                        fieldWithPath("body.exp").type(JsonFieldType.NUMBER)
-                                                .description("ItemType 경험치"),
                                         fieldWithPath("body.description").type(JsonFieldType.STRING)
                                                 .description("ItemType 설명")
                                 )

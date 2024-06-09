@@ -69,8 +69,7 @@ public class ItemController {
     @GetMapping("/store/items/{itemId}")
     public ResponseDto<StoreItemDetailsRes> storeItemDetails(
             @PathVariable("itemId") Long itemId) {
-        StoreItemDetailsRes result = new StoreItemDetailsRes("이미지 url", "아이템 이름",
-                300, "아이템 설명");
+        StoreItemDetailsRes result = new StoreItemDetailsRes("이미지 url", "아이템 이름", "아이템 설명");
 
         return ResponseDto.success(ITEM_INQUIRY_OK, result);
     }
