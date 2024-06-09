@@ -15,8 +15,6 @@ public class CharacterDto {
 
     private Integer level;
 
-    private Integer exp;
-
     private String description;
 
     public static CharacterDto toDto(Character character) {
@@ -24,9 +22,12 @@ public class CharacterDto {
                 .id(character.getId())
                 .name(character.getCharacterType().getName())
                 .img(character.getCharacterType().getImg())
-                .level(character.getCharacterType().getLevel())
-                .exp(character.getExp())
+                .level(calculateLevel(character.getExp()))
                 .description(character.getCharacterType().getDescription())
                 .build();
+    }
+
+    public static Integer calculateLevel(Integer exp) {
+        return exp/100;
     }
 }

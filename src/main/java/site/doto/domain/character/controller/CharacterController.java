@@ -23,7 +23,6 @@ public class CharacterController {
                     .id(10000L + i)
                     .name("캐릭터이름")
                     .level(10+i)
-                    .exp(2500*i)
                     .img("이미지")
                     .description("설명")
                     .build());
