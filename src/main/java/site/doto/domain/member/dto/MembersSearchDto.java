@@ -11,7 +11,7 @@ public class MembersSearchDto {
 
     private String nickname;
 
-    private Long mainCharacterId;
+    private String mainCharacterImg;
 
     private MemberRelation status;
 }

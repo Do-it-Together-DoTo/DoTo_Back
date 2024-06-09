@@ -73,7 +73,7 @@ public class MemberController {
             members.add(MembersSearchDto.builder()
                     .memberId(10000L + i)
                     .nickname("닉네임" + i)
-                    .mainCharacterId(10000L + i)
+                    .mainCharacterImg("이미지" + i)
                     .status(MemberRelation.FRIENDS)
                     .build());
         }
@@ -82,7 +82,7 @@ public class MemberController {
             members.add(MembersSearchDto.builder()
                     .memberId(20000L + i)
                     .nickname("닉네임" + i)
-                    .mainCharacterId(20000L + i)
+                    .mainCharacterImg("이미지" + i)
                     .status(MemberRelation.NOT_FRIENDS)
                     .build());
         }
@@ -91,7 +91,7 @@ public class MemberController {
             members.add(MembersSearchDto.builder()
                     .memberId(30000L + i)
                     .nickname("닉네임" + i)
-                    .mainCharacterId(30000L + i)
+                    .mainCharacterImg("이미지" + i)
                     .status(MemberRelation.WAITING_FRIEND_REQUEST)
                     .build());
         }

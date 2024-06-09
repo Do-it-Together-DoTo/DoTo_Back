@@ -421,8 +421,8 @@ class MemberControllerTest {
                                                         .description("유저 Id"),
                                                 fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
                                                         .description("유저 닉네임"),
-                                                fieldWithPath("body.*[].mainCharacterId").type(JsonFieldType.NUMBER)
-                                                        .description("유저 대표 캐릭터 Id"),
+                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                        .description("유저 대표 캐릭터 이미지"),
                                                 fieldWithPath("body.*[].status").type(JsonFieldType.STRING)
                                                         .description("유저 관계 상태 코드")
                                         )
