@@ -84,6 +84,8 @@ public class CharacterControllerTest {
                                                         .description("Character 이미지 url"),
                                                 fieldWithPath("body.*[].level").type(JsonFieldType.NUMBER)
                                                         .description("Character 레벨"),
+                                                fieldWithPath("body.*[].exp").type(JsonFieldType.NUMBER)
+                                                        .description("Character 남은 경험치"),
                                                 fieldWithPath("body.*[].description").type(JsonFieldType.STRING)
                                                         .description("Character 설명")
                                         )

@@ -17,17 +17,24 @@ public class CharacterDto {
 
     private String description;
 
+    private Integer exp;
+
     public static CharacterDto toDto(Character character) {
         return CharacterDto.builder()
                 .id(character.getId())
                 .name(character.getCharacterType().getName())
                 .img(character.getCharacterType().getImg())
                 .level(calculateLevel(character.getExp()))
+                .exp(calculateExp(character.getExp()))
                 .description(character.getCharacterType().getDescription())
                 .build();
     }
 
     public static Integer calculateLevel(Integer exp) {
         return exp/100;
+    }
+
+    public static Integer calculateExp(Integer exp) {
+        return exp%100;
     }
 }
