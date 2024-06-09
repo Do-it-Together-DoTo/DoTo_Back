@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,7 +26,9 @@ import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuild
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.SuccessCode.MEMBERS_SEARCH_OK;
 
 @Transactional
 @SpringBootTest
@@ -360,6 +363,74 @@ class MemberControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .build())
+                ));
+
+    }
+
+    @Test
+    @DisplayName("유저 검색_성공")
+    public void members_search_success() throws Exception {
+        // given
+        MembersSearchReq membersSearchReq = new MembersSearchReq();
+        membersSearchReq.setSearchWord("검색어");
+        membersSearchReq.setLastMemberId(10000L);
+
+        String content = gson.toJson(membersSearchReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/members/search")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBERS_SEARCH_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBERS_SEARCH_OK.getMessage()))
+                .andDo(document(
+                        "유저 검색",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("유저 검색 API")
+                                .requestHeaders(
+                                        HeaderDocumentation.headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("searchWord").type(JsonFieldType.STRING)
+                                                        .description("검색어"),
+                                                fieldWithPath("lastMemberId").type(JsonFieldType.NUMBER)
+                                                        .description("마지막 유저 Id(Optional)").optional()
+                                        )
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body.searchResult").type(JsonFieldType.ARRAY)
+                                                        .description("검색 결과"),
+                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                        .description("유저 Id"),
+                                                fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("유저 닉네임"),
+                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                        .description("유저 대표 캐릭터 이미지"),
+                                                fieldWithPath("body.*[].status").type(JsonFieldType.STRING)
+                                                        .description("유저 관계 상태 코드")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("유저 검색 Request"))
+                                .responseSchema(Schema.schema("유저 검색 Response"))
+                                .build()
+                        )
                 ));
 
     }

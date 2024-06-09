@@ -2,7 +2,11 @@ package site.doto.domain.member.controller;
 
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
+import site.doto.domain.member.enums.MemberRelation;
 import site.doto.global.dto.ResponseDto;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static site.doto.global.status_code.SuccessCode.*;
 
@@ -60,4 +64,41 @@ public class MemberController {
         return ResponseDto.success(MEMBER_DELETED, null);
     }
 
+    @GetMapping("/search")
+    public ResponseDto<?> membersSearch(
+            MembersSearchReq membersSearchReq) {
+        List<MembersSearchDto> members = new ArrayList<>();
+
+        for(int i = 1; i <= 5; i++) {
+            members.add(MembersSearchDto.builder()
+                    .memberId(10000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterImg("이미지" + i)
+                    .status(MemberRelation.FRIENDS)
+                    .build());
+        }
+
+        for(int i = 6; i <= 10; i++) {
+            members.add(MembersSearchDto.builder()
+                    .memberId(20000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterImg("이미지" + i)
+                    .status(MemberRelation.NOT_FRIENDS)
+                    .build());
+        }
+
+        for(int i = 11; i <= 15; i++) {
+            members.add(MembersSearchDto.builder()
+                    .memberId(30000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterImg("이미지" + i)
+                    .status(MemberRelation.WAITING_FRIEND_REQUEST)
+                    .build());
+        }
+
+        MembersSearchRes result = new MembersSearchRes();
+        result.setSearchResult(members);
+
+        return ResponseDto.success(MEMBERS_SEARCH_OK, result);
+    }
 }

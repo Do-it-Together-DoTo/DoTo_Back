@@ -4,12 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.doto.domain.friend.enums.FriendRelation;
 import site.doto.domain.member.entity.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -26,6 +24,7 @@ public class Friend implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     private Member toMember;
 
-    private Integer status;
+    @Enumerated(EnumType.ORDINAL)
+    private FriendRelation status;
 
 }
