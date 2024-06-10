@@ -1,4 +1,4 @@
-package site.doto.domain.category;
+package site.doto.domain.category.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;

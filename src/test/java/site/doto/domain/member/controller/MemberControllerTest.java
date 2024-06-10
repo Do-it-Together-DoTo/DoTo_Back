@@ -1,4 +1,4 @@
-package site.doto.member;
+package site.doto.domain.member.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;

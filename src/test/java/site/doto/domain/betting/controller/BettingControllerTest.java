@@ -1,4 +1,4 @@
-package site.doto.domain.betting;
+package site.doto.domain.betting.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;

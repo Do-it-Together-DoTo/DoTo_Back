@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.doto.domain.character_type.entity.CharacterType;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;

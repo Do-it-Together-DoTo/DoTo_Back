@@ -1,4 +1,4 @@
-package site.doto.domain.item_type.entity;
+package site.doto.domain.character.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,20 +12,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ItemType {
+public class CharacterType {
     @Id
-    @Column(name = "item_type_id")
+    @Column(name = "character_type_id")
     private Long id;
 
     private String name;
 
     private String img;
 
-    private Integer price;
+    private Integer level;
 
-    private String grade;
-
-    private Integer exp;
+    private Integer species;
 
     private String description;
 

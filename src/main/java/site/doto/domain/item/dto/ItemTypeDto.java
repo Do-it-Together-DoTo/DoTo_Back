@@ -1,8 +1,8 @@
-package site.doto.domain.item_type.dto;
+package site.doto.domain.item.dto;
 
 import lombok.Builder;
 import lombok.Data;
-import site.doto.domain.item_type.entity.ItemType;
+import site.doto.domain.item.entity.ItemType;
 
 @Data
 @Builder
