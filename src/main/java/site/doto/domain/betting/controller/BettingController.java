@@ -28,7 +28,7 @@ public class BettingController {
     public ResponseDto<MyBettingListRes> myBettingList() {
         MyBettingListRes result = new MyBettingListRes();
 
-        BettingDetailsRes myBetting = BettingDetailsRes.builder()
+        BettingDto myBetting = BettingDto.builder()
                 .memberId(1L)
                 .memberNickname("닉네임")
                 .mainCharacterImg("이미지 주소")
@@ -36,11 +36,11 @@ public class BettingController {
                 .bettingName("베팅 이름")
                 .build();
 
-        List<BettingDetailsRes> joiningBetting = new ArrayList<>();
-        List<BettingDetailsRes> closedBetting = new ArrayList<>();
+        List<BettingDto> joiningBetting = new ArrayList<>();
+        List<BettingDto> closedBetting = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
-            joiningBetting.add(BettingDetailsRes.builder()
+            joiningBetting.add(BettingDto.builder()
                     .memberId(1L + i)
                     .memberNickname("친구" + i)
                     .mainCharacterImg("이미지 주소" + i)
@@ -48,7 +48,7 @@ public class BettingController {
                     .bettingName("베팅 이름" + i)
                     .build());
 
-            closedBetting.add(BettingDetailsRes.builder()
+            closedBetting.add(BettingDto.builder()
                     .memberId(1L + i)
                     .memberNickname("친구" + i)
                     .mainCharacterImg("이미지 주소" + i)
@@ -68,10 +68,10 @@ public class BettingController {
     public ResponseDto<OpenBettingListRes> openBettingList() {
         OpenBettingListRes result = new OpenBettingListRes();
 
-        List<BettingDetailsRes> openBetting = new ArrayList<>();
+        List<BettingDto> openBetting = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
-            openBetting.add(BettingDetailsRes.builder()
+            openBetting.add(BettingDto.builder()
                     .memberId(1L + i)
                     .memberNickname("친구" + i)
                     .mainCharacterImg("이미지 주소" + i)
@@ -90,11 +90,16 @@ public class BettingController {
             @PathVariable Long bettingId) {
 
         BettingDetailsRes result = BettingDetailsRes.builder()
-                .memberId(1L)
-                .memberNickname("닉네임")
-                .mainCharacterImg("이미지 주소")
                 .bettingId(10001L)
                 .bettingName("베팅 이름")
+                .memberId(1L)
+                .memberNickname("닉네임")
+                .todoContents("투두 내용")
+                .successCoins(80)
+                .failureCoins(20)
+                .participantCount(10)
+                .isParticipating(false)
+                .chatRoomId(20001L)
                 .build();
 
         return ResponseDto.success(SuccessCode.BETTING_INQUIRY_OK, result);

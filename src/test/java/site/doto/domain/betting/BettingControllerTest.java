@@ -313,16 +313,26 @@ class BettingControllerTest {
                                                         .description("성공 코드"),
                                                 fieldWithPath("header.message").type(JsonFieldType.STRING)
                                                         .description("성공 메시지"),
-                                                fieldWithPath("body.memberId").type(JsonFieldType.NUMBER)
-                                                        .description("멤버 ID"),
-                                                fieldWithPath("body.mainCharacterImg").type(JsonFieldType.STRING)
-                                                        .description("대표 캐릭터 이미지"),
-                                                fieldWithPath("body.memberNickname").type(JsonFieldType.STRING)
-                                                        .description("멤버 닉네임"),
                                                 fieldWithPath("body.bettingId").type(JsonFieldType.NUMBER)
                                                         .description("베팅 ID"),
                                                 fieldWithPath("body.bettingName").type(JsonFieldType.STRING)
-                                                        .description("베팅 이름")
+                                                        .description("베팅 이름"),
+                                                fieldWithPath("body.memberId").type(JsonFieldType.NUMBER)
+                                                        .description("멤버 ID"),
+                                                fieldWithPath("body.memberNickname").type(JsonFieldType.STRING)
+                                                        .description("멤버 닉네임"),
+                                                fieldWithPath("body.todoContents").type(JsonFieldType.STRING)
+                                                        .description("투두 내용"),
+                                                fieldWithPath("body.successCoins").type(JsonFieldType.NUMBER)
+                                                        .description("성공에 베팅된 코인"),
+                                                fieldWithPath("body.failureCoins").type(JsonFieldType.NUMBER)
+                                                        .description("실패에 베팅된 코인"),
+                                                fieldWithPath("body.participantCount").type(JsonFieldType.NUMBER)
+                                                        .description("베팅 참여 인원"),
+                                                fieldWithPath("body.isParticipating").type(JsonFieldType.BOOLEAN)
+                                                        .description("베팅 참가 여부"),
+                                                fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
+                                                        .description("채팅방 ID")
                                         )
                                 )
                                 .responseSchema(Schema.schema("베팅 단일 조회 Response"))

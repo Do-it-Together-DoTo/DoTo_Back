@@ -6,5 +6,5 @@ import java.util.List;
 
 @Data
 public class OpenBettingListRes {
-    List<BettingDetailsRes> openBetting;
+    List<BettingDto> openBetting;
 }

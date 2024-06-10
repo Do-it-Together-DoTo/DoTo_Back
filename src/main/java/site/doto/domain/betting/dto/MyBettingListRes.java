@@ -7,9 +7,9 @@ import java.util.List;
 @Data
 public class MyBettingListRes {
 
-    BettingDetailsRes myBetting;
+    BettingDto myBetting;
 
-    List<BettingDetailsRes> joiningBetting;
+    List<BettingDto> joiningBetting;
 
-    List<BettingDetailsRes> closedBetting;
+    List<BettingDto> closedBetting;
 }

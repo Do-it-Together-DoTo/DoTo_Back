@@ -6,13 +6,23 @@ import lombok.Data;
 @Data
 @Builder
 public class BettingDetailsRes {
-    Long memberId;
-
-    String mainCharacterImg;
-
-    String memberNickname;
-
     Long bettingId;
 
     String bettingName;
+
+    Long memberId;
+
+    String memberNickname;
+
+    String todoContents;
+
+    Integer successCoins;
+
+    Integer failureCoins;
+
+    Integer participantCount;
+
+    Boolean isParticipating;
+
+    Long chatRoomId;
 }
