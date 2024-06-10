@@ -21,11 +21,12 @@ public class Record implements Serializable {
     private Member member;
 
     @Id
-    @Column(name = "year")
+    @Column(name = "record_year")
     private Integer year;
 
     @Id
-    @Column(name = "month")
+    @Column(name = "record_month")
+  
     private Integer month;
 
     private Integer coinUsage;
