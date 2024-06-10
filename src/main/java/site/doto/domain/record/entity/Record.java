@@ -15,15 +15,17 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class Record implements Serializable {
+    @Id
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
-    @Id
     private Member member;
 
     @Id
+    @Column(name = "year")
     private Integer year;
 
     @Id
+    @Column(name = "month")
     private Integer month;
 
     private Integer coinUsage;
