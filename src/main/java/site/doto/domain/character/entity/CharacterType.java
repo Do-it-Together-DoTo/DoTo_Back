@@ -25,4 +25,6 @@ public class CharacterType {
 
     private Integer species;
 
+    private String description;
+
 }

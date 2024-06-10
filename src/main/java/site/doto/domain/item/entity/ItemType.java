@@ -21,4 +21,12 @@ public class ItemType {
 
     private String img;
 
+    private Integer price;
+
+    private String grade;
+
+    private Integer exp;
+
+    private String description;
+
 }
