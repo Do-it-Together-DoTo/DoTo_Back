@@ -95,6 +95,7 @@ class BettingControllerTest {
                                         )
                                 )
                                 .requestSchema(Schema.schema("베팅 생성 Request"))
+                                .responseSchema(Schema.schema("베팅 생성 Response"))
                                 .build()
                         ))
                 );
@@ -153,6 +154,7 @@ class BettingControllerTest {
                                         )
                                 )
                                 .requestSchema(Schema.schema("베팅 참여 Request"))
+                                .responseSchema(Schema.schema("베팅 참여 Response"))
                                 .build()
                         ))
                 );
