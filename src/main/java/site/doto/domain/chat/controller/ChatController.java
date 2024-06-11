@@ -4,10 +4,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import site.doto.domain.chatroom.dto.ChatAddReq;
-import site.doto.domain.chatroom.dto.ChatDto;
-import site.doto.domain.chatroom.dto.ChatListReq;
-import site.doto.domain.chatroom.dto.ChatListRes;
+import site.doto.domain.chat.dto.ChatAddReq;
+import site.doto.domain.chat.dto.ChatDto;
+import site.doto.domain.chat.dto.ChatListReq;
+import site.doto.domain.chat.dto.ChatListRes;
 import site.doto.global.dto.ResponseDto;
 import site.doto.global.status_code.SuccessCode;
 
@@ -31,9 +31,9 @@ public class ChatController {
                     .chatId(40000L + i)
                     .contents("메세지" + i)
                     .createdDate(LocalDateTime.now())
-                    .memberId((0L + i) % 5)
-                    .memberNickname("닉네임" + (0L + i) % 5)
-                    .mainCharacterImg("이미지 주소" + (0L + i) % 5)
+                    .memberId((4L + i) % 5 + 1)
+                    .memberNickname("닉네임" + ((4L + i) % 5 + 1))
+                    .mainCharacterImg("이미지 주소" + ((4L + i) % 5 + 1))
                     .build());
         }
 

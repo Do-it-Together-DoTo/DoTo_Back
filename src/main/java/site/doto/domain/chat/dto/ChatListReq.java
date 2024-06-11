@@ -1,4 +1,4 @@
-package site.doto.domain.chatroom.dto;
+package site.doto.domain.chat.dto;
 
 import lombok.Data;
 

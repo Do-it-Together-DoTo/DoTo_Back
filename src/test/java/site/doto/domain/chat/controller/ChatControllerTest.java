@@ -14,7 +14,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.chatroom.dto.ChatAddReq;
+import site.doto.domain.chat.dto.ChatAddReq;
 
 import java.util.List;
 

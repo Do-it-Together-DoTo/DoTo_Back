@@ -19,10 +19,10 @@ public class ChatRoomController {
 
         for (int i = 1; i <= 10; i++) {
             chatRooms.add(ChatRoomDto.builder()
-                    .chatRoomId(30001L + i)
-                    .bettingId(10001L + i)
+                    .chatRoomId(30000L + i)
+                    .bettingId(10000L + i)
                     .bettingName("베팅 이름" + i)
-                    .memberId(1L + i)
+                    .memberId(0L + i)
                     .memberNickname("닉네임" + i)
                     .mainCharacterImg("이미지 주소" + i)
                     .build());
