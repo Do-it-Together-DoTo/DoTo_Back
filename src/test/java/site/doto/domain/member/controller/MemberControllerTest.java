@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -25,6 +24,7 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -371,19 +371,16 @@ class MemberControllerTest {
     @DisplayName("유저 검색_성공")
     public void members_search_success() throws Exception {
         // given
-        MembersSearchReq membersSearchReq = new MembersSearchReq();
-        membersSearchReq.setSearchWord("검색어");
-        membersSearchReq.setLastMemberId(10000L);
-
-        String content = gson.toJson(membersSearchReq);
+        String keyword = "검색어";
+        Long lastMemberId = 10000L;
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/members/search")
                         .header("Authorization", jwtToken)
+                        .param("keyword", keyword)
+                        .param("lastMemberId", String.valueOf(lastMemberId))
                         .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
@@ -399,15 +396,11 @@ class MemberControllerTest {
                                 .tag("Member API")
                                 .summary("유저 검색 API")
                                 .requestHeaders(
-                                        HeaderDocumentation.headerWithName("Authorization").description("JWT 토큰")
+                                        headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("searchWord").type(JsonFieldType.STRING)
-                                                        .description("검색어"),
-                                                fieldWithPath("lastMemberId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 유저 Id(Optional)").optional()
-                                        )
+                                .requestParameters(
+                                        parameterWithName("keyword").description("검색어"),
+                                        parameterWithName("lastMemberId").description("마지막 유저 Id(Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -435,7 +428,6 @@ class MemberControllerTest {
                                                         .description("요소의 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("유저 검색 Request"))
                                 .responseSchema(Schema.schema("유저 검색 Response"))
                                 .build()
                         )

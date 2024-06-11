@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.todo.dto.TodoAddReq;
-import site.doto.domain.todo.dto.TodoListReq;
 import site.doto.domain.todo.dto.TodoModifyReq;
 import site.doto.domain.todo.dto.TodoRedoReq;
 
@@ -121,18 +120,15 @@ class TodoControllerTest {
     public void todo_list_success() throws Exception {
         // given
         long memberId = 1L;
-        TodoListReq todoListReq = new TodoListReq();
-        todoListReq.setDate("2024-05-19 00:00:00");
-
-        String content = gson.toJson(todoListReq);
+        String date = "2024-05-19 00:00:00";
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/todo/{memberId}", 1L)
+                get("/todo/{memberId}", memberId)
                         .header("Authorization", jwtToken)
+                        .param("date", date)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
@@ -153,9 +149,8 @@ class TodoControllerTest {
                                 .pathParameters(
                                         parameterWithName("memberId").description("회원 Id")
                                 )
-                                .requestFields(
-                                        fieldWithPath("date").type(JsonFieldType.STRING)
-                                                .description("Todo 생성 날짜")
+                                .requestParameters(
+                                        parameterWithName("date").description("Todo 생성 날짜")
                                 )
                                 .responseFields(
                                         List.of(
@@ -173,7 +168,6 @@ class TodoControllerTest {
                                                         .description("Todo 완료 여부")
                                         )
                                 )
-                                .requestSchema(Schema.schema("Todo 전체 조회 Request"))
                                 .responseSchema(Schema.schema("Todo 전체 조회 Response"))
                                 .build()
                         ))

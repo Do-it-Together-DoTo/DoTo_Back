@@ -68,7 +68,7 @@ public class MemberController {
 
     @GetMapping("/search")
     public ResponseDto<?> membersSearch(
-            MembersSearchReq membersSearchReq) {
+            @ModelAttribute MembersSearchReq membersSearchReq) {
         List<MembersSearchDto> members = new ArrayList<>();
 
         for(int i = 1; i <= 5; i++) {

@@ -15,7 +15,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.friend.dto.*;
-import site.doto.domain.friend.enums.FriendRelation;
 
 import java.util.List;
 
@@ -312,19 +311,17 @@ class FriendControllerTest {
     @DisplayName("친구 목록 성공")
     public void friend_List_success() throws Exception {
         // given
-        FriendListReq friendListReq = new FriendListReq();
-        friendListReq.setLastFriendId(2L);
-        friendListReq.setLastFriendTodoDate("2024-05-19 00:00:00");
-
-        String content = gson.toJson(friendListReq);
+        Long lastFriendId = 1L;
+        String lastFriendTodoDate = "2024-05-19 00:00:00";
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
                         .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(lastFriendId))
+                        .param("lastFriendTodoDate", lastFriendTodoDate)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
@@ -342,13 +339,9 @@ class FriendControllerTest {
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 친구 Id (Optional)").optional(),
-                                                fieldWithPath("lastFriendTodoDate").type(JsonFieldType.STRING)
-                                                        .description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
-                                        )
+                                .requestParameters(
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
+                                        parameterWithName("lastFriendTodoDate").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -374,7 +367,6 @@ class FriendControllerTest {
                                                         .description("요소의 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("친구 목록 Request"))
                                 .responseSchema(Schema.schema("친구 목록 Response"))
                                 .build()
                         ))
@@ -385,25 +377,22 @@ class FriendControllerTest {
     @DisplayName("친구 차단 목록 성공")
     public void friend_block_list_success() throws Exception {
         // given
-        FriendBlockListReq friendBlockListReq = new FriendBlockListReq();
-        friendBlockListReq.setLastFriendId(1L);
-
-        String content = gson.toJson(friendBlockListReq);
+        Long lastFriendId = 1L;
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/friends")
+                get("/friends/block")
                         .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(lastFriendId))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIENDS_INQUIRY_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(FRIENDS_INQUIRY_OK.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_BLOCK_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_BLOCK_LIST_OK.getMessage()))
                 .andDo(document(
                         "친구 차단 목록",
                         preprocessRequest(prettyPrint()),
@@ -414,11 +403,8 @@ class FriendControllerTest {
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 친구 Id (Optional)").optional()
-                                        )
+                                .requestParameters(
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -444,7 +430,6 @@ class FriendControllerTest {
                                                         .description("요소의 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("친구 차단 목록 Request"))
                                 .responseSchema(Schema.schema("친구 차단 목록 Response"))
                                 .build()
                         ))
