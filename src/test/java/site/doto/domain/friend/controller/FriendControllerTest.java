@@ -392,7 +392,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/friends")
+                get("/friends/block")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -402,8 +402,8 @@ class FriendControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIENDS_INQUIRY_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(FRIENDS_INQUIRY_OK.getMessage()))
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_BLOCK_LIST_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_BLOCK_LIST_OK.getMessage()))
                 .andDo(document(
                         "친구 차단 목록",
                         preprocessRequest(prettyPrint()),
