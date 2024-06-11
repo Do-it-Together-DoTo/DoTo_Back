@@ -462,7 +462,7 @@ class MemberControllerTest {
                                 .tag("Member API")
                                 .summary("랭킹 조회 API")
                                 .requestHeaders(
-                                        HeaderDocumentation.headerWithName("Authorization")
+                                        headerWithName("Authorization")
                                                 .description("JWT 토큰")
                                 )
                                 .requestParameters(
