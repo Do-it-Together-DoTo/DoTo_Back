@@ -1,7 +1,10 @@
 package site.doto.global.handler;
 
+import org.springframework.core.convert.ConversionException;
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import site.doto.global.dto.ResponseDto;
 import site.doto.global.exception.CustomException;
@@ -12,6 +15,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     protected ResponseDto<?> handleException(Exception e) {
         return ResponseDto.fail(e.getMessage());
+    }
+
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    protected ResponseDto<?> handleMethodArgumentTypeMismatchException(MethodArgumentTypeMismatchException e) {
+        return ResponseDto.fail(ErrorCode.CRITERIA_MISMATCH);
     }
 
     @ExceptionHandler(CustomException.class)

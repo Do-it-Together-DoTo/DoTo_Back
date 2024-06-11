@@ -11,6 +11,7 @@ public enum ErrorCode {
     UNAUTHORIZED(401, "로그인 정보가 없습니다."),
     FORBIDDEN(403, "접근 권한이 없습니다."),
     NOT_FOUND(404, "요청한 URL이 존재하지 않습니다."),
+    CRITERIA_MISMATCH(400, "랭킹 기준이 올바르지 않습니다."),
     PASSWORD_MISMATCH(400, "비밀번호가 서로 일치하지 않습니다."),
     WITHDRAWAL_NOT_ALLOWED(400, "베팅 진행중에는 탈퇴할 수 없습니다."),
     AUTHCODE_MISMATCH(401, "이메일 인증번호가 일치하지 않습니다."),
