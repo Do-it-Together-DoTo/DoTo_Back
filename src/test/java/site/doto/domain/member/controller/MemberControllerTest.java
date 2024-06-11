@@ -10,7 +10,6 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -397,7 +396,7 @@ class MemberControllerTest {
                                 .tag("Member API")
                                 .summary("유저 검색 API")
                                 .requestHeaders(
-                                        HeaderDocumentation.headerWithName("Authorization").description("JWT 토큰")
+                                        headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestParameters(
                                         parameterWithName("keyword").description("검색어"),

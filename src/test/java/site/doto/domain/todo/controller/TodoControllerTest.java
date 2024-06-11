@@ -11,12 +11,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.todo.dto.TodoAddReq;
-import site.doto.domain.todo.dto.TodoListReq;
 import site.doto.domain.todo.dto.TodoModifyReq;
 import site.doto.domain.todo.dto.TodoRedoReq;
 
@@ -152,7 +150,7 @@ class TodoControllerTest {
                                         parameterWithName("memberId").description("회원 Id")
                                 )
                                 .requestParameters(
-                                        RequestDocumentation.parameterWithName("date").description("Todo 생성 날짜")
+                                        parameterWithName("date").description("Todo 생성 날짜")
                                 )
                                 .responseFields(
                                         List.of(

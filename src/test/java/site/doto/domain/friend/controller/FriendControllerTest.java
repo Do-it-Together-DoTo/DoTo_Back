@@ -11,12 +11,10 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
-import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.friend.dto.*;
-import site.doto.domain.friend.enums.FriendRelation;
 
 import java.util.List;
 
@@ -342,8 +340,8 @@ class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestParameters(
-                                        RequestDocumentation.parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
-                                        RequestDocumentation.parameterWithName("lastFriendTodoDate").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
+                                        parameterWithName("lastFriendTodoDate").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -406,7 +404,7 @@ class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestParameters(
-                                        RequestDocumentation.parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
