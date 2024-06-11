@@ -1,5 +1,7 @@
 package site.doto.domain.member.controller;
 
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
 import site.doto.domain.member.enums.MemberRelation;
@@ -96,8 +98,8 @@ public class MemberController {
                     .build());
         }
 
-        MembersSearchRes result = new MembersSearchRes();
-        result.setSearchResult(members);
+        Slice<MembersSearchDto> membersSearchDtoSlice = new SliceImpl<>(members);
+        MembersSearchRes result = new MembersSearchRes(membersSearchDtoSlice);
 
         return ResponseDto.success(MEMBERS_SEARCH_OK, result);
     }

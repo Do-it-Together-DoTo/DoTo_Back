@@ -415,16 +415,24 @@ class MemberControllerTest {
                                                         .description("성공 코드"),
                                                 fieldWithPath("header.message").type(JsonFieldType.STRING)
                                                         .description("성공 메시지"),
-                                                fieldWithPath("body.searchResult").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.searchResult.content").type(JsonFieldType.ARRAY)
                                                         .description("검색 결과"),
-                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.searchResult.*[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("유저 Id"),
-                                                fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.searchResult.*[].nickname").type(JsonFieldType.STRING)
                                                         .description("유저 닉네임"),
-                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.searchResult.*[].mainCharacterImg").type(JsonFieldType.STRING)
                                                         .description("유저 대표 캐릭터 이미지"),
-                                                fieldWithPath("body.*[].status").type(JsonFieldType.STRING)
-                                                        .description("유저 관계 상태 코드")
+                                                fieldWithPath("body.searchResult.*[].status").type(JsonFieldType.STRING)
+                                                        .description("유저 관계 상태 코드"),
+                                                fieldWithPath("body.searchResult.sliceNumber").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.searchResult.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 크기"),
+                                                fieldWithPath("body.searchResult.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.searchResult.numberOfElements").type(JsonFieldType.NUMBER)
+                                                        .description("요소의 수")
                                         )
                                 )
                                 .requestSchema(Schema.schema("유저 검색 Request"))
