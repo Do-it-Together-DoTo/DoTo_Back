@@ -78,17 +78,17 @@ public class ChattingControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.chatRooms").type(JsonFieldType.ARRAY)
                                                         .description("참여 중인 채팅방 목록"),
-                                                fieldWithPath("body.*[].chatRoomId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.chatRooms[].chatRoomId").type(JsonFieldType.NUMBER)
                                                         .description("채팅방 ID"),
-                                                fieldWithPath("body.*[].bettingId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.chatRooms[].bettingId").type(JsonFieldType.NUMBER)
                                                         .description("베팅 ID"),
-                                                fieldWithPath("body.*[].bettingName").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chatRooms[].bettingName").type(JsonFieldType.STRING)
                                                         .description("베팅 이름"),
-                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.chatRooms[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("멤버 ID"),
-                                                fieldWithPath("body.*[].memberNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chatRooms[].memberNickname").type(JsonFieldType.STRING)
                                                         .description("멤버 닉네임"),
-                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chatRooms[].mainCharacterImg").type(JsonFieldType.STRING)
                                                         .description("메인 캐릭터 이미지 주소")
                                         )
                                 )
@@ -193,17 +193,17 @@ public class ChattingControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.chats.content").type(JsonFieldType.ARRAY)
                                                         .description("채팅 목록"),
-                                                fieldWithPath("body.chats.*[].chatId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.chats.content[].chatId").type(JsonFieldType.NUMBER)
                                                         .description("채팅 ID"),
-                                                fieldWithPath("body.chats.*[].contents").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chats.content[].contents").type(JsonFieldType.STRING)
                                                         .description("채팅 내용"),
-                                                fieldWithPath("body.chats.*[].createdDate").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chats.content[].createdDate").type(JsonFieldType.STRING)
                                                         .description("채팅 시간"),
-                                                fieldWithPath("body.chats.*[].memberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.chats.content[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("멤버 ID"),
-                                                fieldWithPath("body.chats.*[].memberNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chats.content[].memberNickname").type(JsonFieldType.STRING)
                                                         .description("멤버 닉네임"),
-                                                fieldWithPath("body.chats.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.chats.content[].mainCharacterImg").type(JsonFieldType.STRING)
                                                         .description("메인 캐릭터 이미지 주소"),
                                                 fieldWithPath("body.chats.sliceNumber").type(JsonFieldType.NUMBER)
                                                         .description("슬라이스 번호"),
