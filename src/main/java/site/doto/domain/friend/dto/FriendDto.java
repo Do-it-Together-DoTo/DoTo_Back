@@ -10,5 +10,5 @@ public class FriendDto {
 
     private String nickname;
 
-    private Long mainCharacterId;
+    private String mainCharacterImg;
 }
