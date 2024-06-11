@@ -1,10 +1,12 @@
 package site.doto.domain.member.controller;
 
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
 import site.doto.domain.member.enums.MemberRelation;
+import site.doto.domain.member.enums.RankingCriteria;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -102,5 +104,26 @@ public class MemberController {
         MembersSearchRes result = new MembersSearchRes(membersSearchDtoSlice);
 
         return ResponseDto.success(MEMBERS_SEARCH_OK, result);
+    }
+
+    @GetMapping("/ranking")
+    public ResponseDto<?> memberRankList(
+            @Param("order") RankingCriteria order) {
+        List<RankDto> ranks = new ArrayList<>();
+
+        for (int i = 1; i <= 10; i++) {
+            ranks.add(RankDto.builder()
+                    .memberId((long) i)
+                    .memberNickname("닉네임" + i)
+                    .mainCharacterImg("이미지 주소" + i)
+                    .score(1100 - i * 100)
+                    .rank(i)
+                    .build());
+        }
+
+        MemberRankRes result = new MemberRankRes();
+        result.setRanks(ranks);
+
+        return ResponseDto.success(FRIENDS_RANKING_OK, result);
     }
 }
