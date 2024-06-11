@@ -12,7 +12,7 @@ import java.util.List;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
-@RequestMapping("/members/friends")
+@RequestMapping("/friends")
 public class FriendController {
     @PostMapping("/request")
     public ResponseDto<?> friendRequest(

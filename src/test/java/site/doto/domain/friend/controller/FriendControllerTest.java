@@ -55,7 +55,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/members/friends/request")
+                post("/friends/request")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -110,7 +110,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/members/friends/response")
+                post("/friends/response")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -165,7 +165,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/members/friends/response")
+                delete("/friends/response")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -220,7 +220,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/members/friends/request")
+                delete("/friends/request")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -271,7 +271,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/members/friends/{memberId}", 2L)
+                delete("/friends/{memberId}", 2L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -320,7 +320,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                get("/members/friends")
+                get("/friends")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -392,7 +392,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/members/friends/block")
+                post("/friends/block")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -447,7 +447,7 @@ class FriendControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/members/friends/block")
+                delete("/friends/block")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
