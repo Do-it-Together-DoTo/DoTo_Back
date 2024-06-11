@@ -467,7 +467,7 @@ class MemberControllerTest {
                                 )
                                 .requestParameters(
                                         parameterWithName("order")
-                                                .description("랭킹 기준")
+                                                .description("랭킹 기준 : 코인 획득순(GAIN), 코인 사용순(USE)")
                                 )
                                 .responseFields(
                                         fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
