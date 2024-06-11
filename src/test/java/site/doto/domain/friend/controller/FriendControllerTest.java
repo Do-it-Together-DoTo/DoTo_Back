@@ -379,18 +379,15 @@ class FriendControllerTest {
     @DisplayName("친구 차단 목록 성공")
     public void friend_block_list_success() throws Exception {
         // given
-        FriendBlockListReq friendBlockListReq = new FriendBlockListReq();
-        friendBlockListReq.setLastFriendId(1L);
-
-        String content = gson.toJson(friendBlockListReq);
+        Long lastFriendId = 1L;
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends/block")
                         .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(lastFriendId))
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
@@ -408,11 +405,8 @@ class FriendControllerTest {
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 친구 Id (Optional)").optional()
-                                        )
+                                .requestParameters(
+                                        RequestDocumentation.parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -438,7 +432,6 @@ class FriendControllerTest {
                                                         .description("요소의 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("친구 차단 목록 Request"))
                                 .responseSchema(Schema.schema("친구 차단 목록 Response"))
                                 .build()
                         ))

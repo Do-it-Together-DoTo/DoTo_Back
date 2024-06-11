@@ -70,7 +70,7 @@ public class FriendController {
 
     @GetMapping("/block")
     ResponseDto<?> friendBlockList(
-            @RequestBody FriendBlockListReq friendBlockListReq) {
+            @ModelAttribute FriendBlockListReq friendBlockListReq) {
         List<FriendDto> friends = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
