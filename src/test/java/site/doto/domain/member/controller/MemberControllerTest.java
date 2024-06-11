@@ -10,6 +10,7 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.headers.HeaderDocumentation;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -28,7 +29,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static site.doto.global.status_code.SuccessCode.MEMBERS_SEARCH_OK;
+import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
 @SpringBootTest
@@ -433,5 +434,63 @@ class MemberControllerTest {
                         )
                 ));
 
+    }
+
+    @Test
+    @DisplayName("랭킹 조회_성공")
+    public void member_rank_success() throws Exception {
+        //given
+        String order = "GAIN";
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/members/ranking")
+                        .header("Authorization", jwtToken)
+                        .param("order", order)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIENDS_RANKING_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIENDS_RANKING_OK.getMessage()))
+                .andDo(document(
+                        "랭킹 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("랭킹 조회 API")
+                                .requestHeaders(
+                                        HeaderDocumentation.headerWithName("Authorization")
+                                                .description("JWT 토큰")
+                                )
+                                .requestParameters(
+                                        parameterWithName("order")
+                                                .description("랭킹 기준")
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.ranks").type(JsonFieldType.ARRAY)
+                                                .description("랭킹 목록"),
+                                        fieldWithPath("body.ranks[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("멤버 ID"),
+                                        fieldWithPath("body.ranks[].memberNickname").type(JsonFieldType.STRING)
+                                                .description("멤버 닉네임"),
+                                        fieldWithPath("body.ranks[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("메인 캐릭터 이미지 주소"),
+                                        fieldWithPath("body.ranks[].score").type(JsonFieldType.NUMBER)
+                                                .description("점수"),
+                                        fieldWithPath("body.ranks[].rank").type(JsonFieldType.NUMBER)
+                                                .description("랭크")
+                                )
+                                .requestSchema(Schema.schema("랭킹 조회 Request"))
+                                .responseSchema(Schema.schema("랭킹 조회 Response"))
+                                .build()
+                        ))
+                );
     }
 }
