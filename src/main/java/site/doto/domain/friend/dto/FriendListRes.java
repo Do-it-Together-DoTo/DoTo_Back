@@ -2,14 +2,15 @@ package site.doto.domain.friend.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import site.doto.domain.friend.entity.Friend;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.springframework.data.domain.Slice;
+import site.doto.global.dto.SliceDto;
 
 @Data
 @NoArgsConstructor
 public class FriendListRes {
-    List<FriendDto> friends = new ArrayList<>();
+    SliceDto<FriendDto> friends;
 
+    public FriendListRes(Slice<FriendDto> friendDtoSlice) {
+        friends = new SliceDto<>(friendDtoSlice);
+    }
 }

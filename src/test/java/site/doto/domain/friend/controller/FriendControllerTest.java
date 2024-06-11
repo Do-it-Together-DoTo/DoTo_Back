@@ -356,14 +356,22 @@ class FriendControllerTest {
                                                         .description("성공 코드"),
                                                 fieldWithPath("header.message").type(JsonFieldType.STRING)
                                                         .description("성공 메시지"),
-                                                fieldWithPath("body.friends").type(JsonFieldType.ARRAY)
+                                                fieldWithPath("body.friends.content").type(JsonFieldType.ARRAY)
                                                         .description("친구 목록"),
-                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.friends.*[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id"),
-                                                fieldWithPath("body.*[].nickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.friends.*[].nickname").type(JsonFieldType.STRING)
                                                         .description("친구 닉네임"),
-                                                fieldWithPath("body.*[].mainCharacterId").type(JsonFieldType.NUMBER)
-                                                        .description("친구 메인 캐릭터 Id")
+                                                fieldWithPath("body.friends.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                        .description("친구 메인 캐릭터 이미지"),
+                                                fieldWithPath("body.friends.sliceNumber").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.friends.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 크기"),
+                                                fieldWithPath("body.friends.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.friends.numberOfElements").type(JsonFieldType.NUMBER)
+                                                        .description("요소의 수")
                                         )
                                 )
                                 .requestSchema(Schema.schema("친구 목록 Request"))

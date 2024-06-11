@@ -1,8 +1,9 @@
 package site.doto.domain.friend.controller;
 
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.friend.dto.*;
-import site.doto.domain.friend.enums.FriendRelation;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -57,12 +58,12 @@ public class FriendController {
             friends.add(FriendDto.builder()
                     .memberId(10000L + i)
                     .nickname("닉네임" + i)
-                    .mainCharacterId(10000L + i)
+                    .mainCharacterImg("메인 캐릭터" + i)
                     .build());
         }
 
-        FriendListRes result = new FriendListRes();
-        result.setFriends(friends);
+        Slice<FriendDto> friendDtoSlice = new SliceImpl<>(friends);
+        FriendListRes result = new FriendListRes(friendDtoSlice);
 
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
