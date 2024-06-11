@@ -8,6 +8,7 @@ import site.doto.domain.chatroom.entity.ChatRoom;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -30,6 +31,6 @@ public class Chat {
 
     private String contents;
 
-    private String createdDate;
+    private LocalDateTime createdDate;
 
 }
