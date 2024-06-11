@@ -382,6 +382,76 @@ class FriendControllerTest {
     }
 
     @Test
+    @DisplayName("친구 차단 목록 성공")
+    public void friend_block_list_success() throws Exception {
+        // given
+        FriendBlockListReq friendBlockListReq = new FriendBlockListReq();
+        friendBlockListReq.setLastFriendId(1L);
+
+        String content = gson.toJson(friendBlockListReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/friends")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIENDS_INQUIRY_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIENDS_INQUIRY_OK.getMessage()))
+                .andDo(document(
+                        "친구 차단 목록",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("친구 차단 목록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
+                                                        .description("마지막 친구 Id (Optional)").optional()
+                                        )
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body.friends.content").type(JsonFieldType.ARRAY)
+                                                        .description("차단된 친구 목록"),
+                                                fieldWithPath("body.friends.*[].memberId").type(JsonFieldType.NUMBER)
+                                                        .description("친구 Id"),
+                                                fieldWithPath("body.friends.*[].nickname").type(JsonFieldType.STRING)
+                                                        .description("친구 닉네임"),
+                                                fieldWithPath("body.friends.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                        .description("친구 메인 캐릭터 이미지"),
+                                                fieldWithPath("body.friends.sliceNumber").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 번호"),
+                                                fieldWithPath("body.friends.size").type(JsonFieldType.NUMBER)
+                                                        .description("슬라이스 크기"),
+                                                fieldWithPath("body.friends.hasNext").type(JsonFieldType.BOOLEAN)
+                                                        .description("다음 슬라이스 여부"),
+                                                fieldWithPath("body.friends.numberOfElements").type(JsonFieldType.NUMBER)
+                                                        .description("요소의 수")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("친구 차단 목록 Request"))
+                                .responseSchema(Schema.schema("친구 차단 목록 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
     @DisplayName("유저 차단 성공")
     public void friend_block_success() throws Exception {
         // given

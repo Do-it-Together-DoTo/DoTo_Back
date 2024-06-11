@@ -68,6 +68,25 @@ public class FriendController {
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
 
+    @GetMapping("/block")
+    ResponseDto<?> friendBlockList(
+            @RequestBody FriendBlockListReq friendBlockListReq) {
+        List<FriendDto> friends = new ArrayList<>();
+
+        for (int i = 1; i <= 10; i++) {
+            friends.add(FriendDto.builder()
+                    .memberId(10000L + i)
+                    .nickname("닉네임" + i)
+                    .mainCharacterImg("메인 캐릭터" + i)
+                    .build());
+        }
+
+        Slice<FriendDto> friendDtoSlice = new SliceImpl<>(friends);
+        FriendListRes result = new FriendListRes(friendDtoSlice);
+
+        return ResponseDto.success(FRIEND_BLOCK_LIST_OK, result);
+    }
+
     @PostMapping("/block")
     ResponseDto<?> friendBlock(
             @RequestBody FriendBlockReq friendBlockReq) {
