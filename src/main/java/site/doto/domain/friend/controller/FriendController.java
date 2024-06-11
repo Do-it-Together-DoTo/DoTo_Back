@@ -51,7 +51,7 @@ public class FriendController {
 
     @GetMapping
     public ResponseDto<FriendListRes> friendList(
-            @RequestBody FriendListReq friendListReq) {
+            @ModelAttribute FriendListReq friendListReq) {
         List<FriendDto> friends = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {

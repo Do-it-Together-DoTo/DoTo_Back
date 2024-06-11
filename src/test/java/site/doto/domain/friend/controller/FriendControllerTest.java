@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.restdocs.request.RequestDocumentation;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -312,19 +313,17 @@ class FriendControllerTest {
     @DisplayName("친구 목록 성공")
     public void friend_List_success() throws Exception {
         // given
-        FriendListReq friendListReq = new FriendListReq();
-        friendListReq.setLastFriendId(2L);
-        friendListReq.setLastFriendTodoDate("2024-05-19 00:00:00");
-
-        String content = gson.toJson(friendListReq);
+        Long lastFriendId = 1L;
+        String lastFriendTodoDate = "2024-05-19 00:00:00";
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
                         .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(lastFriendId))
+                        .param("lastFriendTodoDate", lastFriendTodoDate)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
         );
 
         // then
@@ -342,13 +341,9 @@ class FriendControllerTest {
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("lastFriendId").type(JsonFieldType.NUMBER)
-                                                        .description("마지막 친구 Id (Optional)").optional(),
-                                                fieldWithPath("lastFriendTodoDate").type(JsonFieldType.STRING)
-                                                        .description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
-                                        )
+                                .requestParameters(
+                                        RequestDocumentation.parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
+                                        RequestDocumentation.parameterWithName("lastFriendTodoDate").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
                                 .responseFields(
                                         List.of(
@@ -374,7 +369,6 @@ class FriendControllerTest {
                                                         .description("요소의 수")
                                         )
                                 )
-                                .requestSchema(Schema.schema("친구 목록 Request"))
                                 .responseSchema(Schema.schema("친구 목록 Response"))
                                 .build()
                         ))
