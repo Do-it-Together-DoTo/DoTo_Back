@@ -28,7 +28,7 @@ public class TodoController {
     @GetMapping("/{memberId}")
     public  ResponseDto<TodoListRes> todoList(
             @PathVariable long memberId,
-            @RequestBody TodoListReq todoListReq) {
+            @ModelAttribute TodoListReq todoListReq) {
         List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
 
         for(int i = 1; i <= 10; i++) {
