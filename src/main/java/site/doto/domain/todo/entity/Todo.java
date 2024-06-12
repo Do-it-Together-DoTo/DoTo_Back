@@ -8,6 +8,7 @@ import site.doto.domain.category.entity.Category;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -30,7 +31,7 @@ public class Todo {
 
     private String contents;
 
-    private String date;
+    private LocalDate date;
 
     private Boolean isDone;
 
