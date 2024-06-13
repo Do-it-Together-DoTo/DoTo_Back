@@ -1,6 +1,10 @@
 package site.doto.domain.item.dto;
 
 import lombok.Data;
+import site.doto.domain.item.entity.Item;
+import site.doto.domain.item.entity.ItemPK;
+import site.doto.domain.item.entity.ItemType;
+import site.doto.domain.member.entity.Member;
 
 import javax.validation.constraints.NotNull;
 
@@ -8,4 +12,13 @@ import javax.validation.constraints.NotNull;
 public class ItemBuyReq {
     @NotNull
     private Integer count;
+
+    public Item toEntity(Member member, ItemType itemType, ItemPK itemPK) {
+        return Item.builder()
+                .itemPK(itemPK)
+                .member(member)
+                .itemType(itemType)
+                .count(count)
+                .build();
+    }
 }
