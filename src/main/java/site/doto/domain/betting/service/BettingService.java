@@ -26,6 +26,7 @@ public class BettingService {
 
     private final TodoRepository todoRepository;
 
+    @Transactional
     public void addBetting(Long memberId, BettingAddReq bettingAddReq) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -40,6 +41,7 @@ public class BettingService {
         if (todo.getDate().isBefore(LocalDate.now())) {
             throw new CustomException(ErrorCode.TODO_ALREADY_PAST);
         }
+
         if (todo.getIsDone()) {
             throw new CustomException(ErrorCode.TODO_ALREADY_DONE);
         }
