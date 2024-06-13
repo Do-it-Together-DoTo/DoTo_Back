@@ -1,18 +1,24 @@
 package site.doto.domain.item.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.item.dto.*;
 import site.doto.domain.item.dto.ItemTypeDto;
 import site.doto.domain.item.dto.StoreItemListRes;
+import site.doto.domain.item.service.ItemService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 import static site.doto.global.status_code.SuccessCode.*;
 
+@RequiredArgsConstructor
 @RestController
 public class ItemController {
+    private final ItemService itemService;
+
     @GetMapping("/members/items")
     public ResponseDto<ItemListRes> itemList() {
         List<ItemDto> items = new ArrayList<>();
@@ -77,7 +83,11 @@ public class ItemController {
     @PutMapping("/store/items/{itemId}")
     public ResponseDto<?> itemBuy(
             @PathVariable("itemId") Long itemId,
-            @RequestBody ItemBuyReq itemBuyReq) {
+            @RequestBody @Valid ItemBuyReq itemBuyReq) {
+        Long memberId = 1L;
+
+        itemService.buyItem(memberId, itemId, itemBuyReq);
+
         return ResponseDto.success(ITEMS_BUY_OK, null);
     }
 
