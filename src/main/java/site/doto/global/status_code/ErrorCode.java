@@ -26,6 +26,7 @@ public enum ErrorCode {
     TODO_LIMIT(400, "더이상 투두를 생성할 수 없습니다."),
     CATEGORY_INACTIVATED(400, "비활성화된 카테고리에 투두를 생성할 수 없습니다."),
     TODO_NOT_FOUND(404, "존재하지 않는 투두입니다."),
+    TODO_NOT_MINE(400, "다른 사람의 투두입니다."),
     FRIEND_ALREADY_REQUESTING(400, "친구 신청이 이미 진행중입니다."),
     FRIEND_SELF_REQUEST(400, "자기 자신에겐 친구 신청을 할 수 없습니다"),
     NOT_FRIEND(403, "친구가 아닌 상태에서 접근할 수 없습니다."),
