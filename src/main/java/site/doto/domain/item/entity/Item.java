@@ -15,14 +15,21 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class Item implements Serializable {
-    @Id
+    @EmbeddedId
+    private ItemPK itemPK;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("memberId")
     private Member member;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("itemTypeId")
     private ItemType itemType;
 
     private Integer count;
+
+    public void modify(Integer count) {
+        this.count = count;
+    }
 
 }
