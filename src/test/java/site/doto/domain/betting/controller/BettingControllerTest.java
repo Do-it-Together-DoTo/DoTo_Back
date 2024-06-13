@@ -29,6 +29,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -50,7 +51,7 @@ class BettingControllerTest {
     public void betting_add_success() throws Exception {
         //given
         BettingAddReq bettingAddReq = new BettingAddReq();
-        bettingAddReq.setTodoId(10001L);
+        bettingAddReq.setTodoId(20001L);
         bettingAddReq.setName("베팅 이름");
         String content = gson.toJson(bettingAddReq);
 
@@ -77,22 +78,18 @@ class BettingControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        List.of(
-                                                fieldWithPath("todoId").type(JsonFieldType.NUMBER)
-                                                        .description("투두 ID"),
-                                                fieldWithPath("name").type(JsonFieldType.STRING)
-                                                        .description("베팅 이름")
-                                        )
+                                        fieldWithPath("todoId").type(JsonFieldType.NUMBER)
+                                                .description("투두 ID"),
+                                        fieldWithPath("name").type(JsonFieldType.STRING)
+                                                .description("베팅 이름")
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body").type(JsonFieldType.NULL)
+                                                .description("내용 없음")
                                 )
                                 .requestSchema(Schema.schema("베팅 생성 Request"))
                                 .responseSchema(Schema.schema("베팅 생성 Response"))
@@ -100,6 +97,135 @@ class BettingControllerTest {
                         ))
                 );
     }
+
+    @Test
+    @DisplayName("베팅 생성_검증 실패")
+    public void betting_add_validation_fail() throws Exception {
+        //given
+        BettingAddReq bettingAddReq1 = new BettingAddReq();
+        bettingAddReq1.setName("베팅 이름");
+        String content1 = gson.toJson(bettingAddReq1);
+
+        BettingAddReq bettingAddReq2 = new BettingAddReq();
+        bettingAddReq2.setTodoId(20001L);
+        bettingAddReq2.setName("베팅 이름 too looooooooooooooooooooooooooooooooooooooooooooooooooong");
+        String content2 = gson.toJson(bettingAddReq2);
+
+        //when
+        ResultActions notEnoughRequestFields = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1));
+
+        ResultActions wrongBettingName = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2));
+
+        //then
+        notEnoughRequestFields
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        wrongBettingName
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 생성_존재하지 않는 투두")
+    public void betting_add_todo_not_found() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(21001L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 생성_다른 사람의 투두")
+    public void betting_add_todo_not_mine() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(20002L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_NOT_MINE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_NOT_MINE.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 생성_과거의 투두")
+    public void betting_add_todo_already_past() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(20003L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_ALREADY_PAST.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_ALREADY_PAST.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 생성_이미 완료된 투두")
+    public void betting_add_todo_already_done() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(20004L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_ALREADY_DONE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_ALREADY_DONE.getMessage()));
+    }
+
 
     @Test
     @DisplayName("베팅 참여_성공")
