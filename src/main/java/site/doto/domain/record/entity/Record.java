@@ -26,12 +26,13 @@ public class Record implements Serializable {
 
     @Id
     @Column(name = "record_month")
-  
     private Integer month;
 
     private Integer coinUsage;
 
     private Integer coinEarned;
+
+    private Integer myBetting;
 
     private Integer betParticipation;
 

@@ -1,19 +1,30 @@
 package site.doto.domain.betting.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.betting.dto.*;
+import site.doto.domain.betting.service.BettingService;
 import site.doto.global.dto.ResponseDto;
 import site.doto.global.status_code.SuccessCode;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/betting")
 public class BettingController {
+    private final BettingService bettingService;
+
     @PostMapping
     public ResponseDto<?> bettingAdd(
-            @RequestBody BettingAddReq bettingAddReq) {
+            @RequestBody @Valid BettingAddReq bettingAddReq) {
+
+        Long memberId = 1L;
+
+        bettingService.addBetting(memberId, bettingAddReq);
+
         return ResponseDto.success(SuccessCode.BETTING_CREATED, null);
     }
 

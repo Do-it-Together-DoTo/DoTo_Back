@@ -6,7 +6,7 @@ import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 public class TodoAddReq {
@@ -21,7 +21,7 @@ public class TodoAddReq {
                 .member(member)
                 .category(category)
                 .contents(contents)
-                .date(LocalDateTime.now().toString())
+                .date(LocalDate.now())
                 .isDone(false)
                 .build();
     }
