@@ -19,7 +19,7 @@ public class TodoDetailsRes {
         return TodoDetailsRes.builder()
                 .id(todo.getId())
                 .contents(todo.getContents())
-                .date(todo.getDate())
+                .date(todo.getDate().toString())
                 .isDone(todo.getIsDone())
                 .build();
     }
