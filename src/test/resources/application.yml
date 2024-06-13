@@ -4,9 +4,9 @@ spring:
 
   datasource:
     driver-class-name: org.h2.Driver
-    url: jdbc:h2:tcp://localhost/~/doto
+    url: jdbc:h2:mem:test;MODE=MySQL
     username: sa
-    password: ssafy
+    password:
 
   h2:
     console:
@@ -21,12 +21,12 @@ spring:
     throw-exception-if-no-handler-found: true
 
   jpa:
-    database-platform: org.hibernate.dialect.H2Dialect
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.H2Dialect
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
         default_batch_fetch_size: 100
     defer-datasource-initialization: true
 
