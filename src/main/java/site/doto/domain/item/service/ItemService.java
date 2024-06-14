@@ -37,13 +37,9 @@ public class ItemService {
 
         ItemPK itemPK = new ItemPK(memberId, itemTypeId);
 
-        try {
-            int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
-            if(updatedCount == 0) {
-                itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
-            }
-        } catch(DataIntegrityViolationException e) {
-            throw new CustomException(BAD_REQUEST);
+        int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
+        if(updatedCount == 0) {
+            itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
         }
 
         try {
