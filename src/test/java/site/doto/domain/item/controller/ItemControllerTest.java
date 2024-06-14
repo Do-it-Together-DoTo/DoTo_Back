@@ -345,21 +345,36 @@ public class ItemControllerTest {
     @DisplayName("아이템 구매 - 검증 실패")
     public void item_buy_validation_fail() throws Exception {
         // given
-        ItemBuyReq itemBuyReq = new ItemBuyReq();
+        ItemBuyReq itemBuyReq1 = new ItemBuyReq();
+        String content1 = gson.toJson(itemBuyReq1);
 
-        String content = gson.toJson(itemBuyReq);
+        ItemBuyReq itemBuyReq2 = new ItemBuyReq();
+        itemBuyReq2.setCount(0);
+        String content2 = gson.toJson(itemBuyReq2);
 
         // when
-        ResultActions actions = mockMvc.perform(
+        ResultActions actions1 = mockMvc.perform(
                 put("/store/items/{itemId}", 1L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
+                        .content(content1)
+        );
+
+        ResultActions actions2 = mockMvc.perform(
+                put("/store/items/{itemId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2)
         );
 
         // then
-        actions
+        actions1
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        actions2
                 .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }

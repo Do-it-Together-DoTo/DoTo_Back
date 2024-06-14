@@ -6,11 +6,13 @@ import site.doto.domain.item.entity.ItemPK;
 import site.doto.domain.item.entity.ItemType;
 import site.doto.domain.member.entity.Member;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
 @Data
 public class ItemBuyReq {
     @NotNull
+    @Min(1)
     private Integer count;
 
     public Item toEntity(Member member, ItemType itemType, ItemPK itemPK) {
