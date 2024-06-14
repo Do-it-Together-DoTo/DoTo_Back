@@ -25,11 +25,11 @@ public class ItemService {
     private final ItemRepository itemRepository;
     private final ItemTypeRepository itemTypeRepository;
 
-    public void buyItem(Long memberId, Long itemId, ItemBuyReq itemBuyReq) {
+    public void buyItem(Long memberId, Long itemTypeId, ItemBuyReq itemBuyReq) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        ItemType itemType = itemTypeRepository.findById(itemId)
+        ItemType itemType = itemTypeRepository.findById(itemTypeId)
                 .orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
         Integer coinUsage = itemBuyReq.getCount() * itemType.getPrice();
@@ -37,16 +37,13 @@ public class ItemService {
             throw new CustomException(COIN_NOT_ENOUGH);
         }
 
-        ItemPK itemPK = new ItemPK(memberId, itemId);
-        Optional<Item> item = itemRepository.findById(itemPK);
+        ItemPK itemPK = new ItemPK(memberId, itemTypeId);
+        int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
 
-        if(item.isPresent()) {
-            Item existingItem = item.get();
-            existingItem.modify(existingItem.getCount() + itemBuyReq.getCount());
-        } else {
+        if(updatedCount == 0) {
             itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
         }
 
-        member.modify(member.getCoin() - coinUsage);
+        memberRepository.updateCoin(memberId, member.getCoin() - coinUsage);
     }
 }
