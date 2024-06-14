@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.item.dto.ItemBuyReq;
-import site.doto.domain.item.entity.Item;
 import site.doto.domain.item.entity.ItemPK;
 import site.doto.domain.item.entity.ItemType;
 import site.doto.domain.item.repository.ItemRepository;
@@ -12,8 +11,6 @@ import site.doto.domain.item.repository.ItemTypeRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.exception.CustomException;
-
-import java.util.Optional;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
