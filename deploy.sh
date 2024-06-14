@@ -1,15 +1,9 @@
 #!/bin/bash
 # 파일 경로 설정
-JAR_FILE="/home/ubuntu/doto-0.0.1-SNAPSHOT.jar"
 LOG_FILE="/home/ubuntu/deploy.log"
 ERR_LOG_FILE="/home/ubuntu/deploy_err.log"
 
 # 기존 파일 삭제
-if [ -f "$JAR_FILE" ]; then
-    rm "$JAR_FILE"
-    echo "$JAR_FILE 삭제 완료"
-fi
-
 if [ -f "$LOG_FILE" ]; then
     rm "$LOG_FILE"
     echo "$LOG_FILE 삭제 완료"
