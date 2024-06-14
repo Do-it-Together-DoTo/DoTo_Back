@@ -1,6 +1,7 @@
 package site.doto.domain.item.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.item.dto.ItemBuyReq;
@@ -35,12 +36,20 @@ public class ItemService {
         }
 
         ItemPK itemPK = new ItemPK(memberId, itemTypeId);
-        int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
 
-        if(updatedCount == 0) {
-            itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
+        try {
+            int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
+            if(updatedCount == 0) {
+                itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
+            }
+        } catch(DataIntegrityViolationException e) {
+            throw new CustomException(BAD_REQUEST);
         }
 
-        memberRepository.updateCoin(memberId, coinUsage);
+        try {
+            memberRepository.updateCoin(memberId, coinUsage);
+        } catch(DataIntegrityViolationException e) {
+            throw new CustomException(COIN_NOT_ENOUGH);
+        }
     }
 }
