@@ -41,6 +41,6 @@ public class ItemService {
             itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
         }
 
-        memberRepository.updateCoin(memberId, member.getCoin() - coinUsage);
+        memberRepository.updateCoin(memberId, coinUsage);
     }
 }
