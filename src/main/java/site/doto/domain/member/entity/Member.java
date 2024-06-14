@@ -36,7 +36,4 @@ public class Member {
 
     private LocalDateTime lastUpload;
 
-    public void modify(int coin) {
-        this.coin = coin;
-    }
 }

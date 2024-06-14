@@ -28,8 +28,4 @@ public class Item implements Serializable {
 
     private Integer count;
 
-    public void modify(Integer count) {
-        this.count = count;
-    }
-
 }
