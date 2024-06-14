@@ -30,6 +30,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -338,5 +339,93 @@ public class ItemControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("아이템 구매 - 검증 실패")
+    public void item_buy_validation_fail() throws Exception {
+        // given
+        ItemBuyReq itemBuyReq1 = new ItemBuyReq();
+        String content1 = gson.toJson(itemBuyReq1);
+
+        ItemBuyReq itemBuyReq2 = new ItemBuyReq();
+        itemBuyReq2.setCount(0);
+        String content2 = gson.toJson(itemBuyReq2);
+
+        // when
+        ResultActions actions1 = mockMvc.perform(
+                put("/store/items/{itemId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1)
+        );
+
+        ResultActions actions2 = mockMvc.perform(
+                put("/store/items/{itemId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2)
+        );
+
+        // then
+        actions1
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        actions2
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("아이템 구매 - 존재하지 않는 아이템")
+    public void item_buy_item_not_found() throws Exception {
+        // given
+        ItemBuyReq itemBuyReq = new ItemBuyReq();
+        itemBuyReq.setCount(3);
+
+        String content = gson.toJson(itemBuyReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                put("/store/items/{itemId}", 2L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ITEM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ITEM_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("아이템 구매 - 코인 부족")
+    public void item_buy_coin_not_enough() throws Exception {
+        // given
+        ItemBuyReq itemBuyReq = new ItemBuyReq();
+        itemBuyReq.setCount(1000);
+
+        String content = gson.toJson(itemBuyReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                put("/store/items/{itemId}", 1L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COIN_NOT_ENOUGH.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COIN_NOT_ENOUGH.getMessage()));
     }
 }
