@@ -28,7 +28,7 @@ public class Member {
 
     private String description;
 
-    @Column(name = "coin", nullable = false, columnDefinition = "integer CHECK (coin >= 0)")
+    @Column(name = "coin", columnDefinition = "integer NOT NULL CHECK (coin >= 0)")
     private Integer coin;
 
     @Column(name = "type")
