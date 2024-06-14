@@ -47,7 +47,7 @@ public class ItemService {
         }
 
         try {
-            memberRepository.updateCoin(memberId, coinUsage);
+            memberRepository.updateCoin(memberId, -coinUsage);
         } catch(DataIntegrityViolationException e) {
             throw new CustomException(COIN_NOT_ENOUGH);
         }
