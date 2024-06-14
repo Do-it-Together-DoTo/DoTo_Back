@@ -390,7 +390,7 @@ public class ItemControllerTest {
 
         // when
         ResultActions actions = mockMvc.perform(
-                put("/store/items/{itemId}", 2L)
+                put("/store/items/{itemId}", 10000L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
