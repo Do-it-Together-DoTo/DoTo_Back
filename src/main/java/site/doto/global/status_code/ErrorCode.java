@@ -33,6 +33,7 @@ public enum ErrorCode {
     FRIEND_REQUEST_MISSING(404, "유효하지 않은 요청입니다."),
     CHATROOM_NOT_FOUND(404, "존재하지 않는 채팅방입니다."),
     BETTING_NOT_PARTICIPATION(403, "채팅방에 참여할 수 없습니다."),
+    COLOR_NOT_FOUND(400, "존재하지 않는 색상입니다."),
     ACTIVATED_CATEGORY_LIMIT(400, "더 이상 카테고리를 생성할 수 없습니다."),
     CATEGORY_NOT_FOUND(404, "존재하지 않는 카테고리입니다."),
     BETTING_ALREADY_HOLDING(400, "이미 개최한 베팅이 존재합니다."),
