@@ -1,28 +1,30 @@
 package site.doto.domain.category.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.category.dto.*;
+import site.doto.domain.category.service.CategoryService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
+import static site.doto.domain.category.enums.Color.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
 @RequestMapping("/categories")
+@RequiredArgsConstructor
 public class CategoryController {
+    private final CategoryService categoryService;
+
     @PostMapping
     public ResponseDto<CategoryDetailsRes> categoryAdd(
-            @RequestBody CategoryAddReq categoryAddReq) {
-        CategoryDetailsRes result = CategoryDetailsRes.builder()
-                .id(10001L)
-                .contents(categoryAddReq.getContents())
-                .isPublic(categoryAddReq.getIsPublic())
-                .isActivated(true)
-                .color(categoryAddReq.getColor())
-                .seq(1)
-                .build();
+            @RequestBody @Valid CategoryAddReq categoryAddReq) {
+        Long memberId = 1L;
+
+        CategoryDetailsRes result = categoryService.addCategory(memberId, categoryAddReq);
 
         return ResponseDto.success(CATEGORY_CREATED, result);
     }
@@ -38,7 +40,7 @@ public class CategoryController {
                     .contents("Mock Category" + i)
                     .isPublic(true)
                     .isActivated(true)
-                    .color(i % 2 == 0 ? "blue" : "pink")
+                    .color(i % 2 == 0 ? BLUE : PINK)
                     .seq(i)
                     .build());
         }
@@ -49,7 +51,7 @@ public class CategoryController {
                     .contents("Mock Category" + i)
                     .isPublic(true)
                     .isActivated(false)
-                    .color(i % 2 == 0 ? "yellow" : "green")
+                    .color(i % 2 == 0 ? YELLOW : GREEN)
                     .seq(i)
                     .build());
         }
@@ -70,7 +72,7 @@ public class CategoryController {
                 .contents("Modified Mock Category")
                 .isActivated(true)
                 .isPublic(true)
-                .color("pink")
+                .color(PINK)
                 .seq(1)
                 .build();
 
