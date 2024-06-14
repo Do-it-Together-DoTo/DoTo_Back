@@ -54,20 +54,7 @@ public class ItemController {
 
     @GetMapping("/store/items")
     public ResponseDto<StoreItemListRes> storeItemList() {
-        List<ItemTypeDto> items = new ArrayList<>();
-
-        for(int i = 1; i <= 10; i++) {
-            items.add(ItemTypeDto.builder()
-                    .id(10L+i)
-                    .name("아이템 이름")
-                    .img("이미지 url")
-                    .price(100+i)
-                    .grade("NORMAL")
-                    .build());
-        }
-
-        StoreItemListRes result = new StoreItemListRes();
-        result.setItems(items);
+        StoreItemListRes result = itemService.findStoreItems();
 
         return ResponseDto.success(STORE_INQUIRY_OK, result);
     }
