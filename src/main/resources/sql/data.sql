@@ -13,4 +13,7 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20004, 1, 10001, '투두4', current_date, true);
 
 --itemType
-insert into item_type (item_type_id, name, img, price, grade, exp, description) values (1, '테스트 아이템', '테스트 아이템 이미지', 10, '테스트 아이템 등급', 10, '테스트 아이템 설명');
+insert into item_type (item_type_id, name, img, price, grade, exp, description) values (1, '테스트 아이템1', '테스트 아이템 이미지1', 10, '테스트 아이템 등급1', 10, '테스트 아이템 설명1');
+insert into item_type (item_type_id, name, img, price, grade, exp, description) values (2, '테스트 아이템2', '테스트 아이템 이미지2', 20, '테스트 아이템 등급2', 20, '테스트 아이템 설명2');
+insert into item_type (item_type_id, name, img, price, grade, exp, description) values (3, '테스트 아이템3', '테스트 아이템 이미지3', 30, '테스트 아이템 등급3', 30, '테스트 아이템 설명3');
+insert into item_type (item_type_id, name, img, price, grade, exp, description) values (4, '테스트 아이템4', '테스트 아이템 이미지4', 40, '테스트 아이템 등급4', 40, '테스트 아이템 설명4');
