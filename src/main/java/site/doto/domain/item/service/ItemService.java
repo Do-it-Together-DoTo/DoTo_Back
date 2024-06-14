@@ -5,6 +5,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.item.dto.ItemBuyReq;
+import site.doto.domain.item.dto.ItemTypeDto;
+import site.doto.domain.item.dto.StoreItemListRes;
 import site.doto.domain.item.entity.ItemPK;
 import site.doto.domain.item.entity.ItemType;
 import site.doto.domain.item.repository.ItemRepository;
@@ -22,6 +24,10 @@ public class ItemService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final ItemTypeRepository itemTypeRepository;
+
+    public StoreItemListRes findStoreItems() {
+        return new StoreItemListRes(itemTypeRepository.findAll());
+    }
 
     public void buyItem(Long memberId, Long itemTypeId, ItemBuyReq itemBuyReq) {
         Member member = memberRepository.findById(memberId)
