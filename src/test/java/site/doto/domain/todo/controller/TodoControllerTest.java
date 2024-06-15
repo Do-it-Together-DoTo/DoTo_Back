@@ -159,6 +159,12 @@ class TodoControllerTest {
                                                 .description("성공 메시지"),
                                         fieldWithPath("body.todoList[].categoryId").type(JsonFieldType.NUMBER)
                                                 .description("카테고리 Id"),
+                                        fieldWithPath("body.todoList[].categoryContents").type(JsonFieldType.STRING)
+                                                .description("카테고리 내용"),
+                                        fieldWithPath("body.todoList[].categoryIsActivated").type(JsonFieldType.BOOLEAN)
+                                                .description("카테고리 활성화 여부"),
+                                        fieldWithPath("body.todoList[].categoryColor").type(JsonFieldType.STRING)
+                                                .description("카테고리 색상"),
                                         fieldWithPath("body.todoList[].*[].id").type(JsonFieldType.NUMBER)
                                                 .description("Todo Id"),
                                         fieldWithPath("body.todoList[].*[].contents").type(JsonFieldType.STRING)
