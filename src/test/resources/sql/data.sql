@@ -17,3 +17,4 @@ insert into item_type (item_type_id, name, img, price, grade, exp, description) 
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (2, '테스트 아이템2', '테스트 아이템 이미지2', 20, '테스트 아이템 등급2', 20, '테스트 아이템 설명2');
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (3, '테스트 아이템3', '테스트 아이템 이미지3', 30, '테스트 아이템 등급3', 30, '테스트 아이템 설명3');
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (4, '테스트 아이템4', '테스트 아이템 이미지4', 40, '테스트 아이템 등급4', 40, '테스트 아이템 설명4');
+insert into item_type (item_type_id, name, img, price, grade, exp, description) values (20000, '아이템 이름', '이미지 url', 10, '아이템 등급', 10, '아이템 설명');

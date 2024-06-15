@@ -5,7 +5,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.item.dto.ItemBuyReq;
-import site.doto.domain.item.dto.ItemTypeDto;
+import site.doto.domain.item.dto.StoreItemDetailsRes;
 import site.doto.domain.item.dto.StoreItemListRes;
 import site.doto.domain.item.entity.ItemPK;
 import site.doto.domain.item.entity.ItemType;
@@ -29,6 +29,13 @@ public class ItemService {
         return new StoreItemListRes(itemTypeRepository.findAll());
     }
 
+    public StoreItemDetailsRes findStoreItem(Long itemTypeId) {
+        ItemType itemType = itemTypeRepository.findById(itemTypeId)
+                .orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
+
+        return StoreItemDetailsRes.toDto(itemType);
+    }
+
     public void buyItem(Long memberId, Long itemTypeId, ItemBuyReq itemBuyReq) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -37,20 +44,20 @@ public class ItemService {
                 .orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
         Integer coinUsage = itemBuyReq.getCount() * itemType.getPrice();
-        if(member.getCoin() < coinUsage) {
+        if (member.getCoin() < coinUsage) {
             throw new CustomException(COIN_NOT_ENOUGH);
         }
 
         ItemPK itemPK = new ItemPK(memberId, itemTypeId);
 
         int updatedCount = itemRepository.updateItemCount(memberId, itemTypeId, itemBuyReq.getCount());
-        if(updatedCount == 0) {
+        if (updatedCount == 0) {
             itemRepository.save(itemBuyReq.toEntity(member, itemType, itemPK));
         }
 
         try {
             memberRepository.updateCoin(memberId, -coinUsage);
-        } catch(DataIntegrityViolationException e) {
+        } catch (DataIntegrityViolationException e) {
             throw new CustomException(COIN_NOT_ENOUGH);
         }
     }

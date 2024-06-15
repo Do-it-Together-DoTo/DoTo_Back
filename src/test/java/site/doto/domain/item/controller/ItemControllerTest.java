@@ -250,7 +250,7 @@ public class ItemControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/store/items/{itemId}", 1L)
+                get("/store/items/{itemId}", 20000L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -265,7 +265,7 @@ public class ItemControllerTest {
                 .andExpect(jsonPath("$.body.name").value("아이템 이름"))
                 .andExpect(jsonPath("$.body.description").value("아이템 설명"))
                 .andDo(document(
-                        "아이템 개별 조회 조회",
+                        "아이템 개별 조회",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
@@ -293,6 +293,26 @@ public class ItemControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("아이템 개별 조회 - 존재하지 않는 아이템")
+    public void store_item_details_item_not_found() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/store/items/{itemId}", 10000L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ITEM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ITEM_NOT_FOUND.getMessage()));
     }
 
     @Test
