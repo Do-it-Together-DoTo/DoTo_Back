@@ -3,9 +3,8 @@ insert into member (member_id, email, nickname, password, description, coin, typ
 insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
 
 --category
-insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values (10001, 1, '테스트_카테고리',true, true, 1, 1);
-insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values (10002, 2, '테스트_카테고리2',true, true, 1, 1);
-
+insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values (10001, 1, '테스트_카테고리',true, true, 'BLUE', 1);
+insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values (10002, 2, '테스트_카테고리2',true, true, 'PINK', 1);
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20001, 1, 10001, '투두1', current_date, false);
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20002, 2, 10002, '투두2', current_date, false);

@@ -17,6 +17,7 @@ fi
 pid=$(pgrep -f doto)
 if [ -n "${pid}" ]; then
     kill -15 ${pid}
+    sleep 5
     echo "Killed process ${pid}"
 else
     echo "No process found"
