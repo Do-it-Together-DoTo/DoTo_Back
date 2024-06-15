@@ -18,12 +18,13 @@ public class CategoryAddReq {
     @NotNull
     private String color;
 
-    public Category toEntity(Member member) {
+    public Category toEntity(Member member, int seq) {
         return Category.builder()
                 .member(member)
                 .contents(contents)
                 .isPublic(isPublic)
                 .isActivated(true)
+                .seq(seq+1)
                 .color(Color.valueOf(color))
                 .build();
     }
