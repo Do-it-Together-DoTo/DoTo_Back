@@ -29,19 +29,30 @@ public class TodoController {
     public  ResponseDto<TodoListRes> todoList(
             @PathVariable long memberId,
             @ModelAttribute TodoListReq todoListReq) {
-        List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
-
-        for(int i = 1; i <= 10; i++) {
-            todoDetailsResList.add(TodoDetailsRes.builder()
-                    .id(10001L + i)
-                    .contents("Mock Todo" + i)
-                    .date("2024-05-19 00:00:00")
-                    .isDone(false)
-                    .build());
-        }
-
         TodoListRes result = new TodoListRes();
-        result.setTodoList(todoDetailsResList);
+
+        int index = 0;
+        for(int i = 0; i < 5; i++) {
+            List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
+
+            for(int j = index; j < index + 3; j++) {
+                Long value = 1L + j;
+                todoDetailsResList.add(TodoDetailsRes.builder()
+                        .id(value)
+                        .contents("Mock Todo" + value)
+                        .date("2024-05-19 00:00:00")
+                        .isDone(false)
+                        .build());
+            }
+            index += 3;
+
+            TodoCategoryDto todoCategoryDto = TodoCategoryDto.builder()
+                    .categoryId(1L + i)
+                    .todoDetailsResList(todoDetailsResList)
+                    .build();
+
+            result.getTodoList().add(todoCategoryDto);
+        }
 
         return ResponseDto.success(TODO_INQUIRY_OK, result);
     }
