@@ -8,13 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@NoArgsConstructor
 public class TodoListRes {
-    List<TodoDetailsRes> todoList = new ArrayList<>();
-
-    public TodoListRes(List<Todo> todoList) {
-        todoList.stream()
-                .map(TodoDetailsRes::toDto)
-                .forEach(this.todoList::add);
-    }
+    List<TodoCategoryDto> todoList = new ArrayList<>();
 }

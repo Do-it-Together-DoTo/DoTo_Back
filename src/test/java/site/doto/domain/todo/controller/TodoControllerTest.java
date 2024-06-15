@@ -27,7 +27,7 @@ import static org.springframework.restdocs.headers.HeaderDocumentation.headerWit
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.SuccessCode.*;
@@ -141,8 +141,8 @@ class TodoControllerTest {
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
-                                .tag("Category API")
-                                .summary("카테고리 전체 조회 API")
+                                .tag("Todo API")
+                                .summary("Todo 전체 조회 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -150,23 +150,29 @@ class TodoControllerTest {
                                         parameterWithName("memberId").description("회원 Id")
                                 )
                                 .requestParameters(
-                                        parameterWithName("date").description("Todo 생성 날짜")
+                                        parameterWithName("date").description("해당 날짜")
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body.*[].id").type(JsonFieldType.NUMBER)
-                                                        .description("Todo Id"),
-                                                fieldWithPath("body.*[].contents").type(JsonFieldType.STRING)
-                                                        .description("Todo 수정 내용"),
-                                                fieldWithPath("body.*[].date").type(JsonFieldType.STRING)
-                                                        .description("Todo 수정 날짜"),
-                                                fieldWithPath("body.*[].isDone").type(JsonFieldType.BOOLEAN)
-                                                        .description("Todo 완료 여부")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.todoList[].categoryId").type(JsonFieldType.NUMBER)
+                                                .description("카테고리 Id"),
+                                        fieldWithPath("body.todoList[].categoryContents").type(JsonFieldType.STRING)
+                                                .description("카테고리 내용"),
+                                        fieldWithPath("body.todoList[].categoryIsActivated").type(JsonFieldType.BOOLEAN)
+                                                .description("카테고리 활성화 여부"),
+                                        fieldWithPath("body.todoList[].categoryColor").type(JsonFieldType.STRING)
+                                                .description("카테고리 색상"),
+                                        fieldWithPath("body.todoList[].*[].id").type(JsonFieldType.NUMBER)
+                                                .description("Todo Id"),
+                                        fieldWithPath("body.todoList[].*[].contents").type(JsonFieldType.STRING)
+                                                .description("Todo 내용"),
+                                        fieldWithPath("body.todoList[].*[].date").type(JsonFieldType.STRING)
+                                                .description("Todo 날짜"),
+                                        fieldWithPath("body.todoList[].*[].isDone").type(JsonFieldType.BOOLEAN)
+                                                .description("Todo 완료 여부")
                                 )
                                 .responseSchema(Schema.schema("Todo 전체 조회 Response"))
                                 .build()
