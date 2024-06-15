@@ -1,10 +1,8 @@
 package site.doto.domain.record.entity;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
 import java.io.Serializable;
@@ -13,20 +11,9 @@ import java.io.Serializable;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Record implements Serializable {
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
-    @Id
-    @Column(name = "record_year")
-    private Integer year;
-
-    @Id
-    @Column(name = "record_month")
-    private Integer month;
+    @EmbeddedId
+    private RecordPK recordPK;
 
     private Integer coinUsage;
 
@@ -42,4 +29,15 @@ public class Record implements Serializable {
 
     private Integer betProfit;
 
+    public Long getMemberId() {
+        return recordPK.getMemberId();
+    }
+
+    public Integer getYear() {
+        return recordPK.getYear();
+    }
+
+    public Integer getMonth() {
+        return recordPK.getMonth();
+    }
 }
