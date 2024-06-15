@@ -31,8 +31,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static site.doto.global.status_code.ErrorCode.ACTIVATED_CATEGORY_LIMIT;
-import static site.doto.global.status_code.ErrorCode.COLOR_NOT_FOUND;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -420,5 +419,83 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contents is null")
+    public void category_add_fail_contents_is_null() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents(null);
+        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contents 빈값")
+    public void category_add_fail_contents_is_blank() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("");
+        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contetns length 초과")
+    public void category_add_fail_contents_limit_length() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("1234567891011121234444342");
+        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
 }
