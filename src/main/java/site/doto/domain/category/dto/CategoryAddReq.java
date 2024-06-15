@@ -6,11 +6,12 @@ import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
 import site.doto.domain.member.entity.Member;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 @Data
 public class CategoryAddReq {
-    @NotNull
+    @NotBlank
     @Length(max = 20)
     private String contents;
 
