@@ -27,7 +27,7 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
 
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20001, 1, 10001, '투두1', current_date, false);
-insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20002, 2, 10002, '투두2', current_date, false);
+insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20002, 2, 10021, '투두2', current_date, false);
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20003, 1, 10001, '투두3', '2024-01-01', true);
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values (20004, 1, 10001, '투두4', current_date, true);
 
