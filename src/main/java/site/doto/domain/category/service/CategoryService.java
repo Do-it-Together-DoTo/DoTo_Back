@@ -15,6 +15,8 @@ import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.exception.CustomException;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -51,9 +53,13 @@ public class CategoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        List<Category> activatedList = categoryRepository.findCategoriesByIsActivated(memberId);
-        List<Category> inactivedList = categoryRepository.findCategoriesByIsInactivated(memberId);
+        List<Category> categoryList = categoryRepository.findCategoriesByMemberId(memberId);
 
+        Map<Boolean, List<Category>> partitionedMap = categoryList.stream()
+                .collect(Collectors.partitioningBy(Category::getIsActivated));
+
+        List<Category> activatedList = partitionedMap.get(true);
+        List<Category> inactivedList = partitionedMap.get(false);
         return new CategoryListRes(activatedList, inactivedList);
     }
 

@@ -19,14 +19,7 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("select c " +
     "from Category c " +
-    "where c.member.id = :memberId " +
-    "and c.isActivated = true")
-    List<Category> findCategoriesByIsActivated(@Param("memberId") Long memberId);
-
-    @Query("select c " +
-            "from Category c " +
-            "where c.member.id = :memberId " +
-            "and c.isActivated = false")
-    List<Category> findCategoriesByIsInactivated(@Param("memberId") Long memberId);
+    "where c.member.id = :memberId")
+    List<Category> findCategoriesByMemberId(@Param("memberId") Long memberId);
 
 }
