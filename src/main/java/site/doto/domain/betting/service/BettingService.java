@@ -54,7 +54,7 @@ public class BettingService {
 
         bettingRepository.save(betting);
 
-        redisUtils.updateRecordToRedis(memberId, todo.getDate().getYear(), todo.getDate().getMonthValue(), "myBetting", 1);
+        redisUtils.updateRecordToRedis(memberId, todo.getYear(), todo.getMonth(), "myBetting", 1);
     }
 
     private boolean bettingAlreadyHolding(Long memberId) {
