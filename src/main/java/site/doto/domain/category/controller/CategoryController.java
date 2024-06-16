@@ -31,34 +31,9 @@ public class CategoryController {
 
     @GetMapping
     public ResponseDto<CategoryListRes> categoryList() {
-        List<CategoryDetailsRes> activated = new ArrayList<>();
-        List<CategoryDetailsRes> inactivated = new ArrayList<>();
+        Long memberId = 1L;
 
-        for (int i = 1; i <= 10; i++) {
-            activated.add(CategoryDetailsRes.builder()
-                    .id(10000L + i)
-                    .contents("Mock Category" + i)
-                    .isPublic(true)
-                    .isActivated(true)
-                    .color(i % 2 == 0 ? BLUE : PINK)
-                    .seq(i)
-                    .build());
-        }
-
-        for (int i = 11; i <= 20; i++) {
-            inactivated.add(CategoryDetailsRes.builder()
-                    .id(10000L + i)
-                    .contents("Mock Category" + i)
-                    .isPublic(true)
-                    .isActivated(false)
-                    .color(i % 2 == 0 ? YELLOW : GREEN)
-                    .seq(i)
-                    .build());
-        }
-
-        CategoryListRes result = new CategoryListRes();
-        result.setActivated(activated);
-        result.setInactivated(inactivated);
+        CategoryListRes result = categoryService.listCategory(memberId);
 
         return ResponseDto.success(CATEGORIES_INQUIRY_OK, result);
     }
