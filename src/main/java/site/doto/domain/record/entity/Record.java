@@ -19,7 +19,7 @@ public class Record implements Serializable {
 
     private Integer coinEarned;
 
-    private Integer myBetting;
+    private Integer myBetOpen;
 
     private Integer betParticipation;
 
