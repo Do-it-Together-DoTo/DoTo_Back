@@ -6,12 +6,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryDetailsRes;
+import site.doto.domain.category.dto.CategoryListRes;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.exception.CustomException;
+
+import java.util.List;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -42,6 +45,16 @@ public class CategoryService {
         categoryRepository.save(category);
 
         return CategoryDetailsRes.toDto(category);
+    }
+
+    public CategoryListRes listCategory(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        List<Category> activatedList = categoryRepository.findCategoriesByIsActivated(memberId);
+        List<Category> inactivedList = categoryRepository.findCategoriesByIsInactivated(memberId);
+
+        return new CategoryListRes(activatedList, inactivedList);
     }
 
     private int calculateActiveCount(Long memberId) {
