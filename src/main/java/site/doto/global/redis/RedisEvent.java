@@ -1,6 +1,7 @@
 package site.doto.global.redis;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -12,6 +13,13 @@ public class RedisEvent {
 
     @PostConstruct
     public void init() {
+        redisUtils.updateRecordToDB();
+        redisUtils.flushRedis();
+    }
+
+    @Scheduled(cron = "0 0 3 * * *")
+    public void schedule() {
+        redisUtils.updateRecordToDB();
         redisUtils.flushRedis();
     }
 }

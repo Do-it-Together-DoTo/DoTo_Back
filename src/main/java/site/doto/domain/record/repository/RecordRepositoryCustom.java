@@ -1,7 +1,7 @@
 package site.doto.domain.record.repository;
 
-import java.util.List;
+import site.doto.domain.record.dto.RecordUpdateDto;
 
 public interface RecordRepositoryCustom {
-    void updateRecord(Long memberId, Integer year, Integer month, List<String> fields, List<Integer> variances);
+    void updateRecord(RecordUpdateDto update);
 }

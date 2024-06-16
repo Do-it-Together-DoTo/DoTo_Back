@@ -34,7 +34,6 @@ public class EmbeddedRedisConfig {
         try {
             redisServer.start();
         } catch (RuntimeException e) {
-            e.printStackTrace();
         }
     }
 
@@ -50,9 +49,6 @@ public class EmbeddedRedisConfig {
                 && Objects.equals(System.getProperty("os.name"), "Mac OS X");
     }
 
-    /**
-     * ARM 아키텍처를 사용하는 Mac에서 실행할 수 있는 Redis 바이너리 파일을 반환
-     */
     private File getRedisFileForArcMac() {
         try {
             return new ClassPathResource("redis/redis-server-7.2.3-mac-arm64").getFile();

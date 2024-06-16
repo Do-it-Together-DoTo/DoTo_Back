@@ -18,6 +18,8 @@ public class RecordDetailsRes {
 
     private Integer coinEarned;
 
+    private Integer myBetOpen;
+
     private Integer betParticipation;
 
     private Integer betWins;
@@ -25,8 +27,6 @@ public class RecordDetailsRes {
     private Integer betAmount;
 
     private Integer betProfit;
-
-    private Integer myBetOpen;
 
     private List<TodoRecordDto> todoRecords;
 
