@@ -56,16 +56,16 @@ public class CharacterService {
             } while (characterType == null);
 
             characterRepository.save(characterBuyReq.toEntity(member, characterType));
-
-            try {
-                memberRepository.updateCoin(memberId, -coinUsage);
-            } catch (DataIntegrityViolationException e) {
-                throw new CustomException(COIN_NOT_ENOUGH);
-            }
-
-            LocalDate currentDate = LocalDate.now();
-            redisUtils.updateRecordToRedis(memberId, currentDate.getYear(), currentDate.getMonthValue(), "coinUsage", coinUsage);
         }
+
+        try {
+            memberRepository.updateCoin(memberId, -coinUsage);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(COIN_NOT_ENOUGH);
+        }
+
+        LocalDate currentDate = LocalDate.now();
+        redisUtils.updateRecordToRedis(memberId, currentDate.getYear(), currentDate.getMonthValue(), "coinUsage", coinUsage);
     }
 
     private Long getRandomCharacterTypeId() {
