@@ -28,6 +28,8 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.domain.character.enums.Egg.EGG;
+import static site.doto.global.status_code.ErrorCode.BIND_EXCEPTION;
+import static site.doto.global.status_code.ErrorCode.COIN_NOT_ENOUGH;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -228,7 +230,7 @@ public class CharacterControllerTest {
     public void character_buy_success() throws Exception {
         //given
         CharacterBuyReq characterBuyReq = new CharacterBuyReq();
-        characterBuyReq.setCount(3);
+        characterBuyReq.setCount(1);
 
         String content = gson.toJson(characterBuyReq);
 
@@ -264,5 +266,67 @@ public class CharacterControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("알 구매 - 검증 실패")
+    public void character_buy_validation_fail() throws Exception {
+        //given
+        CharacterBuyReq characterBuyReq1 = new CharacterBuyReq();
+        String content1 = gson.toJson(characterBuyReq1);
+
+        CharacterBuyReq characterBuyReq2 = new CharacterBuyReq();
+        characterBuyReq2.setCount(0);
+        String content2 = gson.toJson(characterBuyReq2);
+
+        //when
+        ResultActions actions1 = mockMvc.perform(
+                post("/store/characters")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1)
+        );
+
+        ResultActions actions2 = mockMvc.perform(
+                post("/store/characters")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2)
+        );
+
+        //then
+        actions1
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+        actions2
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("알 구매 - 코인 부족")
+    public void character_buy_coin_not_enough() throws Exception {
+        //given
+        CharacterBuyReq characterBuyReq = new CharacterBuyReq();
+        characterBuyReq.setCount(3);
+
+        String content = gson.toJson(characterBuyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/store/characters")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COIN_NOT_ENOUGH.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COIN_NOT_ENOUGH.getMessage()));
     }
 }
