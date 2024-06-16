@@ -1,10 +1,12 @@
 package site.doto.domain.character.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.character.dto.CharacterBuyReq;
 import site.doto.domain.character.dto.CharacterDetailsRes;
 import site.doto.domain.character.dto.CharacterDto;
 import site.doto.domain.character.dto.CharacterListRes;
+import site.doto.domain.character.service.CharacterService;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -13,7 +15,10 @@ import java.util.List;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
+@RequiredArgsConstructor
 public class CharacterController {
+    private final CharacterService characterService;
+
     @GetMapping("/members/characters")
     public ResponseDto<?> characterList() {
         List<CharacterDto> characters = new ArrayList<>();
@@ -48,11 +53,10 @@ public class CharacterController {
     }
 
     @GetMapping("/store/characters")
-    public ResponseDto<?> characterDetails() {
-        CharacterDetailsRes characterDetailsRes = new CharacterDetailsRes(
-                1L, "알", "이미지", 200);
+    public ResponseDto<?> eggDetails() {
+        CharacterDetailsRes result = characterService.findEgg();
 
-        return ResponseDto.success(CHARACTER_INQUIRY_OK, characterDetailsRes);
+        return ResponseDto.success(CHARACTER_INQUIRY_OK, result);
     }
 
     @PostMapping("/store/characters")
