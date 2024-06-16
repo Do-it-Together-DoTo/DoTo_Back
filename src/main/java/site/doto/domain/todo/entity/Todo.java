@@ -35,4 +35,12 @@ public class Todo {
 
     private Boolean isDone;
 
+    public int getYear() {
+        return date.getYear();
+    }
+
+    public int getMonth() {
+        return date.getMonthValue();
+    }
+
 }

@@ -12,6 +12,7 @@ import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.global.exception.CustomException;
+import site.doto.global.redis.RedisUtils;
 import site.doto.global.status_code.ErrorCode;
 
 import java.time.LocalDate;
@@ -21,10 +22,9 @@ import java.time.LocalDate;
 @Transactional(readOnly = true)
 public class BettingService {
     private final BettingRepository bettingRepository;
-
     private final MemberRepository memberRepository;
-
     private final TodoRepository todoRepository;
+    private final RedisUtils redisUtils;
 
     @Transactional
     public void addBetting(Long memberId, BettingAddReq bettingAddReq) {
@@ -53,6 +53,8 @@ public class BettingService {
         Betting betting = bettingAddReq.toEntity(member, todo);
 
         bettingRepository.save(betting);
+
+        redisUtils.updateRecordToRedis(memberId, todo.getYear(), todo.getMonth(), "myBetting", 1);
     }
 
     private boolean bettingAlreadyHolding(Long memberId) {

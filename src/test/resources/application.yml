@@ -36,8 +36,13 @@ spring:
 
   redis:
     host: localhost
-    port: 6379
+    port: 6380
+    embedded: true
 
   web:
     resources:
       add-mappings: false
+
+logging:
+  level:
+    io.lettuce.core.protocol: ERROR
