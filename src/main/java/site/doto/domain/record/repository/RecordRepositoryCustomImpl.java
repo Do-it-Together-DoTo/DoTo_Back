@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
 import lombok.RequiredArgsConstructor;
+import site.doto.domain.record.dto.RecordUpdateDto;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom{
         map = new HashMap<>();
         map.put("coinUsage", record.coinUsage);
         map.put("coinEarned", record.coinEarned);
-        map.put("myBetting", record.myBetting);
+        map.put("myBetOpen", record.myBetOpen);
         map.put("betParticipation", record.betParticipation);
         map.put("betWins", record.betWins);
         map.put("betAmount", record.betAmount);
@@ -31,16 +32,19 @@ public class RecordRepositoryCustomImpl implements RecordRepositoryCustom{
     }
 
     @Override
-    public void updateRecord(Long memberId, Integer year, Integer month, List<String> fields, List<Integer> variances) {
+    public void updateRecord(RecordUpdateDto update) {
         JPAUpdateClause query = jpaQueryFactory.update(record);
+
+        List<String> fields = update.getFields();
+        List<Integer> variances = update.getVariances();
 
         for (int i = 0; i < fields.size(); i++) {
             query.set(map.get(fields.get(i)), map.get(fields.get(i)).add(variances.get(i)));
         }
 
-        query.where(record.recordPK.memberId.eq(memberId))
-                .where(record.recordPK.year.eq(year))
-                .where(record.recordPK.month.eq(month))
+        query.where(record.recordPK.memberId.eq(update.getMemberId()))
+                .where(record.recordPK.year.eq(update.getYear()))
+                .where(record.recordPK.month.eq(update.getMonth()))
                 .execute();
     }
 }

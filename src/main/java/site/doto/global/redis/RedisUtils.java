@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
+import site.doto.domain.record.dto.RecordUpdateDto;
 import site.doto.domain.record.entity.Record;
 import site.doto.domain.record.entity.RecordPK;
 import site.doto.domain.record.repository.RecordRepository;
@@ -52,6 +53,13 @@ public class RedisUtils {
         return result;
     }
 
+    public void flushRedis() {
+        redisTemplate.execute((RedisCallback<Object>) connection -> {
+            connection.flushAll();
+            return null;
+        });
+    }
+
     public void updateRecordToRedis(Long memberId, int year, int month, String field, int amount) {
         String key = "record:" + memberId + ":" + year + ":" + month + "::" + field;
 
@@ -64,34 +72,35 @@ public class RedisUtils {
         }
     }
 
-    public void updateRecordToDB(Long memberId, int year, int month) {
-        RecordPK recordPK = new RecordPK(memberId, year, month);
+    public void updateRecordToDB() {
+        Set<String> keys = findKeys("record*");
 
-        Optional<Record> optional = recordRepository.findByRecordPK(recordPK);
-
-        if (optional.isEmpty()) {
-            recordRepository.save(new Record(recordPK, 0, 0, 0, 0, 0, 0, 0));
-        }
-
-        Set<String> keys = findKeys("record:" + memberId + ":" + year + ":" + month + "*");
-
-        if (keys.isEmpty()) return;
-
-        List<String> fields = new ArrayList<>();
-        List<Integer> variances = new ArrayList<>();
+        Map<String, RecordUpdateDto> map = new HashMap<>();
 
         for (String key : keys) {
-            fields.add(key.split("::")[1]);
-            variances.add((Integer) getData(key));
+            String[] split = key.split("::");
+
+            String pk = split[0];
+            String field = split[1];
+            Integer variance = (Integer) getData(key);
+
+            if (!map.containsKey(pk)) {
+                map.put(pk, new RecordUpdateDto(pk.split(":")));
+            }
+
+            RecordUpdateDto update = map.get(pk);
+
+            update.addData(field, variance);
         }
 
-        recordRepository.updateRecord(memberId, year, month, fields, variances);
-    }
+        for (RecordUpdateDto update : map.values()) {
+            RecordPK recordPK = update.getRecordPK();
 
-    public void flushRedis() {
-        redisTemplate.execute((RedisCallback<Object>) connection -> {
-            connection.flushAll();
-            return null;
-        });
+            if (!recordRepository.existsByRecordPK(recordPK)) {
+                recordRepository.save(new Record(recordPK, 0, 0, 0, 0, 0, 0, 0));
+            }
+
+            recordRepository.updateRecord(update);
+        }
     }
 }
