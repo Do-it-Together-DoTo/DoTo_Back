@@ -84,7 +84,7 @@ public class CategoryService {
     }
 
     private Integer calculateSequence(Long memberId, Boolean isActivated) {
-        return categoryRepository.countByMemberId(memberId, isActivated);
+        return categoryRepository.categorySeqByMemberId(memberId, isActivated);
     }
 
     private void updateContents(Category category, String contents) {
