@@ -9,6 +9,7 @@ import site.doto.domain.character.dto.CharacterListRes;
 import site.doto.domain.character.service.CharacterService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,7 +62,11 @@ public class CharacterController {
 
     @PostMapping("/store/characters")
     public ResponseDto<?> characterBuy(
-            @RequestBody CharacterBuyReq characterBuyReq) {
+            @RequestBody @Valid CharacterBuyReq characterBuyReq) {
+        Long memberId = 1L;
+
+        characterService.buyCharacter(memberId, characterBuyReq);
+
         return ResponseDto.success(CHARACTERS_BUY_OK, null);
     }
 

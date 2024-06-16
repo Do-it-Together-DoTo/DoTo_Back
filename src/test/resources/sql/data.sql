@@ -37,3 +37,18 @@ insert into item_type (item_type_id, name, img, price, grade, exp, description) 
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (3, '테스트 아이템3', '테스트 아이템 이미지3', 30, '테스트 아이템 등급3', 30, '테스트 아이템 설명3');
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (4, '테스트 아이템4', '테스트 아이템 이미지4', 40, '테스트 아이템 등급4', 40, '테스트 아이템 설명4');
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values (20000, '아이템 이름', '이미지 url', 10, '아이템 등급', 10, '아이템 설명');
+
+--characterType
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (1, '캐릭터1', '캐릭터1 이미지', 0, 1, '캐릭터1 설명'),
+                                                                                           (10, '캐릭터1-1', '캐릭터1-1 이미지', 1, 1, '캐릭터1-1 설명'),
+                                                                                           (100, '캐릭터1-2', '캐릭터1-2 이미지', 2, 1, '캐릭터1-2 설명');
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (2, '캐릭터2', '캐릭터2 이미지', 0, 2, '캐릭터2 설명'),
+                                                                                           (20, '캐릭터2-1', '캐릭터2-1 이미지', 1, 2, '캐릭터2-1 설명'),
+                                                                                           (200, '캐릭터2-2', '캐릭터2-2 이미지', 2, 2, '캐릭터2-2 설명');
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (3, '캐릭터3', '캐릭터3 이미지', 0, 3, '캐릭터3 설명'),
+                                                                                           (30, '캐릭터3-1', '캐릭터3-1 이미지', 1, 3, '캐릭터3-1 설명'),
+                                                                                           (300, '캐릭터3-2', '캐릭터3-2 이미지', 2, 3, '캐릭터3-2 설명');
+
