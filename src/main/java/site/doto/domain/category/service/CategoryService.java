@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryDetailsRes;
 import site.doto.domain.category.dto.CategoryListRes;
+import site.doto.domain.category.dto.CategoryModifyReq;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
@@ -38,7 +39,7 @@ public class CategoryService {
             throw new CustomException(COLOR_NOT_FOUND);
         }
 
-        int activeCount = calculateActiveCount(memberId);
+        Integer activeCount = calculateSequence(memberId, true);
         if(activeCount >= MAX_ACTIVE_COUNT) {
             throw new CustomException(ACTIVATED_CATEGORY_LIMIT);
         }
@@ -60,10 +61,63 @@ public class CategoryService {
 
         List<Category> activatedList = partitionedMap.get(true);
         List<Category> inactivedList = partitionedMap.get(false);
+
         return new CategoryListRes(activatedList, inactivedList);
     }
 
-    private int calculateActiveCount(Long memberId) {
-        return categoryRepository.countByMemberId(memberId);
+    @Transactional
+    public CategoryDetailsRes modifyCategory(Long memberId, Long categoryId, CategoryModifyReq categoryModifyReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+
+        updateContents(category, categoryModifyReq.getContents());
+        updateIsPublic(category, categoryModifyReq.getIsPublic());
+        updateIsActivated(memberId, category, categoryModifyReq.getIsActivated());
+        updateColor(category, categoryModifyReq.getColor());
+
+        categoryRepository.save(category);
+
+        return CategoryDetailsRes.toDto(category);
+    }
+
+    private Integer calculateSequence(Long memberId, Boolean isActivated) {
+        return categoryRepository.countByMemberId(memberId, isActivated);
+    }
+
+    private void updateContents(Category category, String contents) {
+        if(contents != null) {
+            if(contents.trim().isEmpty()) {
+                throw new CustomException(BIND_EXCEPTION);
+            }
+            category.updateContents(contents);
+        }
+    }
+
+    private void updateIsPublic(Category category, Boolean isPublic) {
+        if(isPublic != null) {
+            category.updateIsPublic(isPublic);
+        }
+    }
+
+    private void updateIsActivated(Long memberId, Category category, Boolean isActivated) {
+        if(isActivated != null) {
+            if(category.getIsActivated() != isActivated) {
+                Integer seq = calculateSequence(memberId, isActivated);
+                category.updateSeq(seq);
+            }
+            category.updateIsActivated(isActivated);
+        }
+    }
+
+    private void updateColor(Category category, String color) {
+        if(color != null) {
+            if(!EnumUtils.isValidEnumIgnoreCase(Color.class, color)) {
+                throw new CustomException(COLOR_NOT_FOUND);
+            }
+            category.updateColor(Color.valueOf(color.toUpperCase()));
+        }
     }
 }
