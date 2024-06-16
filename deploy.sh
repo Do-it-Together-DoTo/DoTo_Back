@@ -46,4 +46,4 @@ fi
 
 # 새로운 애플리케이션 실행
 chmod +x /home/ubuntu/doto-0.0.1-SNAPSHOT.jar
-nohup java -jar /home/ubuntu/doto-0.0.1-SNAPSHOT.jar >> /home/ubuntu/deploy.log 2>> /home/ubuntu/deploy_err.log &
+nohup java -jar -Duser.timezone=Asia/Seoul /home/ubuntu/doto-0.0.1-SNAPSHOT.jar >> /home/ubuntu/deploy.log 2>> /home/ubuntu/deploy_err.log &
