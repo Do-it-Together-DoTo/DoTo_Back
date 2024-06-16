@@ -47,10 +47,13 @@ public class CharacterService {
         }
 
         for(int i = 0; i < characterBuyReq.getCount(); i++) {
-            Long characterTypeId = getRandomCharacterTypeId();
+            CharacterType characterType;
 
-            CharacterType characterType = characterTypeRepository.findById(characterTypeId)
-                    .orElseThrow(() -> new CustomException(CHARACTER_TYPE_NOT_FOUND));
+            do {
+                Long characterTypeId = getRandomCharacterTypeId();
+                characterType = characterTypeRepository.findById(characterTypeId)
+                        .orElse(null);
+            } while (characterType == null);
 
             characterRepository.save(characterBuyReq.toEntity(member, characterType));
 
