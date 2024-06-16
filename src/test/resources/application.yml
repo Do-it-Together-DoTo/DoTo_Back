@@ -42,3 +42,7 @@ spring:
   web:
     resources:
       add-mappings: false
+
+logging:
+  level:
+    io.lettuce.core.protocol: ERROR

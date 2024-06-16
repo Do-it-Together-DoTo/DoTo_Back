@@ -121,6 +121,11 @@ openapi3 {
 	format = "yaml"
 }
 
+tasks.withType(Test) {
+	systemProperty 'file.encoding', 'UTF-8'
+}
+
+
 //querydsl 추가 시작
 def querydslDir = "${buildDir}/generated/querydsl"
 
