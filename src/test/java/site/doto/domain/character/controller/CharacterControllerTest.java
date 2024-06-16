@@ -27,6 +27,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.domain.character.enums.Egg.EGG;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -186,10 +187,10 @@ public class CharacterControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CHARACTER_INQUIRY_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CHARACTER_INQUIRY_OK.getMessage()))
-                .andExpect(jsonPath("$.body.id").value(1L))
-                .andExpect(jsonPath("$.body.name").value("알"))
-                .andExpect(jsonPath("$.body.img").value("이미지"))
-                .andExpect(jsonPath("$.body.price").value(200))
+                .andExpect(jsonPath("$.body.id").value(0L))
+                .andExpect(jsonPath("$.body.name").value(EGG.getName()))
+                .andExpect(jsonPath("$.body.img").value(EGG.getImg()))
+                .andExpect(jsonPath("$.body.price").value(EGG.getCost()))
                 .andDo(document(
                         "알 정보 조회",
                         preprocessRequest(prettyPrint()),
