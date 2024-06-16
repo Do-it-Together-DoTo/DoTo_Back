@@ -5,22 +5,22 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.category.entity.Category;
 
 import java.util.List;
-import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 public class CategoryListRes {
-    List<CategoryDetailsRes> activated = new ArrayList<>();
+    List<CategoryDetailsRes> activated;
 
-    List<CategoryDetailsRes> inactivated = new ArrayList<>();
+    List<CategoryDetailsRes> inactivated;
 
     public CategoryListRes(List<Category> activated, List<Category> inactivated) {
-        activated.stream()
+        this.activated = activated.stream()
                 .map(CategoryDetailsRes::toDto)
-                .forEach(this.activated::add);
+                .collect(Collectors.toList());
 
-        inactivated.stream()
+        this.inactivated = inactivated.stream()
                 .map(CategoryDetailsRes::toDto)
-                .forEach(this.inactivated::add);
+                .collect(Collectors.toList());
     }
 }
