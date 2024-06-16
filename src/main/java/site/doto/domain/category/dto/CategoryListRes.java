@@ -5,15 +5,14 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.category.entity.Category;
 
 import java.util.List;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 @Data
 @NoArgsConstructor
 public class CategoryListRes {
-    List<CategoryDetailsRes> activated = new ArrayList<>();
+    List<CategoryDetailsRes> activated;
 
-    List<CategoryDetailsRes> inactivated = new ArrayList<>();
+    List<CategoryDetailsRes> inactivated;
 
     public CategoryListRes(List<Category> activated, List<Category> inactivated) {
         this.activated = activated.stream()
