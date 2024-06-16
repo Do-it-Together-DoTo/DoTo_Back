@@ -39,7 +39,6 @@ import static site.doto.global.status_code.SuccessCode.*;
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
 class CategoryControllerTest {
-
     @Autowired
     private MockMvc mockMvc;
 
@@ -186,9 +185,10 @@ class CategoryControllerTest {
     public void category_modify_success() throws Exception {
         //given
         CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
-        categoryModifyReq.setContents("카테고리");
-        categoryModifyReq.setIsPublic(true);
-        categoryModifyReq.setColor("BLUE");
+        categoryModifyReq.setContents("카테고리1");
+        categoryModifyReq.setIsPublic(false);
+        categoryModifyReq.setColor("YELLOW");
+        categoryModifyReq.setIsActivated(false);
 
         String content = gson.toJson(categoryModifyReq);
 
@@ -205,6 +205,11 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_MODIFY_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_MODIFY_OK.getMessage()))
+                .andExpect(jsonPath("$.body.contents").value("카테고리1"))
+                .andExpect(jsonPath("$.body.isPublic").value(false))
+                .andExpect(jsonPath("$.body.color").value("YELLOW"))
+                .andExpect(jsonPath("$.body.isActivated").value(false))
+                .andExpect(jsonPath("$.body.seq").value(1))
                 .andDo(document(
                         "카테고리 수정",
                         preprocessRequest(prettyPrint()),
@@ -223,7 +228,9 @@ class CategoryControllerTest {
                                                 fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN)
                                                         .description("공개 여부(Optional)"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING)
-                                                        .description("카테고리 색상(Optional)")
+                                                        .description("카테고리 색상(Optional)"),
+                                                fieldWithPath("isActivated").type(JsonFieldType.BOOLEAN)
+                                                        .description("활성화 여부(Optional)")
                                         )
                                 )
                                 .responseFields(
