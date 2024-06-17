@@ -19,14 +19,13 @@ import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
+@Transactional
 public class BettingService {
     private final BettingRepository bettingRepository;
     private final MemberRepository memberRepository;
     private final TodoRepository todoRepository;
     private final RedisUtils redisUtils;
 
-    @Transactional
     public void addBetting(Long memberId, BettingAddReq bettingAddReq) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
@@ -54,7 +53,7 @@ public class BettingService {
 
         bettingRepository.save(betting);
 
-        redisUtils.updateRecordToRedis(memberId, todo.getYear(), todo.getMonth(), "myBetting", 1);
+        redisUtils.updateRecordToRedis(memberId, todo.getYear(), todo.getMonth(), "myBetOpen", 1);
     }
 
     private boolean bettingAlreadyHolding(Long memberId) {
