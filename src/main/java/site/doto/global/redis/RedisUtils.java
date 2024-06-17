@@ -6,6 +6,7 @@ import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.record.dto.RecordUpdateDto;
 import site.doto.domain.record.entity.Record;
 import site.doto.domain.record.entity.RecordPK;
@@ -72,6 +73,7 @@ public class RedisUtils {
         }
     }
 
+    @Transactional
     public void updateRecordToDB() {
         Set<String> keys = findKeys("record*");
 
