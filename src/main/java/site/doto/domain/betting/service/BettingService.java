@@ -33,7 +33,7 @@ public class BettingService {
         Todo todo = todoRepository.findById(bettingAddReq.getTodoId())
                 .orElseThrow(() -> new CustomException(ErrorCode.TODO_NOT_FOUND));
 
-        if (todo.getMember().getId() != memberId) {
+        if (!todo.getMember().getId().equals(memberId)) {
             throw new CustomException(ErrorCode.TODO_NOT_MINE);
         }
 
@@ -57,6 +57,6 @@ public class BettingService {
     }
 
     private boolean bettingAlreadyHolding(Long memberId) {
-        return bettingRepository.findAfterToday(memberId, PageRequest.of(0, 1)).size() > 0;
+        return !bettingRepository.findAfterToday(memberId, PageRequest.of(0, 1)).isEmpty();
     }
 }
