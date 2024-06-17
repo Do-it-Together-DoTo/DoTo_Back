@@ -23,6 +23,7 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
                                                                                                  (10017, 1, '테스트_카테고리',true, true, 'BLUE', 17),
                                                                                                  (10018, 1, '테스트_카테고리',true, true, 'BLUE', 18),
                                                                                                  (10019, 1, '테스트_카테고리',true, true, 'BLUE', 19),
+                                                                                                 (10020, 1, '테스트_카테고리',true, false, 'BLUE', 1),
                                                                                                  (10021, 2, '테스트_카테고리2',true, true, 'PINK', 1);
 
 --todo

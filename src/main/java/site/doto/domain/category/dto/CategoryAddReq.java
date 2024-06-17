@@ -21,7 +21,7 @@ public class CategoryAddReq {
     @NotNull
     private String color;
 
-    public Category toEntity(Member member, int seq) {
+    public Category toEntity(Member member, Integer seq) {
         return Category.builder()
                 .member(member)
                 .contents(contents)

@@ -11,15 +11,16 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     Optional<Category> findById(Long categoryId);
 
-    @Query("select count(*) " +
+    @Query("select coalesce(max(c.seq), 0)" +
     "from Category c " +
     "where c.member.id = :memberId " +
-    "and c.isActivated = true")
-    int countByMemberId(@Param("memberId") Long memberId);
+    "and c.isActivated = :isActivated")
+    Integer categorySeqByMemberId(@Param("memberId") Long memberId, @Param("isActivated") Boolean isActivated);
 
     @Query("select c " +
     "from Category c " +
-    "where c.member.id = :memberId")
+    "where c.member.id = :memberId " +
+    "order by c.seq")
     List<Category> findCategoriesByMemberId(@Param("memberId") Long memberId);
 
 }

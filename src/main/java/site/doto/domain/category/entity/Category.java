@@ -34,4 +34,24 @@ public class Category {
     private Color color;
 
     private Integer seq;
+
+    public void updateContents(String contents) {
+        this.contents = contents;
+    }
+
+    public void updateIsPublic(Boolean isPublic) {
+        this.isPublic = isPublic;
+    }
+
+    public void updateIsActivated(Boolean isActivated) {
+        this.isActivated = isActivated;
+    }
+
+    public void updateColor(Color color) {
+        this.color = color;
+    }
+
+    public void updateSeq(Integer seq) {
+        this.seq = seq+1;
+    }
 }

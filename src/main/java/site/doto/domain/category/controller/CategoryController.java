@@ -42,14 +42,9 @@ public class CategoryController {
     public ResponseDto<CategoryDetailsRes> categoryModify(
             @PathVariable long categoryId,
             @RequestBody CategoryModifyReq categoryModifyReq) {
-        CategoryDetailsRes result = CategoryDetailsRes.builder()
-                .id(10001L)
-                .contents("Modified Mock Category")
-                .isActivated(true)
-                .isPublic(true)
-                .color(PINK)
-                .seq(1)
-                .build();
+        Long memberId = 1L;
+
+        CategoryDetailsRes result = categoryService.modifyCategory(memberId, categoryId, categoryModifyReq);
 
         return ResponseDto.success(CATEGORY_MODIFY_OK, result);
     }
