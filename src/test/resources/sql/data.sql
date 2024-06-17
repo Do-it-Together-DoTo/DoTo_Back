@@ -37,8 +37,7 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
                                                                             (30001, 1, 20001, '베팅1', false), -- 베팅 삭제
-                                                                            (30002, 2, 20002, '베팅2', false), -- 베팅 삭제 실패
-                                                                            (30003, 1, 20003, '베팅3', true); -- 베팅 삭제 실패
+                                                                            (30002, 2, 20002, '베팅2', false); -- 베팅 삭제 실패
 
 
 --itemType

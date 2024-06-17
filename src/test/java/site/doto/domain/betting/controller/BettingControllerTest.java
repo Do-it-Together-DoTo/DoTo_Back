@@ -558,25 +558,6 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 삭제 - 종료된 베팅")
-    public void betting_remove_finished() throws Exception {
-        //given
-        Long bettingId = 30003L;
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                delete("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_FINISHED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BETTING_FINISHED.getMessage()));
-    }
-
-    @Test
     @DisplayName("베팅 삭제 - 다른 사람이 참여 중인 베팅")
     public void betting_remove_cancel_fail() throws Exception {
         // 베팅 참여 api 구현 후 추가 예정

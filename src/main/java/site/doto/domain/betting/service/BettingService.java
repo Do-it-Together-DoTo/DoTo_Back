@@ -73,10 +73,6 @@ public class BettingService {
             throw new CustomException(FORBIDDEN);
         }
 
-        if (betting.getDate().isBefore(LocalDate.now())) {
-            throw new CustomException(BETTING_FINISHED);
-        }
-
         if (memberBettingRepository.existsByBettingId(bettingId)) {
             throw new CustomException(BETTING_CANCEL_FAILED);
         }
