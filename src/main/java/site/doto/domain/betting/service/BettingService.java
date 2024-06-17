@@ -37,7 +37,7 @@ public class BettingService {
                 .orElseThrow(() -> new CustomException(TODO_NOT_FOUND));
 
         if (!todo.getMember().getId().equals(memberId)) {
-            throw new CustomException(TODO_NOT_MINE);
+            throw new CustomException(FORBIDDEN);
         }
 
         if (todo.getDate().isBefore(LocalDate.now())) {
