@@ -42,7 +42,6 @@ public enum ErrorCode {
     TODO_ALREADY_PAST(400, "과거의 투두는 베팅을 열 수 없습니다."),
     TODO_ALREADY_DONE(400, "이미 완료한 투두는 베팅을 열 수 없습니다."),
     BETTING_NOT_FOUND(404, "존재하지 않는 베팅입니다."),
-    BETTING_NOT_MINE(403, "다른 사람의 베팅입니다."),
     MAIN_CHARACTER_DELETE(400, "대표 캐릭터는 삭제할 수 없습니다."),
     CHARACTER_NOT_FOUND(404, "존재하지 않는 캐릭터입니다.")
     ;

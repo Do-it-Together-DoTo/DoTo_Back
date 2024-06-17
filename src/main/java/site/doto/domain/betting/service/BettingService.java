@@ -70,7 +70,7 @@ public class BettingService {
         Member member = betting.getMember();
 
         if (!memberId.equals(member.getId())) {
-            throw new CustomException(BETTING_NOT_MINE);
+            throw new CustomException(FORBIDDEN);
         }
 
         if (memberBettingRepository.existsByBettingId(bettingId)) {
