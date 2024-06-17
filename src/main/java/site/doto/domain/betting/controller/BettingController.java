@@ -119,6 +119,10 @@ public class BettingController {
     @DeleteMapping("/{bettingId}")
     public ResponseDto<?> bettingRemove(
             @PathVariable Long bettingId) {
+        Long memberId = 1L;
+
+        bettingService.removeBetting(bettingId, memberId);
+
         return ResponseDto.success(SuccessCode.BETTING_DELETED, null);
     }
 }

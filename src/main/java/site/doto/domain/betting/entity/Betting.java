@@ -8,6 +8,7 @@ import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 
 @Entity
 @Getter
@@ -32,4 +33,7 @@ public class Betting {
 
     private Boolean isAchieved;
 
+    public LocalDate getDate() {
+        return todo.getDate();
+    }
 }

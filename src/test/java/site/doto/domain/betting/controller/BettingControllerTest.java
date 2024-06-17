@@ -47,9 +47,15 @@ class BettingControllerTest {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
     @Test
-    @DisplayName("베팅 생성_성공")
+    @DisplayName("베팅 생성 - 성공")
     public void betting_add_success() throws Exception {
         //given
+        ResultActions remove = mockMvc.perform(
+                delete("/betting/{bettingId}", 30001L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+
         BettingAddReq bettingAddReq = new BettingAddReq();
         bettingAddReq.setTodoId(20001L);
         bettingAddReq.setName("베팅 이름");
@@ -99,7 +105,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 생성_검증 실패")
+    @DisplayName("베팅 생성 - 검증 실패")
     public void betting_add_validation_fail() throws Exception {
         //given
         BettingAddReq bettingAddReq1 = new BettingAddReq();
@@ -135,7 +141,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 생성_존재하지 않는 투두")
+    @DisplayName("베팅 생성 - 존재하지 않는 투두")
     public void betting_add_todo_not_found() throws Exception {
         //given
         BettingAddReq bettingAddReq = new BettingAddReq();
@@ -158,7 +164,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 생성_다른 사람의 투두")
+    @DisplayName("베팅 생성 - 다른 사람의 투두")
     public void betting_add_todo_not_mine() throws Exception {
         //given
         BettingAddReq bettingAddReq = new BettingAddReq();
@@ -176,12 +182,12 @@ class BettingControllerTest {
         //then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_NOT_MINE.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(TODO_NOT_MINE.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
     }
 
     @Test
-    @DisplayName("베팅 생성_과거의 투두")
+    @DisplayName("베팅 생성 - 과거의 투두")
     public void betting_add_todo_already_past() throws Exception {
         //given
         BettingAddReq bettingAddReq = new BettingAddReq();
@@ -204,7 +210,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 생성_이미 완료된 투두")
+    @DisplayName("베팅 생성 - 이미 완료된 투두")
     public void betting_add_todo_already_done() throws Exception {
         //given
         BettingAddReq bettingAddReq = new BettingAddReq();
@@ -228,7 +234,7 @@ class BettingControllerTest {
 
 
     @Test
-    @DisplayName("베팅 참여_성공")
+    @DisplayName("베팅 참여 - 성공")
     public void betting_join_success() throws Exception {
         //given
         BettingJoinReq bettingAddReq = new BettingJoinReq();
@@ -287,7 +293,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("나의 베팅 조회_성공")
+    @DisplayName("나의 베팅 조회 - 성공")
     public void my_betting_list_success() throws Exception {
         //given
 
@@ -353,7 +359,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("오픈 베팅 조회_성공")
+    @DisplayName("오픈 베팅 조회 - 성공")
     public void open_betting_list_success() throws Exception {
         //given
 
@@ -405,7 +411,7 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 단일 조회_성공")
+    @DisplayName("베팅 단일 조회 - 성공")
     public void betting_details_success() throws Exception {
         //given
 
@@ -468,13 +474,14 @@ class BettingControllerTest {
     }
 
     @Test
-    @DisplayName("베팅 삭제_성공")
+    @DisplayName("베팅 삭제 - 성공")
     public void betting_remove_success() throws Exception {
         //given
+        Long bettingId = 30001L;
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/betting/{bettingId}", 10001L)
+                delete("/betting/{bettingId}", bettingId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -510,5 +517,49 @@ class BettingControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("베팅 삭제 - 존재하지 않는 베팅")
+    public void betting_remove_not_found() throws Exception {
+        //given
+        Long bettingId = 1L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 삭제 - 다른 사람의 베팅")
+    public void betting_remove_forbidden() throws Exception {
+        //given
+        Long bettingId = 30002L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 삭제 - 다른 사람이 참여 중인 베팅")
+    public void betting_remove_cancel_fail() throws Exception {
+        // 베팅 참여 api 구현 후 추가 예정
     }
 }

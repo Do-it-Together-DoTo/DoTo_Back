@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.member.entity.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity
@@ -18,17 +15,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberBetting implements Serializable {
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+public class MemberBetting {
+    @EmbeddedId
+    private MemberBettingPK memberBettingPK;
+
+    @ManyToOne
+    @MapsId("memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
+    @MapsId("bettingId")
+    @JoinColumn(name = "betting_id")
     private Betting betting;
 
     private Integer cost;
 
     private Boolean prediction;
-
 }
