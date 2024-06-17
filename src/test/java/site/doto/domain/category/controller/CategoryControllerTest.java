@@ -209,7 +209,7 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.body.isPublic").value(false))
                 .andExpect(jsonPath("$.body.color").value("YELLOW"))
                 .andExpect(jsonPath("$.body.isActivated").value(false))
-                .andExpect(jsonPath("$.body.seq").value(1))
+                .andExpect(jsonPath("$.body.seq").value(2))
                 .andDo(document(
                         "카테고리 수정",
                         preprocessRequest(prettyPrint()),
@@ -576,5 +576,49 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(COLOR_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(COLOR_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 수정 실패 - 활성화 개수 초과")
+    public void category_modify_fail_active_category_limit() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("테스트 카테고리 20");
+        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setColor("PURPLE");
+
+        CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
+        categoryModifyReq.setContents("카테고리 수정");
+        categoryModifyReq.setColor("Yellow");
+        categoryModifyReq.setIsActivated(true);
+
+        String content1 = gson.toJson(categoryAddReq);
+        String content2 = gson.toJson(categoryModifyReq);
+
+        //when
+        ResultActions actions1 = mockMvc.perform(
+                post("/categories/")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1));
+
+        ResultActions actions2 = mockMvc.perform(
+                patch("/categories/{categoryId}", 10020L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2));
+
+        //then
+        actions1
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_CREATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_CREATED.getMessage()));
+
+        actions2
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
     }
 }
