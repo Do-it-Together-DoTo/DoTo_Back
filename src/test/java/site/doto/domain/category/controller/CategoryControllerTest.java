@@ -505,4 +505,76 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
+
+    @Test
+    @DisplayName("카테고리 수정 실패 - 없는 카테고리 수정")
+    public void category_modify_fail_category_not_found() throws Exception {
+        //given
+        CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
+        categoryModifyReq.setContents("카테고리 수정1");
+
+        String content = gson.toJson(categoryModifyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories/{categoryId}", 10032L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 수정 실패 - 잘못된 contents")
+    public void category_modify_fail_contents_is_null() throws Exception {
+        //given
+        CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
+        categoryModifyReq.setContents(" ");
+
+        String content = gson.toJson(categoryModifyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories/{categoryId}", 10001L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 수정 실패 - 잘못된 컬러 값")
+    public void category_modify_fail_not_found_color() throws Exception {
+        CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
+        categoryModifyReq.setContents("카테고리 수정");
+        categoryModifyReq.setColor("RED");
+
+        String content = gson.toJson(categoryModifyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories/{categoryId}", 10001L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COLOR_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COLOR_NOT_FOUND.getMessage()));
+    }
 }
