@@ -35,14 +35,10 @@ public class CategoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        if(!EnumUtils.isValidEnumIgnoreCase(Color.class, categoryAddReq.getColor())) {
-            throw new CustomException(COLOR_NOT_FOUND);
-        }
+        validateColor(categoryAddReq.getColor());
 
         Integer activeCount = calculateSequence(memberId, true);
-        if(activeCount >= MAX_ACTIVE_COUNT) {
-            throw new CustomException(ACTIVATED_CATEGORY_LIMIT);
-        }
+        validateActiveCount(activeCount);
 
         Category category = categoryAddReq.toEntity(member, activeCount);
         categoryRepository.save(category);
@@ -73,10 +69,7 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
-        updateContents(category, categoryModifyReq.getContents());
-        updateIsPublic(category, categoryModifyReq.getIsPublic());
-        updateIsActivated(memberId, category, categoryModifyReq.getIsActivated());
-        updateColor(category, categoryModifyReq.getColor());
+        updateCategory(memberId, category, categoryModifyReq);
 
         categoryRepository.save(category);
 
@@ -85,6 +78,25 @@ public class CategoryService {
 
     private Integer calculateSequence(Long memberId, Boolean isActivated) {
         return categoryRepository.categorySeqByMemberId(memberId, isActivated);
+    }
+
+    private void validateColor(String color) {
+        if(!EnumUtils.isValidEnumIgnoreCase(Color.class, color)) {
+            throw new CustomException(COLOR_NOT_FOUND);
+        }
+    }
+
+    private void validateActiveCount(Integer activeCount) {
+        if(activeCount >= MAX_ACTIVE_COUNT) {
+            throw new CustomException(ACTIVATED_CATEGORY_LIMIT);
+        }
+    }
+
+    private void updateCategory(Long memberId, Category category, CategoryModifyReq categoryModifyReq) {
+        updateContents(category, categoryModifyReq.getContents());
+        updateIsPublic(category, categoryModifyReq.getIsPublic());
+        updateIsActivated(memberId, category, categoryModifyReq.getIsActivated());
+        updateColor(category, categoryModifyReq.getColor());
     }
 
     private void updateContents(Category category, String contents) {
@@ -114,9 +126,7 @@ public class CategoryService {
 
     private void updateColor(Category category, String color) {
         if(color != null) {
-            if(!EnumUtils.isValidEnumIgnoreCase(Color.class, color)) {
-                throw new CustomException(COLOR_NOT_FOUND);
-            }
+            validateColor(color);
             category.updateColor(Color.valueOf(color.toUpperCase()));
         }
     }
