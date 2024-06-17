@@ -101,7 +101,7 @@ public class CategoryService {
 
     private void updateContents(Category category, String contents) {
         if(contents != null) {
-            if(contents.trim().isEmpty()) {
+            if(contents.isBlank()) {
                 throw new CustomException(BIND_EXCEPTION);
             }
             category.updateContents(contents);
