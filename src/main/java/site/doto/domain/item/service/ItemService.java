@@ -14,6 +14,9 @@ import site.doto.domain.item.repository.ItemTypeRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.exception.CustomException;
+import site.doto.global.redis.RedisUtils;
+
+import java.time.LocalDate;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -24,11 +27,14 @@ public class ItemService {
     private final MemberRepository memberRepository;
     private final ItemRepository itemRepository;
     private final ItemTypeRepository itemTypeRepository;
+    private final RedisUtils redisUtils;
 
+    @Transactional(readOnly = true)
     public StoreItemListRes findStoreItems() {
         return new StoreItemListRes(itemTypeRepository.findAll());
     }
 
+    @Transactional(readOnly = true)
     public StoreItemDetailsRes findStoreItem(Long itemTypeId) {
         ItemType itemType = itemTypeRepository.findById(itemTypeId)
                 .orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
@@ -60,5 +66,8 @@ public class ItemService {
         } catch (DataIntegrityViolationException e) {
             throw new CustomException(COIN_NOT_ENOUGH);
         }
+
+        LocalDate currentDate = LocalDate.now();
+        redisUtils.updateRecordToRedis(memberId, currentDate.getYear(), currentDate.getMonthValue(), "coinUsage", coinUsage);
     }
 }

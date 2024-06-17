@@ -1,5 +1,6 @@
 package site.doto.global.handler;
 
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -34,5 +35,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(NoHandlerFoundException.class)
     protected ResponseDto<?> handleNoHandlerFoundException(NoHandlerFoundException e) {
         return ResponseDto.fail(ErrorCode.NOT_FOUND);
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    protected ResponseDto<?> handleInvalidRequestStateException(HttpMessageNotReadableException e) {
+        return ResponseDto.fail(ErrorCode.BIND_EXCEPTION);
     }
 }
