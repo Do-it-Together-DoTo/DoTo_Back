@@ -5,6 +5,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.BettingAddReq;
+import site.doto.domain.betting.dto.MyBettingListRes;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.member.entity.Member;
@@ -16,6 +17,7 @@ import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -61,6 +63,14 @@ public class BettingService {
 
     private boolean bettingAlreadyHolding(Long memberId) {
         return !bettingRepository.findAfterToday(memberId, PageRequest.of(0, 1)).isEmpty();
+    }
+
+    @Transactional(readOnly = true)
+    public MyBettingListRes findMyBetting(Long memberId) {
+        List<Betting> myBetting = bettingRepository.findAllByMember(memberId);
+        List<Betting> joiningBetting = bettingRepository.findJoiningBetting(memberId);
+
+        return new MyBettingListRes(myBetting, joiningBetting);
     }
 
     public void removeBetting(Long bettingId, Long memberId) {

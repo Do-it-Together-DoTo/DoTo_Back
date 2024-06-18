@@ -28,6 +28,8 @@ public class Member {
 
     private String description;
 
+    private String mainCharacterImg;
+
     @Column(name = "coin", columnDefinition = "integer NOT NULL CHECK (coin >= 0)")
     private Integer coin;
 

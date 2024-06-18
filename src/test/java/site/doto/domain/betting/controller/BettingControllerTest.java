@@ -319,38 +319,46 @@ class BettingControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body.myBetting").type(JsonFieldType.OBJECT)
-                                                        .description("내가 연 베팅(Optional)").optional(),
-                                                fieldWithPath("body.myBetting.memberId").type(JsonFieldType.NUMBER)
-                                                        .description("멤버 ID"),
-                                                fieldWithPath("body.myBetting.mainCharacterImg").type(JsonFieldType.STRING)
-                                                        .description("대표 캐릭터 이미지"),
-                                                fieldWithPath("body.myBetting.memberNickname").type(JsonFieldType.STRING)
-                                                        .description("멤버 닉네임"),
-                                                fieldWithPath("body.myBetting.bettingId").type(JsonFieldType.NUMBER)
-                                                        .description("베팅 ID"),
-                                                fieldWithPath("body.myBetting.bettingName").type(JsonFieldType.STRING)
-                                                        .description("베팅 이름"),
-                                                fieldWithPath("body.joiningBetting").type(JsonFieldType.ARRAY)
-                                                        .description("참여한 베팅 목록"),
-                                                fieldWithPath("body.closedBetting").type(JsonFieldType.ARRAY)
-                                                        .description("종료된 베팅 목록"),
-                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
-                                                        .description("멤버 ID"),
-                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
-                                                        .description("대표 캐릭터 이미지"),
-                                                fieldWithPath("body.*[].memberNickname").type(JsonFieldType.STRING)
-                                                        .description("멤버 닉네임"),
-                                                fieldWithPath("body.*[].bettingId").type(JsonFieldType.NUMBER)
-                                                        .description("베팅 ID"),
-                                                fieldWithPath("body.*[].bettingName").type(JsonFieldType.STRING)
-                                                        .description("베팅 이름")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.myBetting").type(JsonFieldType.ARRAY)
+                                                .description("내가 연 베팅"),
+                                        fieldWithPath("body.myBetting[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("멤버 ID"),
+                                        fieldWithPath("body.myBetting[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("대표 캐릭터 이미지"),
+                                        fieldWithPath("body.myBetting[].memberNickname").type(JsonFieldType.STRING)
+                                                .description("멤버 닉네임"),
+                                        fieldWithPath("body.myBetting[].bettingId").type(JsonFieldType.NUMBER)
+                                                .description("베팅 ID"),
+                                        fieldWithPath("body.myBetting[].bettingName").type(JsonFieldType.STRING)
+                                                .description("베팅 이름"),
+                                        fieldWithPath("body.joiningBetting").type(JsonFieldType.ARRAY)
+                                                .description("참여한 베팅 목록"),
+                                        fieldWithPath("body.joiningBetting[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("멤버 ID").optional(),
+                                        fieldWithPath("body.joiningBetting[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("대표 캐릭터 이미지").optional(),
+                                        fieldWithPath("body.joiningBetting[].memberNickname").type(JsonFieldType.STRING)
+                                                .description("멤버 닉네임").optional(),
+                                        fieldWithPath("body.joiningBetting[].bettingId").type(JsonFieldType.NUMBER)
+                                                .description("베팅 ID").optional(),
+                                        fieldWithPath("body.joiningBetting[].bettingName").type(JsonFieldType.STRING)
+                                                .description("베팅 이름").optional(),
+                                        fieldWithPath("body.closedBetting").type(JsonFieldType.ARRAY)
+                                                .description("종료된 베팅 목록"),
+                                        fieldWithPath("body.closedBetting[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("멤버 ID").optional(),
+                                        fieldWithPath("body.closedBetting[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("대표 캐릭터 이미지").optional(),
+                                        fieldWithPath("body.closedBetting[].memberNickname").type(JsonFieldType.STRING)
+                                                .description("멤버 닉네임").optional(),
+                                        fieldWithPath("body.closedBetting[].bettingId").type(JsonFieldType.NUMBER)
+                                                .description("베팅 ID").optional(),
+                                        fieldWithPath("body.closedBetting[].bettingName").type(JsonFieldType.STRING)
+                                                .description("베팅 이름").optional()
                                 )
                                 .responseSchema(Schema.schema("나의 베팅 조회 Response"))
                                 .build()

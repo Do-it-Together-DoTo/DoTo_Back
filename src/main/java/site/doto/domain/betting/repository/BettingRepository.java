@@ -14,8 +14,24 @@ public interface BettingRepository extends JpaRepository<Betting, Long> {
     @EntityGraph(attributePaths = {"member", "todo"})
     Optional<Betting> findById(Long bettingId);
 
-    @Query("select b from Betting b join b.todo t " +
-            "where b.member.id = :memberId and t.date >= current_date")
+    @Query("select b " +
+            "from Betting b " +
+            "join b.todo t " +
+            "where b.member.id = :memberId " +
+            "and t.date >= current_date")
     List<Betting> findAfterToday(@Param("memberId") Long memberId, Pageable pageable);
 
+    @EntityGraph(attributePaths = {"member", "todo"})
+    @Query("select b " +
+            "from Betting b " +
+            "where b.member.id = :memberId")
+    List<Betting> findAllByMember(@Param("memberId") Long memberId);
+
+    @EntityGraph(attributePaths = {"member", "todo"})
+    @Query("select b " +
+            "from Betting b " +
+            "join MemberBetting mb " +
+            "on mb.betting = b " +
+            "where mb.member.id = :memberId")
+    List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
 }
