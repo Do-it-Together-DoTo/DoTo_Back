@@ -43,6 +43,11 @@ spring:
     resources:
       add-mappings: false
 
+  data:
+    redis:
+      repositories:
+        enabled: false
+
 logging:
   level:
     io.lettuce.core.protocol: ERROR
