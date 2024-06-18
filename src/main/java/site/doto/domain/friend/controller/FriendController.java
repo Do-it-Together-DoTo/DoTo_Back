@@ -1,9 +1,11 @@
 package site.doto.domain.friend.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.friend.dto.*;
+import site.doto.domain.friend.service.FriendService;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -13,10 +15,16 @@ import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
 @RequestMapping("/friends")
+@RequiredArgsConstructor
 public class FriendController {
+    private final FriendService friendService;
+
     @PostMapping("/request")
     public ResponseDto<?> friendRequest(
             @RequestBody FriendRequestReq friendRequestReq) {
+        Long memberId = 1L;
+
+        friendService.addFriendRequest(memberId, friendRequestReq);
 
         return ResponseDto.success(FRIEND_REQUEST_CREATED, null);
     }
