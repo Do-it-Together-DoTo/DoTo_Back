@@ -49,7 +49,7 @@ class FriendControllerTest {
     public void friend_request_success() throws Exception {
         // given
         FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(2L);
+        friendRequestReq.setFromMemberId(30000L);
 
         String content = gson.toJson(friendRequestReq);
 
