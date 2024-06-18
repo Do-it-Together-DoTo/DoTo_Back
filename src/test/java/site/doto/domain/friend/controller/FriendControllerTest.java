@@ -28,6 +28,7 @@ import static org.springframework.restdocs.operation.preprocess.Preprocessors.pr
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -44,7 +45,7 @@ class FriendControllerTest {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
     @Test
-    @DisplayName("친구 신청 성공")
+    @DisplayName("친구 신청 - 성공")
     public void friend_request_success() throws Exception {
         // given
         FriendRequestReq friendRequestReq = new FriendRequestReq();
@@ -76,20 +77,16 @@ class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        List.of(
-                                                fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
+                                        fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
-                                        )
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body").type(JsonFieldType.NULL)
+                                                .description("내용 없음")
                                 )
                                 .requestSchema(Schema.schema("친구 신청 Request"))
                                 .responseSchema(Schema.schema("친구 신청 Response"))
@@ -97,7 +94,158 @@ class FriendControllerTest {
                         ))
                 );
     }
-    
+
+    @Test
+    @DisplayName("친구 신청 - 존재하지 않는 사용자에게 친구 신청")
+    public void friend_request_member_not_found() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(10000L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 - 자기 자신에게 친구 신청")
+    public void friend_request_self_request() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(1L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_SELF_REQUEST.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_SELF_REQUEST.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 - 차단한 사용자에게 친구 신청")
+    public void friend_request_blocked_member() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(20001L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BLOCKED_MEMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BLOCKED_MEMBER.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 - 이미 친구 신청한 사용자에게 친구 신청")
+    public void friend_request_already_requesting() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(20002L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions preActions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_ALREADY_REQUESTING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_ALREADY_REQUESTING.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 - 이미 친구인 사용자에게 친구 신청")
+    public void friend_request_already_add() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(20000L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_ALREADY_ADDED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_ALREADY_ADDED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 - 차단당한 사용자에게 친구 신청")
+    public void friend_request_block_member() throws Exception {
+        // given
+        FriendRequestReq friendRequestReq = new FriendRequestReq();
+        friendRequestReq.setFromMemberId(20003L);
+
+        String content = gson.toJson(friendRequestReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/request")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
     @Test
     @DisplayName("친구 신청 수락 성공")
     public void friend_response_success() throws Exception {
