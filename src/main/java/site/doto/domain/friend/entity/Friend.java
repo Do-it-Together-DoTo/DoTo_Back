@@ -16,15 +16,20 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class Friend implements Serializable {
-    @Id
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Member fromMember;
+    @EmbeddedId
+    private FriendPK friendPK;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("toMemberId")
+    @JoinColumn(name = "to_member_id")
     private Member toMember;
 
-    @Enumerated(EnumType.ORDINAL)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("fromMemberId")
+    @JoinColumn(name = "from_member_id")
+    private Member fromMember;
+
+    @Enumerated(EnumType.STRING)
     private FriendRelation status;
 
 }
