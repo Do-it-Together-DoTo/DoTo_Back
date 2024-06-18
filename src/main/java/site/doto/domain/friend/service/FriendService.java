@@ -11,6 +11,7 @@ import site.doto.domain.friend.repository.FriendRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.exception.CustomException;
+import site.doto.global.redis.RedisUtils;
 
 import java.util.Optional;
 
@@ -24,6 +25,7 @@ import static site.doto.global.status_code.ErrorCode.MEMBER_NOT_FOUND;
 public class FriendService {
     private final MemberRepository memberRepository;
     private final FriendRepository friendRepository;
+    private final RedisUtils redisUtils;
 
     public void addFriendRequest(Long toMemberId, FriendRequestReq friendRequestReq) {
         Member toMember = memberRepository.findById(toMemberId)
@@ -40,6 +42,7 @@ public class FriendService {
         Optional<Friend> fromFriend = friendRepository.findById(new FriendPK(fromMember.getId(), toMember.getId()));
 
         if(toFriend.isEmpty() && fromFriend.isEmpty()) {
+            redisUtils.updateFriendRequestToRedis(toMember.getId(), fromMember.getId());
             friendRepository.save(new Friend(new FriendPK(toMember.getId(), fromMember.getId()), toMember, fromMember, WAITING));
             return;
         }
@@ -52,6 +55,10 @@ public class FriendService {
             }
 
             if(friendRelation.equals(WAITING)) {
+                if(isFriendRequestExistsInRedis(toMember.getId(), fromMember.getId())) {
+                    throw new CustomException(FRIEND_REQUEST_COOLDOWN);
+                }
+
                 throw new CustomException(FRIEND_ALREADY_REQUESTING);
             }
 
@@ -72,5 +79,11 @@ public class FriendService {
                 friendRepository.save(new Friend(new FriendPK(toMember.getId(), fromMember.getId()),toMember, fromMember, ACCEPTED));
             }
         }
+    }
+
+    private boolean isFriendRequestExistsInRedis(Long toMemberId, Long fromMemberId) {
+        String key = "friendRequest:" + toMemberId + ":" + fromMemberId;
+        Object data = redisUtils.getData(key);
+        return data != null;
     }
 }

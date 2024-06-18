@@ -45,7 +45,8 @@ public enum ErrorCode {
     MAIN_CHARACTER_DELETE(400, "대표 캐릭터는 삭제할 수 없습니다."),
     CHARACTER_NOT_FOUND(404, "존재하지 않는 캐릭터입니다."),
     FRIEND_ALREADY_ADDED(400, "이미 추가된 친구입니다."),
-    BLOCKED_MEMBER(400, "차단 중인 이용자입니다.")
+    BLOCKED_MEMBER(400, "차단 중인 이용자입니다."),
+    FRIEND_REQUEST_COOLDOWN(400, "친구 신청은 10분에 한 번만 가능합니다.")
     ;
 
     private final int httpStatusCode;

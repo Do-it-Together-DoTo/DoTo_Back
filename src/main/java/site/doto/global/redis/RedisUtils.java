@@ -27,7 +27,7 @@ public class RedisUtils {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public void setDataWithExpiration(String key, Object value,Long expiredTime){
+    public void setDataWithExpiration(String key, Object value, Long expiredTime) {
         redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.SECONDS);
     }
 
@@ -59,6 +59,12 @@ public class RedisUtils {
             connection.flushAll();
             return null;
         });
+    }
+
+    public void updateFriendRequestToRedis(Long toMemberId, Long FromMemberId) {
+        String key = "friendRequest:" + toMemberId + ":" + FromMemberId;
+
+        setDataWithExpiration(key, "WAITING", 600L);
     }
 
     public void updateRecordToRedis(Long memberId, int year, int month, String field, int amount) {
