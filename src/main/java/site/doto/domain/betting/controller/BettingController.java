@@ -46,21 +46,9 @@ public class BettingController {
 
     @GetMapping("/open")
     public ResponseDto<OpenBettingListRes> openBettingList() {
-        OpenBettingListRes result = new OpenBettingListRes();
+        Long memberId = 1L;
 
-        List<BettingDto> openBetting = new ArrayList<>();
-
-        for (int i = 1; i <= 10; i++) {
-            openBetting.add(BettingDto.builder()
-                    .memberId(1L + i)
-                    .memberNickname("친구" + i)
-                    .mainCharacterImg("이미지 주소" + i)
-                    .bettingId(10021L + i)
-                    .bettingName("베팅 이름" + (20 + i))
-                    .build());
-        }
-
-        result.setOpenBetting(openBetting);
+        OpenBettingListRes result = bettingService.findOpenBetting(memberId);
 
         return ResponseDto.success(SuccessCode.BETTINGS_INQUIRY_OK, result);
     }

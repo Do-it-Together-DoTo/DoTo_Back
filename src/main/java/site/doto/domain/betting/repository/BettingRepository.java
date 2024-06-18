@@ -34,4 +34,17 @@ public interface BettingRepository extends JpaRepository<Betting, Long> {
             "on mb.betting = b " +
             "where mb.member.id = :memberId")
     List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
+
+    @EntityGraph(attributePaths = {"member", "todo"})
+    @Query("select b " +
+            "from Betting b " +
+            "where b.todo.date >= current_date " +
+            "and b.member in (" +
+            "select m " +
+            "from Member m " +
+            "join Friend f " +
+            "on m.id = f.toMember.id " +
+            "where f.fromMember.id = :memberId " +
+            "and f.status = site.doto.domain.friend.enums.FriendRelation.ACCEPTED)")
+    List<Betting> findOpenBetting(@Param("memberId") Long memberId);
 }
