@@ -37,40 +37,9 @@ public class BettingController {
 
     @GetMapping
     public ResponseDto<MyBettingListRes> myBettingList() {
-        MyBettingListRes result = new MyBettingListRes();
+        Long memberId = 1L;
 
-        BettingDto myBetting = BettingDto.builder()
-                .memberId(1L)
-                .memberNickname("닉네임")
-                .mainCharacterImg("이미지 주소")
-                .bettingId(10001L)
-                .bettingName("베팅 이름")
-                .build();
-
-        List<BettingDto> joiningBetting = new ArrayList<>();
-        List<BettingDto> closedBetting = new ArrayList<>();
-
-        for (int i = 1; i <= 10; i++) {
-            joiningBetting.add(BettingDto.builder()
-                    .memberId(1L + i)
-                    .memberNickname("친구" + i)
-                    .mainCharacterImg("이미지 주소" + i)
-                    .bettingId(10001L + i)
-                    .bettingName("베팅 이름" + i)
-                    .build());
-
-            closedBetting.add(BettingDto.builder()
-                    .memberId(1L + i)
-                    .memberNickname("친구" + i)
-                    .mainCharacterImg("이미지 주소" + i)
-                    .bettingId(10011L + i)
-                    .bettingName("베팅 이름" + (10 + i))
-                    .build());
-        }
-
-        result.setMyBetting(myBetting);
-        result.setJoiningBetting(joiningBetting);
-        result.setClosedBetting(closedBetting);
+        MyBettingListRes result = bettingService.findMyBetting(memberId);
 
         return ResponseDto.success(SuccessCode.BETTINGS_INQUIRY_OK, result);
     }
