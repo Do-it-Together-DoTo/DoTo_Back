@@ -1,7 +1,19 @@
 --member
 insert into member (member_id, email, nickname, password, description, main_character_img, coin, type, last_upload) values
                                                                                                     (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 100, 'LOCAL', current_timestamp), -- 베팅 생성
-                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp); -- 베팅 생성 실패
+                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
+
+--friend
+insert into friend (to_member_id, from_member_id, status) values
+                                                              (1, 20000, 'ACCEPTED'),
+                                                              (20000, 1, 'ACCEPTED'),
+                                                              (1, 20001, 'BLOCKED'),
+                                                              (20003, 1, 'BLOCKED');
 
 --category
 insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values

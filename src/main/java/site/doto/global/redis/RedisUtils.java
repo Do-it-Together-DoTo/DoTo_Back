@@ -27,7 +27,7 @@ public class RedisUtils {
         redisTemplate.opsForValue().set(key, value);
     }
 
-    public void setDataWithExpiration(String key, Object value,Long expiredTime){
+    public void setDataWithExpiration(String key, Object value, Long expiredTime) {
         redisTemplate.opsForValue().set(key, value, expiredTime, TimeUnit.SECONDS);
     }
 
