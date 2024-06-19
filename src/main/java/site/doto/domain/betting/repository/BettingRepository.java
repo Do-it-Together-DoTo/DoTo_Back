@@ -14,6 +14,12 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
     @EntityGraph(attributePaths = {"member", "todo"})
     Optional<Betting> findById(Long bettingId);
 
+    @EntityGraph(attributePaths = {"member", "todo", "chatRoom"})
+    @Query("select b " +
+            "from Betting b " +
+            "where b.id = :bettingId")
+    Optional<Betting> findByIdWithChatRoom(@Param("bettingId") Long bettingId);
+
     @Query("select b " +
             "from Betting b " +
             "join b.todo t " +

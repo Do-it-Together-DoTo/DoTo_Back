@@ -61,10 +61,23 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
 
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
-                                                                            (30001, 1, 20001, '베팅1', false), -- 베팅 삭제
-                                                                            (30002, 2, 20002, '베팅2', false), -- 베팅 삭제 실패
+                                                                            (30001, 1, 20001, '베팅1', null), -- 베팅 삭제
+                                                                            (30002, 2, 20002, '베팅2', null), -- 베팅 삭제 실패
                                                                             (30003, 2, 20005, '베팅3', true), -- 나의 베팅 조회
-                                                                            (30004, 3, 20006, '베팅4', false);
+                                                                            (30004, 3, 20006, '베팅4', null);
+
+
+--chatRoom
+insert into chat_room (chat_room_id, betting_id) values
+                                                    (30001, 30001),
+                                                    (30002, 30002),
+                                                    (30003, 30003),
+                                                    (30004, 30004);
+
+update betting set chat_room_id = 30001 where betting_id = 30001;
+update betting set chat_room_id = 30002 where betting_id = 30002;
+update betting set chat_room_id = 30003 where betting_id = 30003;
+update betting set chat_room_id = 30004 where betting_id = 30004;
 
 --memberBetting
 insert into member_betting (member_id, betting_id, cost, prediction) values
@@ -92,4 +105,3 @@ insert into character_type (character_type_id, name, img, level, species, descri
                                                                                            (3, '캐릭터3', '캐릭터3 이미지', 0, 3, '캐릭터3 설명'),
                                                                                            (30, '캐릭터3-1', '캐릭터3-1 이미지', 1, 3, '캐릭터3-1 설명'),
                                                                                            (300, '캐릭터3-2', '캐릭터3-2 이미지', 2, 3, '캐릭터3-2 설명');
-

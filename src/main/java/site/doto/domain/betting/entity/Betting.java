@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.doto.domain.chatroom.entity.ChatRoom;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
@@ -28,6 +29,10 @@ public class Betting {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "todo_id")
     private Todo todo;
+
+    @OneToOne(cascade = CascadeType.PERSIST, orphanRemoval = true)
+    @JoinColumn(name = "chat_room_id")
+    private ChatRoom chatRoom;
 
     private String name;
 
