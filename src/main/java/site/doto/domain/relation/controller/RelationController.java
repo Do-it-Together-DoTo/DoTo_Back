@@ -1,11 +1,11 @@
-package site.doto.domain.friend.controller;
+package site.doto.domain.relation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
-import site.doto.domain.friend.dto.*;
-import site.doto.domain.friend.service.FriendService;
+import site.doto.domain.relation.dto.*;
+import site.doto.domain.relation.service.RelationService;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -16,98 +16,98 @@ import static site.doto.global.status_code.SuccessCode.*;
 @RestController
 @RequestMapping("/friends")
 @RequiredArgsConstructor
-public class FriendController {
-    private final FriendService friendService;
+public class RelationController {
+    private final RelationService relationService;
 
     @PostMapping("/request")
-    public ResponseDto<?> friendRequest(
-            @RequestBody FriendRequestReq friendRequestReq) {
+    public ResponseDto<?> relationRequest(
+            @RequestBody RelationRequestReq relationRequestReq) {
         Long memberId = 1L;
 
-        friendService.addFriendRequest(memberId, friendRequestReq);
+        relationService.addRelationRequest(memberId, relationRequestReq);
 
         return ResponseDto.success(FRIEND_REQUEST_CREATED, null);
     }
 
     @PostMapping("/response")
-    public ResponseDto<?> friendResponse(
-            @RequestBody FriendResponseReq friendResponseReq) {
+    public ResponseDto<?> relationResponse(
+            @RequestBody RelationResponseReq relationResponseReq) {
         Long memberId = 1L;
 
-        friendService.addFriendResponse(memberId, friendResponseReq);
+        relationService.addRelationResponse(memberId, relationResponseReq);
 
         return ResponseDto.success(FRIEND_CREATED, null);
     }
 
     @DeleteMapping("/response")
-    public ResponseDto<?> friendDeclined(
-            @RequestBody FriendDeclinedReq friendDeclinedReq) {
+    public ResponseDto<?> relationDeclined(
+            @RequestBody RelationDeclinedReq relationDeclinedReq) {
 
         return ResponseDto.success(FRIEND_REQUEST_DELETED, null);
     }
 
     @DeleteMapping("/request")
-    public ResponseDto<?> friendCanceled(
-            @RequestBody FriendCanceledReq friendCanceledReq) {
+    public ResponseDto<?> relationCanceled(
+            @RequestBody RelationCanceledReq relationCanceledReq) {
 
         return ResponseDto.success(FRIEND_REQUEST_CANCELED, null);
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseDto<?> friendRemove(
+    public ResponseDto<?> relationRemove(
             @PathVariable Long memberId) {
 
         return ResponseDto.success(FRIEND_DELETED, null);
     }
 
     @GetMapping
-    public ResponseDto<FriendListRes> friendList(
-            @ModelAttribute FriendListReq friendListReq) {
-        List<FriendDto> friends = new ArrayList<>();
+    public ResponseDto<RelationListRes> relationList(
+            @ModelAttribute RelationListReq relationListReq) {
+        List<RelationDto> friends = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
-            friends.add(FriendDto.builder()
+            friends.add(RelationDto.builder()
                     .memberId(10000L + i)
                     .nickname("닉네임" + i)
                     .mainCharacterImg("메인 캐릭터" + i)
                     .build());
         }
 
-        Slice<FriendDto> friendDtoSlice = new SliceImpl<>(friends);
-        FriendListRes result = new FriendListRes(friendDtoSlice);
+        Slice<RelationDto> friendDtoSlice = new SliceImpl<>(friends);
+        RelationListRes result = new RelationListRes(friendDtoSlice);
 
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
 
     @GetMapping("/block")
-    ResponseDto<?> friendBlockList(
-            @ModelAttribute FriendBlockListReq friendBlockListReq) {
-        List<FriendDto> friends = new ArrayList<>();
+    ResponseDto<?> relationBlockList(
+            @ModelAttribute RelationBlockListReq relationBlockListReq) {
+        List<RelationDto> friends = new ArrayList<>();
 
         for (int i = 1; i <= 10; i++) {
-            friends.add(FriendDto.builder()
+            friends.add(RelationDto.builder()
                     .memberId(10000L + i)
                     .nickname("닉네임" + i)
                     .mainCharacterImg("메인 캐릭터" + i)
                     .build());
         }
 
-        Slice<FriendDto> friendDtoSlice = new SliceImpl<>(friends);
-        FriendListRes result = new FriendListRes(friendDtoSlice);
+        Slice<RelationDto> friendDtoSlice = new SliceImpl<>(friends);
+        RelationListRes result = new RelationListRes(friendDtoSlice);
 
         return ResponseDto.success(FRIEND_BLOCK_LIST_OK, result);
     }
 
     @PostMapping("/block")
-    ResponseDto<?> friendBlock(
-            @RequestBody FriendBlockReq friendBlockReq) {
+    ResponseDto<?> relationBlock(
+            @RequestBody RelationBlockReq relationBlockReq) {
 
         return ResponseDto.success(FRIEND_BLOCK_OK, null);
     }
 
     @DeleteMapping("/block")
-    ResponseDto<?> friendUnblock(
-            @RequestBody FriendUnblockReq friendUnblockReq) {
+    ResponseDto<?> relationUnblock(
+            @RequestBody RelationUnblockReq relationUnblockReq) {
 
         return ResponseDto.success(FRIEND_UNBLOCK_OK, null);
     }
