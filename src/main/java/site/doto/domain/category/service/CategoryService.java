@@ -93,9 +93,6 @@ public class CategoryService {
 
         validateMemberCategory(memberId, category.getMember().getId());
 
-        //1. 카테고리와 관련된 투두 중 베팅이 남아있는 투두 조회
-        //1-1. 하나라도 베팅이 진행중이면 딜리트 안되게
-        //1-2. 베팅이 이미 끝났으면 todo 정보만 redis에 저장하고 카테고리랑 투두는 삭제하기!
         List<Todo> todoList = categoryRepository.findTodoIfExistBetting(category);
 
         if(!todoList.isEmpty()) {
