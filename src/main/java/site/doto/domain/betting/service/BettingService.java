@@ -5,12 +5,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.BettingAddReq;
+import site.doto.domain.betting.dto.BettingDetailsRes;
 import site.doto.domain.betting.dto.MyBettingListRes;
 import site.doto.domain.betting.dto.OpenBettingListRes;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.domain.member_betting.entity.MemberBetting;
 import site.doto.domain.member_betting.repository.MemberBettingRepository;
 import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
@@ -81,8 +83,18 @@ public class BettingService {
         return new OpenBettingListRes(openBetting);
     }
 
+    @Transactional(readOnly = true)
+    public BettingDetailsRes findBetting(Long memberId, Long bettingId) {
+        Betting betting = bettingRepository.findByIdWithChatRoom(bettingId)
+                .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
+
+        List<MemberBetting> memberBetting = memberBettingRepository.findByBettingId(bettingId);
+
+        return new BettingDetailsRes(betting, memberBetting, memberId);
+    }
+
     public void removeBetting(Long bettingId, Long memberId) {
-        Betting betting = bettingRepository.findById(bettingId)
+        Betting betting = bettingRepository.findByIdWithChatRoom(bettingId)
                 .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
 
         Member member = betting.getMember();

@@ -8,8 +8,6 @@ import site.doto.global.dto.ResponseDto;
 import site.doto.global.status_code.SuccessCode;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -56,19 +54,9 @@ public class BettingController {
     @GetMapping("/{bettingId}")
     public ResponseDto<BettingDetailsRes> bettingDetails(
             @PathVariable Long bettingId) {
+        Long memberId = 1L;
 
-        BettingDetailsRes result = BettingDetailsRes.builder()
-                .bettingId(10001L)
-                .bettingName("베팅 이름")
-                .memberId(1L)
-                .memberNickname("닉네임")
-                .todoContents("투두 내용")
-                .successCoins(80)
-                .failureCoins(20)
-                .participantCount(10)
-                .isParticipating(false)
-                .chatRoomId(20001L)
-                .build();
+        BettingDetailsRes result = bettingService.findBetting(memberId, bettingId);
 
         return ResponseDto.success(SuccessCode.BETTING_INQUIRY_OK, result);
     }
