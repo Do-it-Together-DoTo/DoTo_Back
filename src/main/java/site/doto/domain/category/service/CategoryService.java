@@ -13,10 +13,15 @@ import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.domain.todo.dto.TodoRedisDto;
+import site.doto.domain.todo.entity.Todo;
 import site.doto.global.exception.CustomException;
+import site.doto.global.redis.RedisUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -29,6 +34,7 @@ public class CategoryService {
     private static final int MAX_ACTIVE_COUNT = 20;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
+    private final RedisUtils redisUtils;
 
     @Transactional
     public CategoryDetailsRes addCategory(Long memberId, CategoryAddReq categoryAddReq) {
@@ -69,11 +75,40 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
+        validateMemberCategory(memberId, category.getMember().getId());
+
         updateCategory(memberId, category, categoryModifyReq);
 
         categoryRepository.save(category);
 
         return CategoryDetailsRes.toDto(category);
+    }
+
+    public void removeCategory(Long memberId, Long categoryId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Category category =  categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+
+        validateMemberCategory(memberId, category.getMember().getId());
+
+        //1. 카테고리와 관련된 투두 중 베팅이 남아있는 투두 조회
+        //1-1. 하나라도 베팅이 진행중이면 딜리트 안되게
+        //1-2. 베팅이 이미 끝났으면 todo 정보만 redis에 저장하고 카테고리랑 투두는 삭제하기!
+        List<Todo> todoList = categoryRepository.findTodoIfExistBetting(category);
+
+        if(!todoList.isEmpty()) {
+            for (Todo todo : todoList) {
+                if (todo.getDate().isEqual(LocalDate.now())) {
+                    throw new CustomException(CATEGORY_DELETE_NOT_ALLOWED);
+                }
+                TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo);
+                redisUtils.saveTodo(todoRedisDto);
+            }
+        }
+
+        categoryRepository.delete(category);
     }
 
     private Integer calculateSequence(Long memberId, Boolean isActivated) {
@@ -89,6 +124,12 @@ public class CategoryService {
     private void validateActiveCount(Integer activeCount) {
         if(activeCount >= MAX_ACTIVE_COUNT) {
             throw new CustomException(ACTIVATED_CATEGORY_LIMIT);
+        }
+    }
+
+    private void validateMemberCategory(Long memberId, Long categoryMemberId) {
+        if(!Objects.equals(memberId, categoryMemberId)) {
+            throw new CustomException(FORBIDDEN);
         }
     }
 
