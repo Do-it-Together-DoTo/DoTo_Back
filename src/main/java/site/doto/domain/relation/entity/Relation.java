@@ -1,10 +1,10 @@
-package site.doto.domain.friend.entity;
+package site.doto.domain.relation.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.doto.domain.friend.enums.FriendRelation;
+import site.doto.domain.relation.enums.RelationStatus;
 import site.doto.domain.member.entity.Member;
 
 import javax.persistence.*;
@@ -15,21 +15,21 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Friend implements Serializable {
+public class Relation implements Serializable {
     @EmbeddedId
-    private FriendPK friendPK;
+    private RelationPK relationPK;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("toMemberId")
-    @JoinColumn(name = "to_member_id")
-    private Member toMember;
+    @MapsId("memberId")
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @MapsId("fromMemberId")
-    @JoinColumn(name = "from_member_id")
-    private Member fromMember;
+    @MapsId("friendId")
+    @JoinColumn(name = "friend_id")
+    private Member friend;
 
     @Enumerated(EnumType.STRING)
-    private FriendRelation status;
+    private RelationStatus status;
 
 }
