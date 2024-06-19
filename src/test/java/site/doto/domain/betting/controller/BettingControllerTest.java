@@ -400,15 +400,15 @@ class BettingControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.openBetting").type(JsonFieldType.ARRAY)
                                                         .description("참여한 베팅 목록"),
-                                                fieldWithPath("body.*[].memberId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.openBetting[].memberId").type(JsonFieldType.NUMBER)
                                                         .description("멤버 ID"),
-                                                fieldWithPath("body.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.openBetting[].mainCharacterImg").type(JsonFieldType.STRING)
                                                         .description("대표 캐릭터 이미지"),
-                                                fieldWithPath("body.*[].memberNickname").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.openBetting[].memberNickname").type(JsonFieldType.STRING)
                                                         .description("멤버 닉네임"),
-                                                fieldWithPath("body.*[].bettingId").type(JsonFieldType.NUMBER)
+                                                fieldWithPath("body.openBetting[].bettingId").type(JsonFieldType.NUMBER)
                                                         .description("베팅 ID"),
-                                                fieldWithPath("body.*[].bettingName").type(JsonFieldType.STRING)
+                                                fieldWithPath("body.openBetting[].bettingName").type(JsonFieldType.STRING)
                                                         .description("베팅 이름")
                                         )
                                 )

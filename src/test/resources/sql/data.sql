@@ -35,6 +35,11 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
                                                                                 (20005, 2, 10021, '투두5', '2024-01-01', true); -- 나의 베팅 조회
 
+-- friend
+insert into friend (from_member_member_id, to_member_member_id, status) values
+                                                                (1, 2, 1),
+                                                                (2, 1, 1);
+
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
                                                                             (30001, 1, 20001, '베팅1', false), -- 베팅 삭제

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.BettingAddReq;
 import site.doto.domain.betting.dto.MyBettingListRes;
+import site.doto.domain.betting.dto.OpenBettingListRes;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.member.entity.Member;
@@ -71,6 +72,13 @@ public class BettingService {
         List<Betting> joiningBetting = bettingRepository.findJoiningBetting(memberId);
 
         return new MyBettingListRes(myBetting, joiningBetting);
+    }
+
+    @Transactional(readOnly = true)
+    public OpenBettingListRes findOpenBetting(Long memberId) {
+        List<Betting> openBetting = bettingRepository.findOpenBetting(memberId);
+
+        return new OpenBettingListRes(openBetting);
     }
 
     public void removeBetting(Long bettingId, Long memberId) {

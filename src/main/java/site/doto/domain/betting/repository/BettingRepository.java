@@ -10,7 +10,7 @@ import site.doto.domain.betting.entity.Betting;
 import java.util.Optional;
 import java.util.List;
 
-public interface BettingRepository extends JpaRepository<Betting, Long> {
+public interface BettingRepository extends JpaRepository<Betting, Long>, BettingRepositoryCustom {
     @EntityGraph(attributePaths = {"member", "todo"})
     Optional<Betting> findById(Long bettingId);
 
@@ -21,7 +21,7 @@ public interface BettingRepository extends JpaRepository<Betting, Long> {
             "and t.date >= current_date")
     List<Betting> findAfterToday(@Param("memberId") Long memberId, Pageable pageable);
 
-    @EntityGraph(attributePaths = {"member", "todo"})
+    @EntityGraph(attributePaths = "member")
     @Query("select b " +
             "from Betting b " +
             "where b.member.id = :memberId")
