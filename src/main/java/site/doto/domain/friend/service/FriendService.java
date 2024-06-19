@@ -50,16 +50,16 @@ public class FriendService {
         if(toFriend.isPresent()) {
             FriendRelation friendRelation = toFriend.get().getStatus();
 
-            if(friendRelation.equals(BLOCKED)) {
-                throw new CustomException(BLOCKED_MEMBER);
+            if(friendRelation.equals(WAITING)) {
+                throw new CustomException(FRIEND_ALREADY_REQUESTING);
             }
 
-            if(friendRelation.equals(WAITING)) {
-                if(isFriendRequestExistsInRedis(toMember.getId(), fromMember.getId())) {
-                    throw new CustomException(FRIEND_REQUEST_COOLDOWN);
-                }
+            if(isFriendRequestExistsInRedis(toMember.getId(), fromMember.getId())) {
+                throw new CustomException(FRIEND_REQUEST_COOLDOWN);
+            }
 
-                throw new CustomException(FRIEND_ALREADY_REQUESTING);
+            if(friendRelation.equals(BLOCKED)) {
+                throw new CustomException(BLOCKED_MEMBER);
             }
 
             if(friendRelation.equals(ACCEPTED)) {
