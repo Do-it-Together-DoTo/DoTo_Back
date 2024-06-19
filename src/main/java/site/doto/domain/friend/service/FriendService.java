@@ -34,7 +34,7 @@ public class FriendService {
         Member fromMember = memberRepository.findById(friendRequestReq.getFromMemberId())
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        if(toMember.getId().compareTo(fromMember.getId()) == 0) {
+        if(toMember.getId().equals(fromMember.getId())) {
             throw new CustomException(FRIEND_SELF_REQUEST);
         }
 
