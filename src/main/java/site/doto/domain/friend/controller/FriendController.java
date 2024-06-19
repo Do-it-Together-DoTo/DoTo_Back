@@ -32,6 +32,9 @@ public class FriendController {
     @PostMapping("/response")
     public ResponseDto<?> friendResponse(
             @RequestBody FriendResponseReq friendResponseReq) {
+        Long memberId = 1L;
+
+        friendService.addFriendResponse(memberId, friendResponseReq);
 
         return ResponseDto.success(FRIEND_CREATED, null);
     }

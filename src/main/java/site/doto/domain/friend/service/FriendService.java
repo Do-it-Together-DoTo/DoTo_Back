@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.friend.dto.FriendRequestReq;
+import site.doto.domain.friend.dto.FriendResponseReq;
 import site.doto.domain.friend.entity.Friend;
 import site.doto.domain.friend.entity.FriendPK;
 import site.doto.domain.friend.enums.FriendRelation;
@@ -81,15 +82,51 @@ public class FriendService {
         }
     }
 
+    public void addFriendResponse(Long fromMemberId, FriendResponseReq friendResponseReq) {
+        Member toMember = memberRepository.findById(friendResponseReq.getToMemberId())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Member fromMember = memberRepository.findById(fromMemberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Optional<Friend> toFriend = friendRepository.findById(new FriendPK(toMember.getId(), fromMember.getId()));
+        Optional<Friend> fromFriend = friendRepository.findById(new FriendPK(fromMember.getId(), toMember.getId()));
+
+        if(toFriend.isEmpty()) {
+            throw new CustomException(FRIEND_REQUEST_MISSING);
+        }
+
+        Friend existedToFriend = toFriend.get();
+
+        if(existedToFriend.getStatus().equals(ACCEPTED)) {
+            throw new CustomException(FRIEND_ALREADY_ADDED);
+        }
+
+        if(existedToFriend.getStatus().equals(BLOCKED)) {
+            throw new CustomException(MEMBER_NOT_FOUND);
+        }
+
+        if(fromFriend.isPresent()) {
+            Friend existedFromFriend = fromFriend.get();
+
+            if(existedFromFriend.getStatus().equals(BLOCKED)) {
+                throw new CustomException(BLOCKED_MEMBER);
+            }
+        }
+
+        friendRepository.updateFriendRelation(new FriendPK(toMember.getId(), fromMember.getId()), ACCEPTED);
+        friendRepository.save(new Friend(new FriendPK(fromMember.getId(), toMember.getId()), fromMember, toMember, ACCEPTED));
+    }
+
     private void updateFriendRequestToRedis(Long toMemberId, Long FromMemberId) {
         String key = "friendRequest:" + toMemberId + ":" + FromMemberId;
-
         redisUtils.setDataWithExpiration(key, "WAITING", 300L);
     }
 
     private boolean isFriendRequestExistsInRedis(Long toMemberId, Long fromMemberId) {
         String key = "friendRequest:" + toMemberId + ":" + fromMemberId;
         Object data = redisUtils.getData(key);
+
         return data != null;
     }
 }
