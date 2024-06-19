@@ -10,6 +10,6 @@ import site.doto.domain.friend.enums.FriendRelation;
 
 public interface FriendRepository extends JpaRepository<Friend, FriendPK> {
     @Modifying
-    @Query("update Friend f set f.status = :status where f.friendPK.toMemberId = :toMemberId and f.friendPK.fromMemberId = :fromMemberId")
-    void updateFriendRelation(@Param("toMemberId") Long toMemberId, @Param("fromMemberId") Long fromMemberId, @Param("status") FriendRelation status);
+    @Query("update Friend f set f.status = :status where f.friendPK = :friendPK")
+    void updateFriendRelation(@Param("friendPK") FriendPK friendPK, @Param("status") FriendRelation status);
 }

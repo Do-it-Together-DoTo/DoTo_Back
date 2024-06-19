@@ -75,7 +75,7 @@ public class FriendService {
             }
 
             if(friendRelation.equals(WAITING)) {
-                friendRepository.updateFriendRelation(fromMember.getId(), toMember.getId(), ACCEPTED);
+                friendRepository.updateFriendRelation(new FriendPK(fromMember.getId(), toMember.getId()), ACCEPTED);
                 friendRepository.save(new Friend(new FriendPK(toMember.getId(), fromMember.getId()),toMember, fromMember, ACCEPTED));
             }
         }
