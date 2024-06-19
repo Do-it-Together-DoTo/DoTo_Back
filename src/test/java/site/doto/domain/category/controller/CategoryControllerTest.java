@@ -17,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryArrangeReq;
 import site.doto.domain.category.dto.CategoryModifyReq;
+import site.doto.domain.todo.dto.TodoRedisDto;
+import site.doto.global.redis.RedisUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +26,7 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
@@ -44,6 +47,9 @@ class CategoryControllerTest {
 
     @Autowired
     private Gson gson;
+
+    @Autowired
+    private RedisUtils redisUtils;
 
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
@@ -264,10 +270,11 @@ class CategoryControllerTest {
     @DisplayName("카테고리 삭제_성공")
     public void category_remove_success() throws Exception {
         //given
+        Long categoryId = 10002L;
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/categories/{categoryId}", 10001L)
+                delete("/categories/{categoryId}", categoryId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -360,7 +367,7 @@ class CategoryControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body").type(JsonFieldType.NULL)
                                                         .description("내용 없음")
-                                                )
+                                        )
                                 )
                                 .requestSchema(Schema.schema("카테고리 순서 변경 Request"))
                                 .responseSchema(Schema.schema("카테고리 순서 변경 Response"))
@@ -620,5 +627,67 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제 실패 - 내 카테고리가 아닌 경우")
+    public void category_remove_fail_not_my_category() throws Exception {
+        //given
+        Long categoryId = 10021L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/categories/{categoryId}", categoryId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제 실패 - 존재하지 않는 카테고리")
+    public void category_remove_fail_not_found_category() throws Exception {
+        //given
+        Long categoryId = 20000L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/categories/{categoryId}", categoryId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제 - redis에 값이 존재하는지 테스트")
+    public void category_remove_success_redis_value_present_test() throws Exception {
+        //given
+        Long categoryId = 10002L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/categories/{categoryId}", categoryId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()));
+
+        TodoRedisDto savedTodo = redisUtils.findTodo(20007L);
+        assertThat(savedTodo).isNotNull();
+        assertThat(savedTodo.getId()).isEqualTo(20007L);
+        assertThat(savedTodo.getCategoryId()).isEqualTo(categoryId);
     }
 }
