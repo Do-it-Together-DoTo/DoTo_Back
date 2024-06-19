@@ -1,4 +1,4 @@
-package site.doto.domain.friend.controller;
+package site.doto.domain.relation.controller;
 
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
@@ -14,7 +14,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.friend.dto.*;
+import site.doto.domain.relation.dto.*;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class FriendControllerTest {
+class RelationControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
@@ -48,10 +48,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 성공")
     public void friend_request_success() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(30000L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(30000L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -77,7 +77,7 @@ class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
+                                        fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
                                 )
                                 .responseFields(
@@ -99,10 +99,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 존재하지 않는 사용자에게 친구 신청")
     public void friend_request_member_not_found() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(10000L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(10000L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -123,10 +123,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 자기 자신에게 친구 신청")
     public void friend_request_self_request() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(1L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(1L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -147,10 +147,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 차단한 사용자에게 친구 신청")
     public void friend_request_blocked_member() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(20001L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(20001L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -171,10 +171,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 이미 친구 신청한 사용자에게 친구 신청")
     public void friend_request_already_requesting() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(20002L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(20002L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions preActions = mockMvc.perform(
@@ -202,10 +202,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 이미 친구인 사용자에게 친구 신청")
     public void friend_request_already_add() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(20000L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(20000L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -226,10 +226,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 - 차단당한 사용자에게 친구 신청")
     public void friend_request_block_member() throws Exception {
         // given
-        FriendRequestReq friendRequestReq = new FriendRequestReq();
-        friendRequestReq.setFromMemberId(20003L);
+        RelationRequestReq relationRequestReq = new RelationRequestReq();
+        relationRequestReq.setFriendId(20003L);
 
-        String content = gson.toJson(friendRequestReq);
+        String content = gson.toJson(relationRequestReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -250,10 +250,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 성공")
     public void friend_response_success() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(20004L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(20004L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -279,7 +279,7 @@ class FriendControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        fieldWithPath("toMemberId").type(JsonFieldType.NUMBER)
+                                        fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                 .description("친구 Id")
                                 )
                                 .responseFields(
@@ -301,10 +301,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 존재하지 않는 사용자에게서 온 친구 신청")
     public void friend_response_member_not_found() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(10000L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(10000L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -325,10 +325,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 존재하지 않는 친구 신청")
     public void friend_response_friend_request_missing() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(30000L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(30000L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -349,10 +349,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 이미 추가된 친구")
     public void friend_response_friend_already_added() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(2L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(2L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -373,10 +373,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 차단당한 사용자에게서 온 친구 신청")
     public void friend_response_block_member() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(20003L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(20003L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -397,10 +397,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 수락 - 차단한 사용자에게서 온 친구 신청")
     public void friend_response_blocked_member() throws Exception {
         // given
-        FriendResponseReq friendResponseReq = new FriendResponseReq();
-        friendResponseReq.setToMemberId(20005L);
+        RelationResponseReq relationResponseReq = new RelationResponseReq();
+        relationResponseReq.setFriendId(20005L);
 
-        String content = gson.toJson(friendResponseReq);
+        String content = gson.toJson(relationResponseReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -421,10 +421,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 거절 성공")
     public void friend_declined_success() throws Exception {
         // given
-        FriendDeclinedReq friendDeclinedReq = new FriendDeclinedReq();
-        friendDeclinedReq.setFromMemberId(2L);
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFromMemberId(2L);
 
-        String content = gson.toJson(friendDeclinedReq);
+        String content = gson.toJson(relationDeclinedReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -476,10 +476,10 @@ class FriendControllerTest {
     @DisplayName("친구 신청 취소 성공")
     public void friend_canceled_success() throws Exception {
         // given
-        FriendCanceledReq friendCanceledReq = new FriendCanceledReq();
-        friendCanceledReq.setToMemberId(2L);
+        RelationCanceledReq relationCanceledReq = new RelationCanceledReq();
+        relationCanceledReq.setToMemberId(2L);
 
-        String content = gson.toJson(friendCanceledReq);
+        String content = gson.toJson(relationCanceledReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -704,10 +704,10 @@ class FriendControllerTest {
     @DisplayName("유저 차단 성공")
     public void friend_block_success() throws Exception {
         // given
-        FriendBlockReq friendBlockReq = new FriendBlockReq();
-        friendBlockReq.setMemberId(2L);
+        RelationBlockReq relationBlockReq = new RelationBlockReq();
+        relationBlockReq.setMemberId(2L);
 
-        String content = gson.toJson(friendBlockReq);
+        String content = gson.toJson(relationBlockReq);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -759,10 +759,10 @@ class FriendControllerTest {
     @DisplayName("유저 차단 취소 성공")
     public void friend_unblock_success() throws Exception {
         // given
-        FriendUnblockReq friendUnblockReq = new FriendUnblockReq();
-        friendUnblockReq.setMemberId(2L);
+        RelationUnblockReq relationUnblockReq = new RelationUnblockReq();
+        relationUnblockReq.setMemberId(2L);
 
-        String content = gson.toJson(friendUnblockReq);
+        String content = gson.toJson(relationUnblockReq);
 
         // when
         ResultActions actions = mockMvc.perform(
