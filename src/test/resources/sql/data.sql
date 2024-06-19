@@ -7,6 +7,8 @@ insert into member (member_id, email, nickname, password, description, main_char
                                                                                                     (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20004, 'test20004@naver.com', 'test_user20004', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20005, 'test20004@naver.com', 'test_user20005', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
 
 --friend
@@ -18,7 +20,10 @@ insert into friend (to_member_id, from_member_id, status) values
                                                               (1, 20000, 'ACCEPTED'),
                                                               (20000, 1, 'ACCEPTED'),
                                                               (1, 20001, 'BLOCKED'),
-                                                              (20003, 1, 'BLOCKED');
+                                                              (20003, 1, 'BLOCKED'),
+                                                              (1, 20005, 'BLOCKED'),
+                                                              (20005, 1, 'WAITING'),
+                                                              (20004, 1, 'WAITING');
 
 --category
 insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values
