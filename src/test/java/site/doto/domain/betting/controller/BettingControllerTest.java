@@ -232,7 +232,6 @@ class BettingControllerTest {
                 .andExpect(jsonPath("$.header.message").value(TODO_ALREADY_DONE.getMessage()));
     }
 
-
     @Test
     @DisplayName("베팅 참여 - 성공")
     public void betting_join_success() throws Exception {
@@ -482,6 +481,25 @@ class BettingControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("베팅 단일 조회 - 존재하지 않는 베팅")
+    public void betting_details_betting_not_found() throws Exception {
+        //given
+        Long bettingId = 100001L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_NOT_FOUND.getMessage()));
     }
 
     @Test
