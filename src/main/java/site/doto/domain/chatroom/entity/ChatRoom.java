@@ -19,8 +19,11 @@ public class ChatRoom {
     @Column(name = "chat_room_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "betting_id")
     private Betting betting;
 
+    public void setBetting(Betting betting) {
+        this.betting = betting;
+    }
 }
