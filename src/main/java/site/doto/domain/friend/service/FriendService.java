@@ -42,8 +42,8 @@ public class FriendService {
         Optional<Friend> fromFriend = friendRepository.findById(new FriendPK(fromMember.getId(), toMember.getId()));
 
         if(toFriend.isEmpty() && fromFriend.isEmpty()) {
-            redisUtils.updateFriendRequestToRedis(toMember.getId(), fromMember.getId());
             friendRepository.save(new Friend(new FriendPK(toMember.getId(), fromMember.getId()), toMember, fromMember, WAITING));
+            updateFriendRequestToRedis(toMember.getId(), fromMember.getId());
             return;
         }
 
@@ -79,6 +79,12 @@ public class FriendService {
                 friendRepository.save(new Friend(new FriendPK(toMember.getId(), fromMember.getId()),toMember, fromMember, ACCEPTED));
             }
         }
+    }
+
+    private void updateFriendRequestToRedis(Long toMemberId, Long FromMemberId) {
+        String key = "friendRequest:" + toMemberId + ":" + FromMemberId;
+
+        redisUtils.setDataWithExpiration(key, "WAITING", 300L);
     }
 
     private boolean isFriendRequestExistsInRedis(Long toMemberId, Long fromMemberId) {
