@@ -64,7 +64,7 @@ public class RedisUtils {
     public void updateFriendRequestToRedis(Long toMemberId, Long FromMemberId) {
         String key = "friendRequest:" + toMemberId + ":" + FromMemberId;
 
-        setDataWithExpiration(key, "WAITING", 600L);
+        setDataWithExpiration(key, "WAITING", 300L);
     }
 
     public void updateRecordToRedis(Long memberId, int year, int month, String field, int amount) {
