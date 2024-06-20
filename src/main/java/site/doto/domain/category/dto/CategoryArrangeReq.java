@@ -6,6 +6,9 @@ import java.util.List;
 
 @Data
 public class CategoryArrangeReq {
-    List<Long> categoryIds;
-    List<Integer> orders;
+    private Boolean isActivated;
+
+    private List<Long> categoryIds;
+
+    private List<Integer> orders;
 }
