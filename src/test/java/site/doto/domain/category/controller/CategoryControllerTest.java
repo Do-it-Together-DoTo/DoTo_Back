@@ -318,11 +318,12 @@ class CategoryControllerTest {
         List<Long> categoryIds = new ArrayList<>();
         List<Integer> orders = new ArrayList<>();
 
-        for (int i = 1; i < 5; i++) {
-            categoryIds.add(10000L + i);
-            orders.add(6 - i);
+        for (int i = 0; i < 5; i++) {
+            categoryIds.add(10001L + i);
+            orders.add(5 - i);
         }
 
+        categoryArrangeReq.setIsActivated(false);
         categoryArrangeReq.setCategoryIds(categoryIds);
         categoryArrangeReq.setOrders(orders);
 
@@ -353,6 +354,8 @@ class CategoryControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
+                                                fieldWithPath("isActivated").type(JsonFieldType.BOOLEAN)
+                                                        .description("활성화 여부"),
                                                 fieldWithPath("categoryIds").type(JsonFieldType.ARRAY)
                                                         .description("카테고리 ID"),
                                                 fieldWithPath("orders").type(JsonFieldType.ARRAY)
@@ -690,5 +693,76 @@ class CategoryControllerTest {
         assertThat(savedTodo.getBettingId()).isEqualTo(30005L);
         assertThat(savedTodo.getTodoId()).isEqualTo(20007L);
         assertThat(savedTodo.getCategoryId()).isEqualTo(categoryId);
+    }
+
+    @Test
+    @DisplayName("카테고리 순서 변경 실패 - 두 배열의 개수 안맞음")
+    public void category_arrange_fail_array_length_diff() throws Exception {
+        //given
+        CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
+        List<Long> categoryIds = new ArrayList<>();
+        List<Integer> orderIds = new ArrayList<>();
+
+        for(int i = 1; i <= 6; i++) {
+            categoryIds.add(10000L + i);
+        }
+
+        for(int i = 0; i < 5; i++) {
+            orderIds.add(i);
+        }
+
+        categoryArrangeReq.setIsActivated(false);
+        categoryArrangeReq.setCategoryIds(categoryIds);
+        categoryArrangeReq.setOrders(orderIds);
+
+        String content = gson.toJson(categoryArrangeReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 순서 변경 실패 - 활성화 개수 초과")
+    public void category_arrange_fail_active_category_limit() throws Exception {
+        //given
+        CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
+        List<Long> categoryIds = new ArrayList<>();
+        List<Integer> orderIds = new ArrayList<>();
+
+        for(int i = 1; i <= 21; i++) {
+            categoryIds.add(10000L + i);
+            orderIds.add(i-1);
+        }
+
+        categoryArrangeReq.setIsActivated(true);
+        categoryArrangeReq.setCategoryIds(categoryIds);
+        categoryArrangeReq.setOrders(orderIds);
+
+        String content = gson.toJson(categoryArrangeReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
     }
 }
