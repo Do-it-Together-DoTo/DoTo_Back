@@ -97,7 +97,7 @@ public class CategoryService {
 
         if(!todoList.isEmpty()) {
             for (Todo todo : todoList) {
-                if (todo.getDate().isEqual(LocalDate.now())) {
+                if (!todo.getDate().isBefore(LocalDate.now())) {
                     throw new CustomException(CATEGORY_DELETE_NOT_ALLOWED);
                 }
                 TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo);
