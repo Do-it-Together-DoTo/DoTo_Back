@@ -1,9 +1,9 @@
-package site.doto.domain.friend.dto;
+package site.doto.domain.relation.dto;
 
 import lombok.Data;
 
 @Data
-public class FriendListReq {
+public class RelationListReq {
     private Long lastFriendId;
 
     private String lastFriendTodoDate;

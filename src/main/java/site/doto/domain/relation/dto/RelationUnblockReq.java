@@ -1,11 +1,11 @@
-package site.doto.domain.friend.dto;
+package site.doto.domain.relation.dto;
 
 import lombok.Data;
 
 import javax.validation.constraints.NotNull;
 
 @Data
-public class FriendUnblockReq {
+public class RelationUnblockReq {
     @NotNull
     private Long memberId;
 }

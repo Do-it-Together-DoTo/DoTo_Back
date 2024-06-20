@@ -9,8 +9,8 @@ insert into member (member_id, email, nickname, password, description, main_char
                                                                                                                         (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                                         (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
 
---friend
-insert into friend (to_member_id, from_member_id, status) values
+--relation
+insert into relation (member_id, friend_id, status) values
                                                               (1, 2, 'ACCEPTED'),
                                                               (2, 1, 'ACCEPTED'),
                                                               (1, 3, 'ACCEPTED'),

@@ -1,4 +1,4 @@
-package site.doto.domain.friend.dto;
+package site.doto.domain.relation.dto;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,10 +7,10 @@ import site.doto.global.dto.SliceDto;
 
 @Data
 @NoArgsConstructor
-public class FriendListRes {
-    SliceDto<FriendDto> friends;
+public class RelationListRes {
+    SliceDto<RelationDto> friends;
 
-    public FriendListRes(Slice<FriendDto> friendDtoSlice) {
+    public RelationListRes(Slice<RelationDto> friendDtoSlice) {
         friends = new SliceDto<>(friendDtoSlice);
     }
 }
