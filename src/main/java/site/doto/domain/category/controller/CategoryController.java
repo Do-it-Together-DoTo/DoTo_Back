@@ -59,6 +59,9 @@ public class CategoryController {
     @PatchMapping
     public ResponseDto<?> categoryArrange(
             @RequestBody CategoryArrangeReq categoryArrangeReq) {
+        Long memberId = 1L;
+
+        categoryService.arrangeCategory(memberId, categoryArrangeReq);
 
         return ResponseDto.success(CATEGORY_ARRANGE_OK, null);
     }
