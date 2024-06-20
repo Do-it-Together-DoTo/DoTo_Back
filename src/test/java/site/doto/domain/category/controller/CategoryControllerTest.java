@@ -312,20 +312,20 @@ class CategoryControllerTest {
     @Test
     @DisplayName("카테고리 순서 변경_성공")
     public void category_arrange_success() throws Exception {
-        //given
         CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
+        List<Long> activatedList = new ArrayList<>();
+        List<Long> inactivatedList = new ArrayList<>();
 
-        List<Long> categoryIds = new ArrayList<>();
-        List<Integer> orders = new ArrayList<>();
-
-        for (int i = 0; i < 5; i++) {
-            categoryIds.add(10001L + i);
-            orders.add(5 - i);
+        for(int i = 1; i <= 10; i++) {
+            activatedList.add(10000L+i);
         }
 
-        categoryArrangeReq.setIsActivated(false);
-        categoryArrangeReq.setCategoryIds(categoryIds);
-        categoryArrangeReq.setOrders(orders);
+        for(int i = 11; i <= 21; i++) {
+            inactivatedList.add(10000L+i);
+        }
+
+        categoryArrangeReq.setActivated(activatedList);
+        categoryArrangeReq.setInactivated(inactivatedList);
 
         String content = gson.toJson(categoryArrangeReq);
 
@@ -354,12 +354,10 @@ class CategoryControllerTest {
                                 )
                                 .requestFields(
                                         List.of(
-                                                fieldWithPath("isActivated").type(JsonFieldType.BOOLEAN)
-                                                        .description("활성화 여부"),
-                                                fieldWithPath("categoryIds").type(JsonFieldType.ARRAY)
-                                                        .description("카테고리 ID"),
-                                                fieldWithPath("orders").type(JsonFieldType.ARRAY)
-                                                        .description("카테고리 순서")
+                                                fieldWithPath("activated").type(JsonFieldType.ARRAY)
+                                                        .description("활성화된 카테고리 아이디"),
+                                                fieldWithPath("inactivated").type(JsonFieldType.ARRAY)
+                                                        .description("비활성화된 카테고리 아이디")
                                         )
                                 )
                                 .responseFields(
@@ -636,7 +634,7 @@ class CategoryControllerTest {
     @DisplayName("카테고리 삭제 실패 - 내 카테고리가 아닌 경우")
     public void category_remove_fail_not_my_category() throws Exception {
         //given
-        Long categoryId = 10021L;
+        Long categoryId = 10022L;
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -696,24 +694,23 @@ class CategoryControllerTest {
     }
 
     @Test
-    @DisplayName("카테고리 순서 변경 실패 - 두 배열의 개수 안맞음")
+    @DisplayName("카테고리 순서 변경 실패 - 전체 카테고리 개수 안맞음")
     public void category_arrange_fail_array_length_diff() throws Exception {
         //given
         CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
-        List<Long> categoryIds = new ArrayList<>();
-        List<Integer> orderIds = new ArrayList<>();
+        List<Long> activatedList = new ArrayList<>();
+        List<Long> inactiveList = new ArrayList<>();
 
-        for(int i = 1; i <= 6; i++) {
-            categoryIds.add(10000L + i);
+        for(int i = 1; i <= 11; i++) {
+            activatedList.add(10000L+i);
         }
 
-        for(int i = 0; i < 5; i++) {
-            orderIds.add(i);
+        for(int i = 12; i <= 19; i++) {
+            inactiveList.add(10000L+i);
         }
 
-        categoryArrangeReq.setIsActivated(false);
-        categoryArrangeReq.setCategoryIds(categoryIds);
-        categoryArrangeReq.setOrders(orderIds);
+        categoryArrangeReq.setActivated(activatedList);
+        categoryArrangeReq.setInactivated(inactiveList);
 
         String content = gson.toJson(categoryArrangeReq);
 
@@ -728,8 +725,8 @@ class CategoryControllerTest {
         //then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NOT_MATCH_CATEGORIES.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NOT_MATCH_CATEGORIES.getMessage()));
     }
 
     @Test
@@ -737,17 +734,15 @@ class CategoryControllerTest {
     public void category_arrange_fail_active_category_limit() throws Exception {
         //given
         CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
-        List<Long> categoryIds = new ArrayList<>();
-        List<Integer> orderIds = new ArrayList<>();
+        List<Long> activatedList = new ArrayList<>();
+        List<Long> inactiveList = new ArrayList<>();
 
         for(int i = 1; i <= 21; i++) {
-            categoryIds.add(10000L + i);
-            orderIds.add(i-1);
+            activatedList.add(10000L+i);
         }
 
-        categoryArrangeReq.setIsActivated(true);
-        categoryArrangeReq.setCategoryIds(categoryIds);
-        categoryArrangeReq.setOrders(orderIds);
+        categoryArrangeReq.setActivated(activatedList);
+        categoryArrangeReq.setInactivated(inactiveList);
 
         String content = gson.toJson(categoryArrangeReq);
 
@@ -764,5 +759,42 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 순서 변경 실패 - 중복된 카테고리 값")
+    public void category_arrange_fail_duplicated_categories() throws Exception {
+        //given
+        CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
+        List<Long> activatedList = new ArrayList<>();
+        List<Long> inactiveList = new ArrayList<>();
+
+        for(int i = 1; i <= 10; i++) {
+            activatedList.add(10000L+i);
+        }
+
+        for(int i = 10; i <= 20; i++) {
+            inactiveList.add(10000L+i);
+        }
+
+        categoryArrangeReq.setActivated(activatedList);
+        categoryArrangeReq.setInactivated(inactiveList);
+
+        String content = gson.toJson(categoryArrangeReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
     }
 }
