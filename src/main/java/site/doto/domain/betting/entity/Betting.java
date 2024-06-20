@@ -26,7 +26,7 @@ public class Betting {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne
     @JoinColumn(name = "todo_id")
     private Todo todo;
 
@@ -40,5 +40,9 @@ public class Betting {
 
     public LocalDate getDate() {
         return todo.getDate();
+    }
+
+    public void todoDisconnected() {
+        this.todo = null;
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryDetailsRes;
 import site.doto.domain.category.dto.CategoryListRes;
@@ -13,10 +14,16 @@ import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.domain.todo.entity.Todo;
+import site.doto.domain.todo.repository.TodoRepository;
+import site.doto.domain.todo.service.TodoService;
 import site.doto.global.exception.CustomException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -29,6 +36,11 @@ public class CategoryService {
     private static final int MAX_ACTIVE_COUNT = 20;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
+    private final TodoRepository todoRepository;
+    private final TodoService todoService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public CategoryDetailsRes addCategory(Long memberId, CategoryAddReq categoryAddReq) {
@@ -69,11 +81,36 @@ public class CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
+        validateMemberCategory(memberId, category.getMember().getId());
+
         updateCategory(memberId, category, categoryModifyReq);
 
         categoryRepository.save(category);
 
         return CategoryDetailsRes.toDto(category);
+    }
+
+    @Transactional
+    public void removeCategory(Long memberId, Long categoryId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Category category =  categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+
+        validateMemberCategory(memberId, category.getMember().getId());
+
+        List<Todo> todoList = todoRepository.findTodoIfExistBetting(category);
+
+        if(!todoList.isEmpty()) {
+            for (Todo todo : todoList) {
+                todoService.deleteTodo(todo);
+            }
+            entityManager.flush();
+        }
+
+        todoRepository.deleteByCategoryId(categoryId);
+        categoryRepository.delete(category);
     }
 
     private Integer calculateSequence(Long memberId, Boolean isActivated) {
@@ -89,6 +126,12 @@ public class CategoryService {
     private void validateActiveCount(Integer activeCount) {
         if(activeCount >= MAX_ACTIVE_COUNT) {
             throw new CustomException(ACTIVATED_CATEGORY_LIMIT);
+        }
+    }
+
+    private void validateMemberCategory(Long memberId, Long categoryMemberId) {
+        if(!Objects.equals(memberId, categoryMemberId)) {
+            throw new CustomException(FORBIDDEN);
         }
     }
 

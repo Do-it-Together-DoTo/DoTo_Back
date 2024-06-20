@@ -57,14 +57,16 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
                                                                                 (20003, 1, 10001, '투두3', '2024-01-01', true), -- 베팅 생성 실패
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
                                                                                 (20005, 2, 10021, '투두5', '2024-01-01', true), -- 나의 베팅 조회
-                                                                                (20006, 3, 10022, '투두6', current_date, false);
+                                                                                (20006, 3, 10022, '투두6', current_date, false),
+                                                                                (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false);
 
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
                                                                             (30001, 1, 20001, '베팅1', null), -- 베팅 삭제
                                                                             (30002, 2, 20002, '베팅2', null), -- 베팅 삭제 실패
                                                                             (30003, 2, 20005, '베팅3', true), -- 나의 베팅 조회
-                                                                            (30004, 3, 20006, '베팅4', null);
+                                                                            (30004, 3, 20006, '베팅4', null),
+                                                                            (30005, 1, 20007, '베팅5', null);
 
 
 --chatRoom
@@ -72,12 +74,14 @@ insert into chat_room (chat_room_id, betting_id) values
                                                     (30001, 30001),
                                                     (30002, 30002),
                                                     (30003, 30003),
-                                                    (30004, 30004);
+                                                    (30004, 30004),
+                                                    (30005, 30005);
 
 update betting set chat_room_id = 30001 where betting_id = 30001;
 update betting set chat_room_id = 30002 where betting_id = 30002;
 update betting set chat_room_id = 30003 where betting_id = 30003;
 update betting set chat_room_id = 30004 where betting_id = 30004;
+update betting set chat_room_id = 30005 where betting_id = 30005;
 
 --memberBetting
 insert into member_betting (member_id, betting_id, cost, prediction) values

@@ -7,10 +7,7 @@ import site.doto.domain.category.service.CategoryService;
 import site.doto.global.dto.ResponseDto;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
-import static site.doto.domain.category.enums.Color.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
@@ -52,6 +49,9 @@ public class CategoryController {
     @DeleteMapping("/{categoryId}")
     public ResponseDto<?> categoryRemove(
             @PathVariable long categoryId) {
+        Long memberId = 1L;
+
+        categoryService.removeCategory(memberId, categoryId);
 
         return ResponseDto.success(CATEGORY_DELETED, null);
     }
