@@ -20,7 +20,10 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -114,24 +117,25 @@ public class CategoryService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        if(categoryArrangeReq.getCategoryIds().size() != categoryArrangeReq.getOrders().size()) {
+        List<Category> categoryList = categoryRepository.findCategoriesByMemberId(memberId);
+
+        List<Long> activatedList = categoryArrangeReq.getActivated();
+        List<Long> inactivatedList = categoryArrangeReq.getInactivated();
+
+        int length = activatedList.size() + inactivatedList.size();
+
+        if(categoryList.size() != length) {
+            throw new CustomException(NOT_MATCH_CATEGORIES);
+        }
+
+        if(duplicatedLong(activatedList, inactivatedList)) {
             throw new CustomException(BIND_EXCEPTION);
         }
 
-        if(categoryArrangeReq.getIsActivated()) {
-            validateActiveCount(categoryArrangeReq.getCategoryIds().size());
-        }
+        validateActiveCount(activatedList.size()-1);
 
-        for(int i = 0; i < categoryArrangeReq.getCategoryIds().size(); i++) {
-            Category category = categoryRepository.findById(categoryArrangeReq.getCategoryIds().get(i))
-                    .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
-            validateMemberCategory(memberId, category.getMember().getId());
-
-            category.updateIsActivated(categoryArrangeReq.getIsActivated());
-            category.updateSeq(categoryArrangeReq.getOrders().get(i));
-
-            categoryRepository.save(category);
-        }
+        updateSeq(memberId, activatedList, true);
+        updateSeq(memberId, inactivatedList, false);
     }
 
 
@@ -155,6 +159,13 @@ public class CategoryService {
         if(!Objects.equals(memberId, categoryMemberId)) {
             throw new CustomException(FORBIDDEN);
         }
+    }
+
+    private boolean duplicatedLong(List<Long> activated, List<Long> inactivated) {
+        Set<Long> uniqueSet = Stream.concat(activated.stream(), inactivated.stream())
+                .collect(Collectors.toSet());
+
+        return uniqueSet.size() < (activated.size() + inactivated.size());
     }
 
     private void updateCategory(Long memberId, Category category, CategoryModifyReq categoryModifyReq) {
@@ -199,5 +210,21 @@ public class CategoryService {
             validateColor(color);
             category.updateColor(Color.valueOf(color.toUpperCase()));
         }
+    }
+
+    private void updateSeq(Long memberId, List<Long> ids, Boolean isActivated) {
+        IntStream.range(0, ids.size())
+                .forEach(index -> {
+                    Long categoryId = ids.get(index);
+                    Category category = categoryRepository.findById(categoryId)
+                            .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+
+                    validateMemberCategory(memberId, category.getMember().getId());
+
+                    category.updateIsActivated(isActivated);
+                    category.updateSeq(index);
+
+                    categoryRepository.save(category);
+                });
     }
 }
