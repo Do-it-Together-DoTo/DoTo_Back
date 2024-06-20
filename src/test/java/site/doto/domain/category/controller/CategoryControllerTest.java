@@ -685,9 +685,10 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()));
 
-        TodoRedisDto savedTodo = redisUtils.findTodo(20007L);
+        TodoRedisDto savedTodo = redisUtils.findTodo(30005L);
         assertThat(savedTodo).isNotNull();
-        assertThat(savedTodo.getId()).isEqualTo(20007L);
+        assertThat(savedTodo.getBettingId()).isEqualTo(30005L);
+        assertThat(savedTodo.getTodoId()).isEqualTo(20007L);
         assertThat(savedTodo.getCategoryId()).isEqualTo(categoryId);
     }
 }
