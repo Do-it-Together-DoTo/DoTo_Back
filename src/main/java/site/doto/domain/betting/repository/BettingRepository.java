@@ -40,4 +40,6 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "on mb.betting = b " +
             "where mb.member.id = :memberId")
     List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
+
+    Optional<Betting> findBettingByTodoId(Long todoId);
 }
