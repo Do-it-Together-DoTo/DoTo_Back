@@ -108,7 +108,7 @@ public class RedisUtils {
     }
 
     public void saveTodo(TodoRedisDto todo) {
-        redisTemplate.opsForHash().put("todo:", longToString(todo.getId()), todo);
+        redisTemplate.opsForHash().put("todo:", longToString(todo.getBettingId()), todo);
     }
 
     public TodoRedisDto findTodo(Long id) {

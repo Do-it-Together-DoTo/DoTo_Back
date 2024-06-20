@@ -13,12 +13,11 @@ import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
-import site.doto.domain.todo.dto.TodoRedisDto;
 import site.doto.domain.todo.entity.Todo;
+import site.doto.domain.todo.repository.TodoRepository;
+import site.doto.domain.todo.service.TodoService;
 import site.doto.global.exception.CustomException;
-import site.doto.global.redis.RedisUtils;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -34,7 +33,8 @@ public class CategoryService {
     private static final int MAX_ACTIVE_COUNT = 20;
     private final CategoryRepository categoryRepository;
     private final MemberRepository memberRepository;
-    private final RedisUtils redisUtils;
+    private final TodoRepository todoRepository;
+    private final TodoService todoService;
 
     @Transactional
     public CategoryDetailsRes addCategory(Long memberId, CategoryAddReq categoryAddReq) {
@@ -84,6 +84,7 @@ public class CategoryService {
         return CategoryDetailsRes.toDto(category);
     }
 
+    @Transactional
     public void removeCategory(Long memberId, Long categoryId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -93,15 +94,11 @@ public class CategoryService {
 
         validateMemberCategory(memberId, category.getMember().getId());
 
-        List<Todo> todoList = categoryRepository.findTodoIfExistBetting(category);
+        List<Todo> todoList = todoRepository.findTodoIfExistBetting(category);
 
         if(!todoList.isEmpty()) {
             for (Todo todo : todoList) {
-                if (!todo.getDate().isBefore(LocalDate.now())) {
-                    throw new CustomException(CATEGORY_DELETE_NOT_ALLOWED);
-                }
-                TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo);
-                redisUtils.saveTodo(todoRedisDto);
+                todoService.deleteTodo(todo.getId());
             }
         }
 

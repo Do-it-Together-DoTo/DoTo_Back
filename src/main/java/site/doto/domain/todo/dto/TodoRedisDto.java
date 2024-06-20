@@ -9,7 +9,9 @@ import java.io.Serializable;
 @Data
 @Builder
 public class TodoRedisDto implements Serializable {
-    private Long id;
+    private Long bettingId;
+
+    private Long todoId;
 
     private Long memberId;
 
@@ -19,9 +21,10 @@ public class TodoRedisDto implements Serializable {
 
     private String contents;
 
-    public static TodoRedisDto toDto(Todo todo) {
+    public static TodoRedisDto toDto(Todo todo, Long id) {
         return TodoRedisDto.builder()
-                .id(todo.getId())
+                .bettingId(id)
+                .todoId(todo.getId())
                 .memberId(todo.getMember().getId())
                 .categoryId(todo.getCategory().getId())
                 .contents(todo.getContents())
