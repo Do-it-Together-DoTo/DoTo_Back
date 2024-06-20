@@ -17,7 +17,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     public List<Todo> findTodoIfExistBetting(Category category) {
         return jpaQueryFactory.select(todo)
                 .from(todo)
-                .leftJoin(betting).on(todo.id.eq(betting.todo.id))
+                .innerJoin(betting).on(todo.id.eq(betting.todo.id))
                 .where(todo.category.id.eq(category.getId()))
                 .fetch();
     }
