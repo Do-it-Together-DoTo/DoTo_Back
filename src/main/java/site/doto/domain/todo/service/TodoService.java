@@ -12,7 +12,6 @@ import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDate;
-import java.util.Optional;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -25,22 +24,17 @@ public class TodoService {
     private final BettingRepository bettingRepository;
 
     @Transactional
-    public void deleteTodo(Long todoId) {
-        Todo todo = todoRepository.findById(todoId)
-                .orElseThrow(() -> new CustomException(TODO_NOT_FOUND));
-
+    public void deleteTodo(Todo todo) {
         if (!todo.getDate().isBefore(LocalDate.now())) {
             throw new CustomException(DELETE_NOT_ALLOWED);
         }
 
-        Optional<Betting> betting = bettingRepository.findBettingByTodoId(todoId);
+        Betting betting = bettingRepository.findBettingByTodo(todo);
 
-        if (betting.isPresent()) {
-            TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo, betting.get().getId());
-            redisUtils.saveTodo(todoRedisDto);
-            betting.get().todoDisconnected();
-        }
+        TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo, betting.getId());
+        redisUtils.saveTodo(todoRedisDto);
 
-        todoRepository.delete(todo);
+        betting.todoDisconnected();
+        bettingRepository.save(betting);
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryDetailsRes;
 import site.doto.domain.category.dto.CategoryListRes;
@@ -18,6 +19,8 @@ import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.domain.todo.service.TodoService;
 import site.doto.global.exception.CustomException;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -35,6 +38,9 @@ public class CategoryService {
     private final MemberRepository memberRepository;
     private final TodoRepository todoRepository;
     private final TodoService todoService;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public CategoryDetailsRes addCategory(Long memberId, CategoryAddReq categoryAddReq) {
@@ -98,10 +104,12 @@ public class CategoryService {
 
         if(!todoList.isEmpty()) {
             for (Todo todo : todoList) {
-                todoService.deleteTodo(todo.getId());
+                todoService.deleteTodo(todo);
             }
+            entityManager.flush();
         }
 
+        todoRepository.deleteByCategoryId(categoryId);
         categoryRepository.delete(category);
     }
 

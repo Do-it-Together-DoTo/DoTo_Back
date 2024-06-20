@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import site.doto.domain.betting.entity.Betting;
+import site.doto.domain.todo.entity.Todo;
 
 import java.util.Optional;
 import java.util.List;
@@ -41,5 +42,5 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "where mb.member.id = :memberId")
     List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
 
-    Optional<Betting> findBettingByTodoId(Long todoId);
+    Betting findBettingByTodo(Todo todo);
 }
