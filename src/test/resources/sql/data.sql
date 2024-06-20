@@ -47,8 +47,9 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
                                                                                                  (10018, 1, '테스트_카테고리',true, true, 'BLUE', 18),
                                                                                                  (10019, 1, '테스트_카테고리',true, true, 'BLUE', 19),
                                                                                                  (10020, 1, '테스트_카테고리',true, false, 'BLUE', 1),
-                                                                                                 (10021, 2, '테스트_카테고리2',true, true, 'PINK', 1), -- 베팅 생성 실패
-                                                                                                 (10022, 3, '테스트_카테고리3',true, true, 'PINK', 1);
+                                                                                                 (10021, 1, '테스트_카테고리',true, false, 'BLUE', 1),
+                                                                                                 (10022, 2, '테스트_카테고리2',true, true, 'PINK', 1), -- 베팅 생성 실패
+                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1);
 
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values
@@ -56,8 +57,8 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
                                                                                 (20002, 2, 10021, '투두2', current_date, false), -- 베팅 생성 실패, 삭제 실패
                                                                                 (20003, 1, 10001, '투두3', '2024-01-01', true), -- 베팅 생성 실패
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
-                                                                                (20005, 2, 10021, '투두5', '2024-01-01', true), -- 나의 베팅 조회
-                                                                                (20006, 3, 10022, '투두6', current_date, false),
+                                                                                (20005, 2, 10022, '투두5', '2024-01-01', true), -- 나의 베팅 조회
+                                                                                (20006, 3, 10023, '투두6', current_date, false),
                                                                                 (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false);
 
 --betting

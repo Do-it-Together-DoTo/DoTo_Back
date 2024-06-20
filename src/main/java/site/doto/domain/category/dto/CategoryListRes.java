@@ -10,9 +10,9 @@ import java.util.stream.Collectors;
 @Data
 @NoArgsConstructor
 public class CategoryListRes {
-    List<CategoryDetailsRes> activated;
+    private List<CategoryDetailsRes> activated;
 
-    List<CategoryDetailsRes> inactivated;
+    private List<CategoryDetailsRes> inactivated;
 
     public CategoryListRes(List<Category> activated, List<Category> inactivated) {
         this.activated = activated.stream()

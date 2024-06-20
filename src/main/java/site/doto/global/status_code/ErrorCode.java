@@ -35,6 +35,7 @@ public enum ErrorCode {
     COLOR_NOT_FOUND(400, "존재하지 않는 색상입니다."),
     ACTIVATED_CATEGORY_LIMIT(400, "더 이상 카테고리를 생성할 수 없습니다."),
     CATEGORY_NOT_FOUND(404, "존재하지 않는 카테고리입니다."),
+    NOT_MATCH_CATEGORIES(400, "카테고리 개수가 맞지 않습니다"),
     DELETE_NOT_ALLOWED(400, "베팅이 진행중이므로 삭제할 수 없습니다."),
     BETTING_ALREADY_HOLDING(400, "이미 개최한 베팅이 존재합니다."),
     BETTING_ALREADY_JOINING(400, "이미 참여한 베팅입니다."),

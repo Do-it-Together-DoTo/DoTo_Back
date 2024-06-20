@@ -4,11 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.betting.repository.BettingRepository;
-import site.doto.domain.category.dto.CategoryAddReq;
-import site.doto.domain.category.dto.CategoryDetailsRes;
-import site.doto.domain.category.dto.CategoryListRes;
-import site.doto.domain.category.dto.CategoryModifyReq;
+import site.doto.domain.category.dto.*;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
 import site.doto.domain.category.repository.CategoryRepository;
@@ -24,7 +20,10 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -113,6 +112,33 @@ public class CategoryService {
         categoryRepository.delete(category);
     }
 
+    @Transactional
+    public void arrangeCategory(Long memberId, CategoryArrangeReq categoryArrangeReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        List<Category> categoryList = categoryRepository.findCategoriesByMemberId(memberId);
+
+        List<Long> activatedList = categoryArrangeReq.getActivated();
+        List<Long> inactivatedList = categoryArrangeReq.getInactivated();
+
+        int length = activatedList.size() + inactivatedList.size();
+
+        if(categoryList.size() != length) {
+            throw new CustomException(NOT_MATCH_CATEGORIES);
+        }
+
+        if(duplicatedLong(activatedList, inactivatedList)) {
+            throw new CustomException(BIND_EXCEPTION);
+        }
+
+        validateActiveCount(activatedList.size()-1);
+
+        updateSeq(memberId, activatedList, true);
+        updateSeq(memberId, inactivatedList, false);
+    }
+
+
     private Integer calculateSequence(Long memberId, Boolean isActivated) {
         return categoryRepository.categorySeqByMemberId(memberId, isActivated);
     }
@@ -133,6 +159,13 @@ public class CategoryService {
         if(!Objects.equals(memberId, categoryMemberId)) {
             throw new CustomException(FORBIDDEN);
         }
+    }
+
+    private boolean duplicatedLong(List<Long> activated, List<Long> inactivated) {
+        Set<Long> uniqueSet = Stream.concat(activated.stream(), inactivated.stream())
+                .collect(Collectors.toSet());
+
+        return uniqueSet.size() < (activated.size() + inactivated.size());
     }
 
     private void updateCategory(Long memberId, Category category, CategoryModifyReq categoryModifyReq) {
@@ -177,5 +210,21 @@ public class CategoryService {
             validateColor(color);
             category.updateColor(Color.valueOf(color.toUpperCase()));
         }
+    }
+
+    private void updateSeq(Long memberId, List<Long> ids, Boolean isActivated) {
+        IntStream.range(0, ids.size())
+                .forEach(index -> {
+                    Long categoryId = ids.get(index);
+                    Category category = categoryRepository.findById(categoryId)
+                            .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+
+                    validateMemberCategory(memberId, category.getMember().getId());
+
+                    category.updateIsActivated(isActivated);
+                    category.updateSeq(index);
+
+                    categoryRepository.save(category);
+                });
     }
 }
