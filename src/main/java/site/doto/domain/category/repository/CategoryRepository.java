@@ -8,7 +8,7 @@ import site.doto.domain.category.entity.Category;
 import java.util.List;
 import java.util.Optional;
 
-public interface CategoryRepository extends JpaRepository<Category, Long>, CategoryRepositoryCustom{
+public interface CategoryRepository extends JpaRepository<Category, Long>{
     Optional<Category> findById(Long categoryId);
 
     @Query("select coalesce(max(c.seq), 0)" +

@@ -1,4 +1,4 @@
-package site.doto.domain.category.repository;
+package site.doto.domain.todo.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,7 @@ import static site.doto.domain.todo.entity.QTodo.todo;
 import static site.doto.domain.betting.entity.QBetting.betting;
 
 @RequiredArgsConstructor
-public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
+public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override

@@ -5,6 +5,6 @@ import site.doto.domain.todo.entity.Todo;
 
 import java.util.Optional;
 
-public interface TodoRepository extends JpaRepository<Todo, Long> {
+public interface TodoRepository extends JpaRepository<Todo, Long>, TodoRepositoryCustom {
     Optional<Todo> findById(Long todoId);
 }
