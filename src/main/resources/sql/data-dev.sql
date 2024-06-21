@@ -53,7 +53,7 @@ insert into todo (todo_id, member_id, category_id, contents, date, is_done) valu
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
                                                                                 (20005, 2, 10021, '투두5', '2024-01-01', true), -- 나의 베팅 조회
                                                                                 (20006, 3, 10022, '투두6', current_date, false),
-                                                                                (20007, 1, 10002, '투두7', date_add('DAY', -1, current_date), false),
+                                                                                (20007, 1, 10002, '투두7', date_add(current_date, interval -1 day), false),
                                                                                 (20008, 1, 10002, '투두8', current_date, false);
 
 --betting
