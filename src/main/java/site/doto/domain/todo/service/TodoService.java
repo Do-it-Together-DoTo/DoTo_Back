@@ -31,10 +31,16 @@ public class TodoService {
 
         Betting betting = bettingRepository.findBettingByTodo(todo);
 
-        TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo, betting.getId());
-        redisUtils.saveTodo(todoRedisDto);
+        TodoRedisDto todoRedisDto = TodoRedisDto.toDto(todo);
+        saveTodoToRedis(todoRedisDto, betting.getId());
 
         betting.todoDisconnected();
         bettingRepository.save(betting);
+    }
+
+    private void saveTodoToRedis(TodoRedisDto dto, Long bettingId) {
+        String key = "todo:" + bettingId;
+
+        redisUtils.setData(key, dto);
     }
 }
