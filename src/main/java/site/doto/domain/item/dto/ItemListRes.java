@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class ItemListRes {
-    List<ItemDto> items = new ArrayList<>();
+    private List<ItemDto> items = new ArrayList<>();
 
     public ItemListRes(List<Item> items) {
         items.stream()
