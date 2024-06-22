@@ -41,15 +41,18 @@ public class RelationService {
             throw new CustomException(FRIEND_SELF_REQUEST);
         }
 
-        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
-        Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
 
         if(isRelationRequestExistsInRedis(member.getId(), friend.getId())) {
             throw new CustomException(FRIEND_REQUEST_COOLDOWN);
         }
 
         if(memberToFriend.isEmpty() && friendToMember.isEmpty()) {
-            relationRepository.save(new Relation(new RelationPK(member.getId(), friend.getId()), member, friend, WAITING));
+            relationRepository.save(new Relation(memberAndFriendPK, member, friend, WAITING));
             updateRelationRequestToRedis(member.getId(), friend.getId());
             return;
         }
@@ -78,8 +81,8 @@ public class RelationService {
             }
 
             if(relationStatus.equals(WAITING)) {
-                relationRepository.updateRelationStatus(new RelationPK(friend.getId(), member.getId()), ACCEPTED);
-                relationRepository.save(new Relation(new RelationPK(member.getId(), friend.getId()),member, friend, ACCEPTED));
+                relationRepository.updateRelationStatus(friendAndMemberPK, ACCEPTED);
+                relationRepository.save(new Relation(memberAndFriendPK, member, friend, ACCEPTED));
             }
         }
     }
@@ -91,8 +94,11 @@ public class RelationService {
         Member friend = memberRepository.findById(relationResponseReq.getFriendId())
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
-        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
 
         if(friendToMember.isEmpty()) {
             throw new CustomException(FRIEND_REQUEST_MISSING);
@@ -116,8 +122,8 @@ public class RelationService {
             }
         }
 
-        relationRepository.updateRelationStatus(new RelationPK(friend.getId(), member.getId()), ACCEPTED);
-        relationRepository.save(new Relation(new RelationPK(member.getId(), friend.getId()), member, friend, ACCEPTED));
+        relationRepository.updateRelationStatus(friendAndMemberPK, ACCEPTED);
+        relationRepository.save(new Relation(memberAndFriendPK, member, friend, ACCEPTED));
     }
 
     public void declineRelation(Long memberId, RelationDeclinedReq relationDeclinedReq) {
@@ -127,8 +133,11 @@ public class RelationService {
         Member friend = memberRepository.findById(relationDeclinedReq.getFriendId())
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
-        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
+        Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
 
         if(friendToMember.isEmpty()) {
             throw new CustomException(FRIEND_REQUEST_MISSING);
@@ -162,8 +171,11 @@ public class RelationService {
         Member friend = memberRepository.findById(relationCanceledReq.getFriendId())
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
-        Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
 
         if(memberToFriend.isEmpty()) {
             throw new CustomException(FRIEND_REQUEST_MISSING);
