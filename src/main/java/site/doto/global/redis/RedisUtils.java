@@ -11,7 +11,6 @@ import site.doto.domain.record.dto.RecordUpdateDto;
 import site.doto.domain.record.entity.Record;
 import site.doto.domain.record.entity.RecordPK;
 import site.doto.domain.record.repository.RecordRepository;
-import site.doto.domain.todo.dto.TodoRedisDto;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -105,21 +104,5 @@ public class RedisUtils {
 
             recordRepository.updateRecord(update);
         }
-    }
-
-    public void saveTodo(TodoRedisDto todo) {
-        redisTemplate.opsForHash().put("todo:", longToString(todo.getBettingId()), todo);
-    }
-
-    public TodoRedisDto findTodo(Long id) {
-        return (TodoRedisDto) redisTemplate.opsForHash().get("todo:", longToString(id));
-    }
-
-    public void deleteTodo(Long id) {
-        redisTemplate.opsForHash().delete("todo:", longToString(id));
-    }
-
-    private String longToString(Long number) {
-        return String.valueOf(number);
     }
 }
