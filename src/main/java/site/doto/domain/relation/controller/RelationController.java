@@ -42,6 +42,9 @@ public class RelationController {
     @DeleteMapping("/response")
     public ResponseDto<?> relationDeclined(
             @RequestBody RelationDeclinedReq relationDeclinedReq) {
+        Long memberId = 1L;
+
+        relationService.declineRelation(memberId, relationDeclinedReq);
 
         return ResponseDto.success(FRIEND_REQUEST_DELETED, null);
     }

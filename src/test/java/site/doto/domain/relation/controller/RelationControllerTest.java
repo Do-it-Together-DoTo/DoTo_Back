@@ -418,11 +418,11 @@ class RelationControllerTest {
     }
 
     @Test
-    @DisplayName("친구 신청 거절 성공")
+    @DisplayName("친구 신청 거절 - 성공")
     public void friend_declined_success() throws Exception {
         // given
         RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
-        relationDeclinedReq.setFromMemberId(2L);
+        relationDeclinedReq.setFriendId(20004L);
 
         String content = gson.toJson(relationDeclinedReq);
 
@@ -450,26 +450,142 @@ class RelationControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        List.of(
-                                                fieldWithPath("fromMemberId").type(JsonFieldType.NUMBER)
+                                        fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
-                                        )
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body").type(JsonFieldType.NULL)
+                                                .description("내용 없음")
                                 )
                                 .requestSchema(Schema.schema("친구 신청 거절 Request"))
                                 .responseSchema(Schema.schema("친구 신청 거절 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("친구 신청 거절 - 존재하지 않는 사용자에게서 온 친구 신청")
+    public void friend_declined_member_not_found() throws Exception {
+        // given
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFriendId(10000L);
+
+        String content = gson.toJson(relationDeclinedReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/response")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 거절 - 존재하지 않는 친구 신청")
+    public void friend_declined_friend_request_missing() throws Exception {
+        // given
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFriendId(30000L);
+
+        String content = gson.toJson(relationDeclinedReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/response")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_REQUEST_MISSING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_REQUEST_MISSING.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 거절 - 이미 추가된 친구")
+    public void friend_declined_friend_already_added() throws Exception {
+        // given
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFriendId(2L);
+
+        String content = gson.toJson(relationDeclinedReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/response")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_ALREADY_ADDED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_ALREADY_ADDED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 거절 - 차단당한 사용자에게서 온 친구 신청")
+    public void friend_declined_block_member() throws Exception {
+        // given
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFriendId(20003L);
+
+        String content = gson.toJson(relationDeclinedReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/response")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 신청 거절 - 차단한 사용자에게서 온 친구 신청")
+    public void friend_declined_blocked_member() throws Exception {
+        // given
+        RelationDeclinedReq relationDeclinedReq = new RelationDeclinedReq();
+        relationDeclinedReq.setFriendId(20005L);
+
+        String content = gson.toJson(relationDeclinedReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/response")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BLOCKED_MEMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BLOCKED_MEMBER.getMessage()));
     }
 
     @Test

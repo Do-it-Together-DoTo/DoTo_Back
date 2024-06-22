@@ -9,7 +9,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 public class StoreItemListRes {
-    List<ItemTypeDto> items = new ArrayList<>();
+    private List<ItemTypeDto> items = new ArrayList<>();
 
     public StoreItemListRes(List<ItemType> items) {
         items.stream()

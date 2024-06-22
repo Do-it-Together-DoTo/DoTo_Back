@@ -8,7 +8,7 @@ import site.doto.global.dto.SliceDto;
 @Data
 @NoArgsConstructor
 public class RelationListRes {
-    SliceDto<RelationDto> friends;
+    private SliceDto<RelationDto> friends;
 
     public RelationListRes(Slice<RelationDto> friendDtoSlice) {
         friends = new SliceDto<>(friendDtoSlice);
