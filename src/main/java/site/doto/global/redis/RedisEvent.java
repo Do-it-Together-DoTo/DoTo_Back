@@ -17,7 +17,7 @@ public class RedisEvent {
         redisUtils.flushRedis();
     }
 
-    @Scheduled(cron = "0 0 3 * * *")
+    @Scheduled(cron = "0 0 0 * * *")
     public void schedule() {
         redisUtils.updateRecordToDB();
         redisUtils.flushRedis();
