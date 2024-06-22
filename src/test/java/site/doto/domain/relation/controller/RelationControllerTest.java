@@ -194,8 +194,8 @@ class RelationControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_ALREADY_REQUESTING.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(FRIEND_ALREADY_REQUESTING.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIEND_REQUEST_COOLDOWN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIEND_REQUEST_COOLDOWN.getMessage()));
     }
 
     @Test
