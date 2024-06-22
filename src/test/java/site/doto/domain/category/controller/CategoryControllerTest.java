@@ -20,6 +20,7 @@ import site.doto.domain.category.dto.CategoryModifyReq;
 import site.doto.domain.todo.dto.TodoRedisDto;
 import site.doto.global.redis.RedisUtils;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -673,6 +674,8 @@ class CategoryControllerTest {
         //given
         Long categoryId = 10002L;
 
+        System.out.println(LocalDate.now().toString());
+
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/categories/{categoryId}", categoryId)
@@ -685,10 +688,11 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()));
 
-        TodoRedisDto savedTodo = redisUtils.findTodo(30005L);
+        TodoRedisDto savedTodo = (TodoRedisDto) redisUtils.getData("todo:" + 30005L);
         assertThat(savedTodo).isNotNull();
-        assertThat(savedTodo.getBettingId()).isEqualTo(30005L);
-        assertThat(savedTodo.getTodoId()).isEqualTo(20007L);
-        assertThat(savedTodo.getCategoryId()).isEqualTo(categoryId);
+        assertThat(savedTodo.getContents()).isEqualTo("투두7");
+        assertThat(savedTodo.getYear()).isEqualTo(LocalDate.now().minusDays(1).getYear());
+        assertThat(savedTodo.getMonth()).isEqualTo(LocalDate.now().minusDays(1).getMonthValue());
+        assertThat(savedTodo.getDate()).isEqualTo(LocalDate.now().minusDays(1).getDayOfMonth());
     }
 }
