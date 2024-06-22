@@ -4,16 +4,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.betting.dto.BettingAddReq;
-import site.doto.domain.betting.dto.BettingDetailsRes;
-import site.doto.domain.betting.dto.MyBettingListRes;
-import site.doto.domain.betting.dto.OpenBettingListRes;
+import site.doto.domain.betting.dto.*;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.member_betting.entity.MemberBetting;
 import site.doto.domain.member_betting.repository.MemberBettingRepository;
+import site.doto.domain.todo.dto.TodoRedisDto;
 import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.global.exception.CustomException;
@@ -73,7 +71,34 @@ public class BettingService {
         List<Betting> myBetting = bettingRepository.findAllByMember(memberId);
         List<Betting> joiningBetting = bettingRepository.findJoiningBetting(memberId);
 
-        return new MyBettingListRes(myBetting, joiningBetting);
+        MyBettingListRes myBettingListRes = new MyBettingListRes(myBetting);
+
+        divideJoiningBetting(myBettingListRes, joiningBetting);
+
+        return myBettingListRes;
+    }
+
+    private void divideJoiningBetting(MyBettingListRes myBettingListRes, List<Betting> bettingList) {
+        List<BettingDto> joiningBetting = myBettingListRes.getJoiningBetting();
+        List<BettingDto> closedBetting = myBettingListRes.getClosedBetting();
+
+        bettingList.stream()
+                .forEach(betting -> {
+                    LocalDate todoDate;
+
+                    if (betting.getTodo() == null) {
+                        TodoRedisDto todoRedisDto = getTodoDataFromRedis(betting.getId());
+                        todoDate = LocalDate.of(todoRedisDto.getYear(), todoRedisDto.getMonth(), todoRedisDto.getDate());
+                    } else {
+                        todoDate = betting.getDate();
+                    }
+
+                    if (todoDate.isBefore(LocalDate.now())) {
+                        closedBetting.add(BettingDto.toDto(betting));
+                    } else {
+                        joiningBetting.add(BettingDto.toDto(betting));
+                    }
+                });
     }
 
     @Transactional(readOnly = true)
@@ -90,7 +115,25 @@ public class BettingService {
 
         List<MemberBetting> memberBetting = memberBettingRepository.findByBettingId(bettingId);
 
-        return new BettingDetailsRes(betting, memberBetting, memberId);
+        BettingDetailsRes bettingDetailsRes = new BettingDetailsRes(betting, memberBetting, memberId);
+
+        addTodoDataToBettingDetails(betting, bettingDetailsRes);
+
+        return bettingDetailsRes;
+    }
+
+    private void addTodoDataToBettingDetails(Betting betting, BettingDetailsRes bettingDetailsRes) {
+        if (betting.getTodo() == null) {
+            TodoRedisDto todoRedisDto = getTodoDataFromRedis(betting.getId());
+
+            LocalDate todoDate = LocalDate.of(todoRedisDto.getYear(), todoRedisDto.getMonth(), todoRedisDto.getDate());
+
+            bettingDetailsRes.setTodoContents(todoRedisDto.getContents());
+            bettingDetailsRes.setIsFinished(todoDate.isBefore(LocalDate.now()));
+        } else {
+            bettingDetailsRes.setTodoContents(betting.getTodo().getContents());
+            bettingDetailsRes.setIsFinished(betting.getDate().isBefore(LocalDate.now()));
+        }
     }
 
     public void removeBetting(Long bettingId, Long memberId) {
@@ -110,5 +153,9 @@ public class BettingService {
         bettingRepository.delete(betting);
 
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
+    }
+
+    private TodoRedisDto getTodoDataFromRedis(Long bettingId) {
+        return (TodoRedisDto) redisUtils.getData("todo:" + bettingId);
     }
 }

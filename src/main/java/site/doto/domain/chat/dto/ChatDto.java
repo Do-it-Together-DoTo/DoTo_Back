@@ -8,16 +8,15 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ChatDto {
+    private Long chatId;
 
-    Long chatId;
+    private String contents;
 
-    String contents;
+    private LocalDateTime createdDate;
 
-    LocalDateTime createdDate;
+    private Long memberId;
 
-    Long memberId;
+    private String memberNickname;
 
-    String memberNickname;
-
-    String mainCharacterImg;
+    private String mainCharacterImg;
 }

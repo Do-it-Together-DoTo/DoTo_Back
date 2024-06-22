@@ -6,6 +6,5 @@ import java.util.List;
 
 @Data
 public class ChatRoomListRes {
-
-    List<ChatRoomDto> chatRooms;
+    private List<ChatRoomDto> chatRooms;
 }
