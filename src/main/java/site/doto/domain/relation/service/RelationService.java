@@ -44,6 +44,10 @@ public class RelationService {
         Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
         Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
 
+        if(isRelationRequestExistsInRedis(member.getId(), friend.getId())) {
+            throw new CustomException(FRIEND_REQUEST_COOLDOWN);
+        }
+
         if(memberToFriend.isEmpty() && friendToMember.isEmpty()) {
             relationRepository.save(new Relation(new RelationPK(member.getId(), friend.getId()), member, friend, WAITING));
             updateRelationRequestToRedis(member.getId(), friend.getId());
@@ -55,10 +59,6 @@ public class RelationService {
 
             if(relationStatus.equals(WAITING)) {
                 throw new CustomException(FRIEND_ALREADY_REQUESTING);
-            }
-
-            if(isRelationRequestExistsInRedis(member.getId(), friend.getId())) {
-                throw new CustomException(FRIEND_REQUEST_COOLDOWN);
             }
 
             if(relationStatus.equals(BLOCKED)) {
