@@ -1,9 +1,12 @@
 package site.doto.domain.todo.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.todo.dto.*;
+import site.doto.domain.todo.service.TodoService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,16 +15,16 @@ import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
 @RequestMapping("/todo")
+@RequiredArgsConstructor
 public class TodoController {
+    private final TodoService todoService;
+
     @PostMapping
     public ResponseDto<TodoDetailsRes> todoAdd(
-            @RequestBody TodoAddReq todoAddReq) {
-        TodoDetailsRes result = TodoDetailsRes.builder()
-                .id(10001L)
-                .contents(todoAddReq.getContents())
-                .date("2024-05-19 00:00:00")
-                .isDone(false)
-                .build();
+            @RequestBody @Valid TodoAddReq todoAddReq) {
+        Long memberId = 1L;
+
+        TodoDetailsRes result = todoService.addTodo(memberId, todoAddReq);
 
         return ResponseDto.success(TODO_CRATED, result);
     }

@@ -5,6 +5,7 @@ import site.doto.domain.category.entity.Category;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
@@ -13,7 +14,7 @@ public class TodoAddReq {
     @NotNull
     private Long categoryId;
 
-    @NotNull
+    @NotBlank
     private String contents;
 
     public Todo toEntity(Member member, Category category) {
