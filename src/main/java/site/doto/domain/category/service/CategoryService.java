@@ -103,7 +103,7 @@ public class CategoryService {
 
         if(!todoList.isEmpty()) {
             for (Todo todo : todoList) {
-                todoService.deleteTodo(todo);
+                todoService.disconnectBetting(todo);
             }
             entityManager.flush();
         }
