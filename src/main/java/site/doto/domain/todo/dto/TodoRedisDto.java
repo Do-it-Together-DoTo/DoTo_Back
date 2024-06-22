@@ -1,34 +1,31 @@
 package site.doto.domain.todo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import site.doto.domain.todo.entity.Todo;
 
 import java.io.Serializable;
-
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TodoRedisDto implements Serializable {
-    private Long bettingId;
-
-    private Long todoId;
-
-    private Long memberId;
-
-    private Long categoryId;
-
-    private String categoryContents;
-
     private String contents;
 
-    public static TodoRedisDto toDto(Todo todo, Long id) {
+    private Integer year;
+
+    private Integer month;
+
+    private Integer date;
+
+    public static TodoRedisDto toDto(Todo todo) {
         return TodoRedisDto.builder()
-                .bettingId(id)
-                .todoId(todo.getId())
-                .memberId(todo.getMember().getId())
-                .categoryId(todo.getCategory().getId())
                 .contents(todo.getContents())
-                .categoryContents(todo.getCategory().getContents())
+                .year(todo.getDate().getYear())
+                .month(todo.getDate().getMonthValue())
+                .date(todo.getDate().getDayOfMonth())
                 .build();
     }
 }
