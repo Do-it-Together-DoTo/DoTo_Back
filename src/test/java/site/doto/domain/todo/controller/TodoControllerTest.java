@@ -526,4 +526,31 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
 
     }
+
+    @Test
+    @DisplayName("투두 생성 실패 - 본인 카테고리가 아닌 경우")
+    public void todo_add_fail_category_is_not_mine() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10022L);
+        todoAddReq.setContents("투두 생성 테스트");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+
+    }
 }
