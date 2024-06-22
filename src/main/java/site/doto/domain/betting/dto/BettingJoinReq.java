@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class BettingJoinReq {
     @NotNull
-    Integer cost;
+    private Integer cost;
 
     @NotNull
-    Boolean prediction;
+    private Boolean prediction;
 
     public MemberBetting toEntity(Member member, Betting betting) {
         return MemberBetting.builder()

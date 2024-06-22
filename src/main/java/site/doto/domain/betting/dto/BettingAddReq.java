@@ -12,11 +12,11 @@ import javax.validation.constraints.NotNull;
 @Data
 public class BettingAddReq {
     @NotNull
-    Long todoId;
+    private Long todoId;
 
     @NotNull
     @Length(min = 2, max = 20)
-    String name;
+    private String name;
 
     public Betting toEntity(Member member, Todo todo) {
         ChatRoom chatRoom = new ChatRoom();

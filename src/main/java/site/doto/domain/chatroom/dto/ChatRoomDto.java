@@ -6,16 +6,15 @@ import lombok.Data;
 @Data
 @Builder
 public class ChatRoomDto {
+    private Long chatRoomId;
 
-    Long chatRoomId;
+    private Long bettingId;
 
-    Long bettingId;
+    private String bettingName;
 
-    String bettingName;
+    private Long memberId;
 
-    Long memberId;
+    private String memberNickname;
 
-    String memberNickname;
-
-    String mainCharacterImg;
+    private String mainCharacterImg;
 }

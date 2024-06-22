@@ -4,5 +4,5 @@ import lombok.Data;
 
 @Data
 public class ChatListReq {
-    Long lastChatId;
+    private Long lastChatId;
 }

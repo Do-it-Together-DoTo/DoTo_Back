@@ -9,29 +9,29 @@ import java.util.List;
 
 @Data
 public class BettingDetailsRes {
-    Long bettingId;
+    private Long bettingId;
 
-    String bettingName;
+    private String bettingName;
 
-    Long chatRoomId;
+    private Long chatRoomId;
 
-    Long memberId;
+    private Long memberId;
 
-    String memberNickname;
+    private String memberNickname;
 
-    String todoContents;
+    private String todoContents;
 
-    Integer successCoins;
+    private Integer successCoins;
 
-    Integer failureCoins;
+    private Integer failureCoins;
 
-    Integer participantCount;
+    private Integer participantCount;
 
-    Boolean isParticipating;
+    private Boolean isParticipating;
 
-    Boolean isFinished;
+    private Boolean isFinished;
 
-    Boolean isAchieved;
+    private Boolean isAchieved;
 
     public BettingDetailsRes(Betting betting, List<MemberBetting> memberBetting, Long memberId) {
         this.bettingId = betting.getId();

@@ -7,15 +7,15 @@ import site.doto.domain.betting.entity.Betting;
 @Data
 @Builder
 public class BettingDto {
-    Long bettingId;
+    private Long bettingId;
 
-    String bettingName;
+    private String bettingName;
 
-    Long memberId;
+    private Long memberId;
 
-    String memberNickname;
+    private String memberNickname;
 
-    String mainCharacterImg;
+    private String mainCharacterImg;
 
     static public BettingDto toDto(Betting betting) {
         return BettingDto.builder()

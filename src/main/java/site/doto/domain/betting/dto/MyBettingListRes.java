@@ -10,11 +10,11 @@ import java.util.List;
 @Data
 public class MyBettingListRes {
 
-    List<BettingDto> myBetting = new ArrayList<>();
+    private List<BettingDto> myBetting = new ArrayList<>();
 
-    List<BettingDto> joiningBetting = new ArrayList<>();
+    private List<BettingDto> joiningBetting = new ArrayList<>();
 
-    List<BettingDto> closedBetting = new ArrayList<>();
+    private List<BettingDto> closedBetting = new ArrayList<>();
 
     public MyBettingListRes(List<Betting> myBetting, List<Betting> bettingList) {
         myBetting.stream()

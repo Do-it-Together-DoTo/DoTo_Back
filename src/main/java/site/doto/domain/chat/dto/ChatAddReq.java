@@ -7,5 +7,5 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ChatAddReq {
     @NotNull
-    String contents;
+    private String contents;
 }

@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 @Data
 public class OpenBettingListRes {
-    List<BettingDto> openBetting;
+    private List<BettingDto> openBetting;
 
     public OpenBettingListRes(List<Betting> openBetting) {
         this.openBetting = openBetting.stream()
