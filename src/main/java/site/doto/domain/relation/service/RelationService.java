@@ -127,6 +127,7 @@ public class RelationService {
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
+        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
 
         if(friendToMember.isEmpty()) {
             throw new CustomException(FRIEND_REQUEST_MISSING);
@@ -134,9 +135,23 @@ public class RelationService {
 
         Relation existingFriendToMember = friendToMember.get();
 
-        if(existingFriendToMember.getStatus().equals(WAITING)) {
-            relationRepository.delete(existingFriendToMember);
+        if(existingFriendToMember.getStatus().equals(ACCEPTED)) {
+            throw new CustomException(FRIEND_ALREADY_ADDED);
         }
+
+        if(existingFriendToMember.getStatus().equals(BLOCKED)) {
+            throw new CustomException(MEMBER_NOT_FOUND);
+        }
+
+        if(memberToFriend.isPresent()) {
+            Relation existingMemberToFriend = memberToFriend.get();
+
+            if(existingMemberToFriend.getStatus().equals(BLOCKED)) {
+                throw new CustomException(BLOCKED_MEMBER);
+            }
+        }
+
+        relationRepository.delete(existingFriendToMember);
     }
 
     private void updateRelationRequestToRedis(Long memberId, Long friendId) {
