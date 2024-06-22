@@ -18,6 +18,7 @@ import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDate;
+import java.util.Objects;
 
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -40,6 +41,7 @@ public class TodoService {
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
         validateActivatedCategory(category.getIsActivated());
+        validateMemberCategory(memberId, category.getMember().getId());
 
         Todo todo = todoAddReq.toEntity(member, category);
 
@@ -72,6 +74,12 @@ public class TodoService {
     private void validateActivatedCategory(Boolean isActivated) {
         if(!isActivated) {
             throw new CustomException(CATEGORY_INACTIVATED);
+        }
+    }
+
+    private void validateMemberCategory(Long memberId, Long categoryMemberId) {
+        if(!Objects.equals(memberId, categoryMemberId)) {
+            throw new CustomException(FORBIDDEN);
         }
     }
 }
