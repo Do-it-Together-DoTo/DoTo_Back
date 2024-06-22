@@ -9,6 +9,9 @@ insert into member (member_id, email, nickname, password, description, main_char
                                                                                                     (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20004, 'test20004@naver.com', 'test_user20004', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20005, 'test20004@naver.com', 'test_user20005', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20006, 'test20006@naver.com', 'test_user20006', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20007, 'test20007@naver.com', 'test_user20007', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20008, 'test20008@naver.com', 'test_user20008', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
 
 --relation
@@ -22,6 +25,10 @@ insert into relation (member_id, friend_id, status) values
                                                               (1, 20001, 'BLOCKED'),
                                                               (20003, 1, 'BLOCKED'),
                                                               (1, 20005, 'BLOCKED'),
+                                                              (1, 20007, 'BLOCKED'),
+                                                              (20008, 1, 'BLOCKED'),
+                                                              (1, 20006, 'WAITING'),
+                                                              (1, 20008, 'WAITING'),
                                                               (20005, 1, 'WAITING'),
                                                               (20004, 1, 'WAITING');
 
