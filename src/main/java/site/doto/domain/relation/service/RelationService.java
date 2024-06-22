@@ -3,6 +3,7 @@ package site.doto.domain.relation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import site.doto.domain.relation.dto.RelationCanceledReq;
 import site.doto.domain.relation.dto.RelationDeclinedReq;
 import site.doto.domain.relation.dto.RelationRequestReq;
 import site.doto.domain.relation.dto.RelationResponseReq;
@@ -152,6 +153,41 @@ public class RelationService {
         }
 
         relationRepository.delete(existingFriendToMember);
+    }
+
+    public void cancelRelation(Long memberId, RelationCanceledReq relationCanceledReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Member friend = memberRepository.findById(relationCanceledReq.getFriendId())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Optional<Relation> memberToFriend = relationRepository.findById(new RelationPK(member.getId(), friend.getId()));
+        Optional<Relation> friendToMember = relationRepository.findById(new RelationPK(friend.getId(), member.getId()));
+
+        if(memberToFriend.isEmpty()) {
+            throw new CustomException(FRIEND_REQUEST_MISSING);
+        }
+
+        Relation existingMemberToFriend = memberToFriend.get();
+
+        if(existingMemberToFriend.getStatus().equals(ACCEPTED)) {
+            throw new CustomException(FRIEND_ALREADY_ADDED);
+        }
+
+        if(existingMemberToFriend.getStatus().equals(BLOCKED)) {
+            throw new CustomException(BLOCKED_MEMBER);
+        }
+
+        if(friendToMember.isPresent()) {
+            Relation existingFriendToMember = friendToMember.get();
+
+            if(existingFriendToMember.getStatus().equals(BLOCKED)) {
+                throw new CustomException(MEMBER_NOT_FOUND);
+            }
+        }
+
+        relationRepository.delete(existingMemberToFriend);
     }
 
     private void updateRelationRequestToRedis(Long memberId, Long friendId) {
