@@ -16,12 +16,16 @@ insert into member (member_id, email, nickname, password, description, coin, typ
                                                                                                     (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 100, 'LOCAL', current_timestamp), -- 베팅 생성
                                                                                                     (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
                                                                                                     (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (4, 'test4@naver.com', 'test_user4', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20004, 'test20004@naver.com', 'test_user20004', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20005, 'test20004@naver.com', 'test_user20005', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20006, 'test20006@naver.com', 'test_user20006', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20007, 'test20007@naver.com', 'test_user20007', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20008, 'test20008@naver.com', 'test_user20008', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
 
 insert into characters (character_id, exp, character_type_id, member_id) values (1, 250, 1, 1),
@@ -33,7 +37,10 @@ insert into characters (character_id, exp, character_type_id, member_id) values 
                                                                                 (7, 100, 1, 20003),
                                                                                 (8, 100, 2, 20004),
                                                                                 (9, 100, 3, 20005),
-                                                                                (10, 100, 1, 30000);
+                                                                                (10, 100, 1, 20006),
+                                                                                (11, 100, 2, 20007),
+                                                                                (12, 100, 3, 20008),
+                                                                                (13, 100, 1, 30000);
 
 update member set main_character_id = 1 where member_id = 1;
 update member set main_character_id = 2 where member_id = 2;
