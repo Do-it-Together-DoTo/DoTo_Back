@@ -2,7 +2,8 @@
 insert into member (member_id, email, nickname, password, description, main_character_img, coin, type, last_upload) values
                                                                                                     (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 100, 'LOCAL', current_timestamp), -- 베팅 생성
                                                                                                     (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                    (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (3, 'test3@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (4, 'test4@naver.com', 'test_user4', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
                                                                                                     (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
@@ -49,17 +50,19 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
                                                                                                  (10020, 1, '테스트_카테고리',true, false, 'BLUE', 1),
                                                                                                  (10021, 1, '테스트_카테고리',true, false, 'BLUE', 1),
                                                                                                  (10022, 2, '테스트_카테고리2',true, true, 'PINK', 1), -- 베팅 생성 실패
-                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1);
+                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1),
+                                                                                                 (10024, 4, '테스트_카테고리4',true, true, 'PINK', 1);
 
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values
                                                                                 (20001, 1, 10001, '투두1', current_date, false), -- 베팅 생성, 삭제
                                                                                 (20002, 2, 10021, '투두2', current_date, false), -- 베팅 생성 실패, 삭제 실패
-                                                                                (20003, 1, 10001, '투두3', '2024-01-01', true), -- 베팅 생성 실패
+                                                                                (20003, 1, 10001, '투두3', dateadd('DAY', -1, current_date), true), -- 베팅 생성 실패
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
-                                                                                (20005, 2, 10022, '투두5', '2024-01-01', true), -- 나의 베팅 조회
+                                                                                (20005, 2, 10022, '투두5', dateadd('DAY', -1, current_date), true), -- 나의 베팅 조회
                                                                                 (20006, 3, 10023, '투두6', current_date, false),
-                                                                                (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false);
+                                                                                (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false),
+                                                                                (20008, 4, 10024, '투두8', current_date, false);
 
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
@@ -67,8 +70,8 @@ insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
                                                                             (30002, 2, 20002, '베팅2', null), -- 베팅 삭제 실패
                                                                             (30003, 2, 20005, '베팅3', true), -- 나의 베팅 조회
                                                                             (30004, 3, 20006, '베팅4', null),
-                                                                            (30005, 1, 20007, '베팅5', null);
-
+                                                                            (30005, 1, 20007, '베팅5', false),
+                                                                            (30006, 4, 20008, '베팅6', null);
 
 --chatRoom
 insert into chat_room (chat_room_id, betting_id) values
