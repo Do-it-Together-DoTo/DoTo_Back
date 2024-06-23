@@ -47,7 +47,7 @@ public class RelationService {
         Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
         Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
 
-        if(isRelationRequestExistsInRedis(member.getId(), friend.getId())) {
+        if(isRelationRequestInRedis(member.getId(), friend.getId())) {
             throw new CustomException(FRIEND_REQUEST_COOLDOWN);
         }
 
@@ -178,7 +178,7 @@ public class RelationService {
         redisUtils.setDataWithExpiration(key, "WAITING", 300L);
     }
 
-    private boolean isRelationRequestExistsInRedis(Long memberId, Long friendId) {
+    private boolean isRelationRequestInRedis(Long memberId, Long friendId) {
         String key = "relationRequest:" + memberId + ":" + friendId;
         Object data = redisUtils.getData(key);
 
