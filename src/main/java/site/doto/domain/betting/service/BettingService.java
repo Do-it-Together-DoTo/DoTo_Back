@@ -11,6 +11,9 @@ import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.member_betting.entity.MemberBetting;
 import site.doto.domain.member_betting.repository.MemberBettingRepository;
+import site.doto.domain.relation.entity.Relation;
+import site.doto.domain.relation.entity.RelationPK;
+import site.doto.domain.relation.repository.RelationRepository;
 import site.doto.domain.todo.dto.TodoRedisDto;
 import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
@@ -19,7 +22,10 @@ import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+import static site.doto.domain.relation.enums.RelationStatus.BLOCKED;
+import static site.doto.domain.relation.enums.RelationStatus.WAITING;
 import static site.doto.global.status_code.ErrorCode.*;
 
 @Service
@@ -30,6 +36,7 @@ public class BettingService {
     private final MemberRepository memberRepository;
     private final MemberBettingRepository memberBettingRepository;
     private final TodoRepository todoRepository;
+    private final RelationRepository relationRepository;
     private final RedisUtils redisUtils;
 
     public void addBetting(Long memberId, BettingAddReq bettingAddReq) {
@@ -64,6 +71,42 @@ public class BettingService {
 
     private boolean bettingAlreadyHolding(Long memberId) {
         return !bettingRepository.findAfterToday(memberId, PageRequest.of(0, 1)).isEmpty();
+    }
+
+    public void joinBetting(Long memberId, Long bettingId, BettingJoinReq bettingJoinReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Betting betting = bettingRepository.findById(bettingId)
+                .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
+
+        Long friendId = betting.getMember().getId();
+
+        if (memberId.equals(friendId)) {
+            throw new CustomException(BETTING_SELF_JOIN);
+        }
+
+        Optional<Relation> relation = relationRepository.findById(new RelationPK(friendId, memberId));
+
+        if (!relation.isPresent() || relation.get().getStatus().equals(WAITING)) {
+            throw new CustomException(NOT_FRIEND);
+        }
+
+        if (relation.get().getStatus().equals(BLOCKED)) {
+            throw new CustomException(BETTING_NOT_FOUND);
+        }
+
+        if (betting.getTodo() == null || betting.getDate().isBefore(LocalDate.now())) {
+            throw new CustomException(BETTING_CLOSED);
+        }
+
+        if (memberBettingRepository.existsByMemberIdAndBettingId(memberId, bettingId)) {
+            throw new CustomException(BETTING_ALREADY_JOINING);
+        }
+
+        MemberBetting memberBetting = bettingJoinReq.toEntity(member, betting);
+
+        memberBettingRepository.save(memberBetting);
     }
 
     @Transactional(readOnly = true)
@@ -136,6 +179,10 @@ public class BettingService {
         }
     }
 
+    private TodoRedisDto getTodoDataFromRedis(Long bettingId) {
+        return (TodoRedisDto) redisUtils.getData("todo:" + bettingId);
+    }
+
     public void removeBetting(Long bettingId, Long memberId) {
         Betting betting = bettingRepository.findByIdWithChatRoom(bettingId)
                 .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
@@ -153,9 +200,5 @@ public class BettingService {
         bettingRepository.delete(betting);
 
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
-    }
-
-    private TodoRedisDto getTodoDataFromRedis(Long bettingId) {
-        return (TodoRedisDto) redisUtils.getData("todo:" + bettingId);
     }
 }
