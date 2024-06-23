@@ -41,14 +41,14 @@ public class ItemController {
 
     @PatchMapping("/members/items")
     public ResponseDto<?> itemUse(
-            @RequestBody ItemUseReq itemUseReq) {
+            @RequestBody @Valid ItemUseReq itemUseReq) {
         return ResponseDto.success(ITEM_USE_OK, null);
     }
 
     @PatchMapping("/members/items/{itemId}")
     public ResponseDto<?> itemSell(
             @PathVariable("itemId") Long itemId,
-            @RequestBody ItemSellReq itemSellReq) {
+            @RequestBody @Valid ItemSellReq itemSellReq) {
         return ResponseDto.success(ITEMS_SELL_OK, null);
     }
 

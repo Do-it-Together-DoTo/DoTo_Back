@@ -8,6 +8,7 @@ import site.doto.domain.relation.dto.*;
 import site.doto.domain.relation.service.RelationService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,7 @@ public class RelationController {
 
     @PostMapping("/request")
     public ResponseDto<?> relationRequest(
-            @RequestBody RelationRequestReq relationRequestReq) {
+            @RequestBody @Valid RelationRequestReq relationRequestReq) {
         Long memberId = 1L;
 
         relationService.addRelationRequest(memberId, relationRequestReq);
@@ -31,7 +32,7 @@ public class RelationController {
 
     @PostMapping("/response")
     public ResponseDto<?> relationResponse(
-            @RequestBody RelationResponseReq relationResponseReq) {
+            @RequestBody @Valid RelationResponseReq relationResponseReq) {
         Long memberId = 1L;
 
         relationService.addRelationResponse(memberId, relationResponseReq);
@@ -41,7 +42,7 @@ public class RelationController {
 
     @DeleteMapping("/response")
     public ResponseDto<?> relationDeclined(
-            @RequestBody RelationDeclinedReq relationDeclinedReq) {
+            @RequestBody @Valid RelationDeclinedReq relationDeclinedReq) {
         Long memberId = 1L;
 
         relationService.declineRelation(memberId, relationDeclinedReq);
@@ -51,7 +52,7 @@ public class RelationController {
 
     @DeleteMapping("/request")
     public ResponseDto<?> relationCanceled(
-            @RequestBody RelationCanceledReq relationCanceledReq) {
+            @RequestBody @Valid RelationCanceledReq relationCanceledReq) {
         Long memberId = 1L;
 
         relationService.cancelRelation(memberId, relationCanceledReq);
@@ -106,14 +107,14 @@ public class RelationController {
 
     @PostMapping("/block")
     ResponseDto<?> relationBlock(
-            @RequestBody RelationBlockReq relationBlockReq) {
+            @RequestBody @Valid RelationBlockReq relationBlockReq) {
 
         return ResponseDto.success(FRIEND_BLOCK_OK, null);
     }
 
     @DeleteMapping("/block")
     ResponseDto<?> relationUnblock(
-            @RequestBody RelationUnblockReq relationUnblockReq) {
+            @RequestBody @Valid RelationUnblockReq relationUnblockReq) {
 
         return ResponseDto.success(FRIEND_UNBLOCK_OK, null);
     }
