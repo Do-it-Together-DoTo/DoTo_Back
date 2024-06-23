@@ -312,6 +312,11 @@ class BettingControllerTest {
         bettingAddReq3.setPrediction(true);
         String content3 = gson.toJson(bettingAddReq3);
 
+        BettingJoinReq bettingAddReq4 = new BettingJoinReq();
+        bettingAddReq4.setCost(13);
+        bettingAddReq4.setPrediction(true);
+        String content4 = gson.toJson(bettingAddReq4);
+
         //when
         ResultActions notEnoughRequestFields = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
@@ -331,6 +336,12 @@ class BettingControllerTest {
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content3));
 
+        ResultActions notMultipleOfFive = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content4));
+
         //then
         notEnoughRequestFields
                 .andExpect(status().isOk())
@@ -343,6 +354,11 @@ class BettingControllerTest {
                 .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
 
         tooMuchBet
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        notMultipleOfFive
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
