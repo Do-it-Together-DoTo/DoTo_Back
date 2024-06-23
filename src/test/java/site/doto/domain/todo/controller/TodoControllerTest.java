@@ -71,7 +71,7 @@ class TodoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_CRATED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(TODO_CRATED.getMessage()))
-                .andExpect(jsonPath("$.body.id").value(20008L))
+                .andExpect(jsonPath("$.body.id").value(20009L))
                 .andExpect(jsonPath("$.body.contents").value("투두 생성"))
                 .andExpect(jsonPath("$.body.date").value(LocalDate.now().toString()))
                 .andExpect(jsonPath("$.body.isDone").value(false))
