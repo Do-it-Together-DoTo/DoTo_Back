@@ -12,17 +12,17 @@ insert into character_type (character_type_id, name, img, level, species, descri
                                                                                            (30, '캐릭터3-1', '캐릭터3-1 이미지', 1, 3, '캐릭터3-1 설명'),
                                                                                            (300, '캐릭터3-2', '캐릭터3-2 이미지', 2, 3, '캐릭터3-2 설명');
 --member
-insert into member (member_id, email, nickname, password, description, main_character_img, coin, type, last_upload) values
-                                                                                                    (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 100, 'LOCAL', current_timestamp), -- 베팅 생성
-                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                    (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                    (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20004, 'test20004@naver.com', 'test_user20004', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20005, 'test20004@naver.com', 'test_user20005', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                    (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
+insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values
+                                                                                                    (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 100, 'LOCAL', current_timestamp), -- 베팅 생성
+                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20004, 'test20004@naver.com', 'test_user20004', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20005, 'test20004@naver.com', 'test_user20005', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
 
 insert into characters (character_id, exp, character_type_id, member_id) values (1, 250, 1, 1),
                                                                                 (2, 200, 2, 1),

@@ -27,7 +27,7 @@ public class MemberDetailsRes {
                 .description(member.getDescription())
                 .mainCharacterExp(calculateExp(exp))
                 .mainCharacterLevel(calculateLevel(exp))
-                .mainCharacterImg(member.getMainCharacter().getCharacterType().getImg())
+                .mainCharacterImg(member.getMainCharacterImg())
                 .coin(member.getCoin())
                 .build();
     }
