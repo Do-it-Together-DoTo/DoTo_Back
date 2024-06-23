@@ -688,13 +688,14 @@ class RelationControllerTest {
     }
 
     @Test
-    @DisplayName("친구 삭제 성공")
+    @DisplayName("친구 삭제 - 성공")
     public void friend_remove_success() throws Exception {
         // given
+        Long friendId = 2L;
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/friends/{memberId}", 2L)
+                delete("/friends/{friendId}", friendId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON));
@@ -724,11 +725,51 @@ class RelationControllerTest {
                                                         .description("내용 없음")
                                         )
                                 )
-                                .pathParameters(parameterWithName("memberId").description("친구 Id"))
+                                .pathParameters(parameterWithName("friendId").description("친구 Id"))
                                 .responseSchema(Schema.schema("친구 삭제 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("친구 삭제 - 존재하지 않는 사용자와의 친구 삭제")
+    public void friend_remove_member_not_found() throws Exception {
+        // given
+        Long friendId = 10000L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/{friendId}", friendId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("친구 삭제 - 차단한 사용자")
+    public void friend_remove_blocked_member() throws Exception {
+        // given
+        Long friendId = 20009L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/{friendId}", friendId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BLOCKED_MEMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BLOCKED_MEMBER.getMessage()));
     }
 
     @Test
