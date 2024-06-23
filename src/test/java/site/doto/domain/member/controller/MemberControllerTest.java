@@ -256,6 +256,48 @@ class MemberControllerTest {
     }
 
     @Test
+    @DisplayName("회원 정보 조회_성공")
+    public void member_inquiry_success() throws Exception {
+        //given
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/members/")
+                        .header("Authorization", "Bearer " + jwtToken)
+        );
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andDo(document(
+                        "회원 정보 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Member API")
+                                .summary("회원 정보 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING).description("성공 메시지"),
+                                                fieldWithPath("body.nickname").type(JsonFieldType.STRING).description("회원 닉네임"),
+                                                fieldWithPath("body.description").type(JsonFieldType.STRING).description("회원 한줄소개"),
+                                                fieldWithPath("body.mainCharacterExp").type(JsonFieldType.NUMBER).description(30),
+                                                fieldWithPath("body.mainCharacterLevel").type(JsonFieldType.NUMBER).description(3),
+                                                fieldWithPath("body.mainCharacterImg").type(JsonFieldType.STRING).description("회원 한줄소개"),
+                                                fieldWithPath("body.coin").type(JsonFieldType.NUMBER).description(100)
+                                        )
+                                )
+                                .requestSchema(Schema.schema("회원 정보 조회 Request"))
+                                .responseSchema(Schema.schema("회원 정보 조회 Response"))
+                                .build())
+                ));
+    }
+
+    @Test
     @DisplayName("비밀번호 변경_성공")
     public void password_reset_success() throws Exception {
         //given

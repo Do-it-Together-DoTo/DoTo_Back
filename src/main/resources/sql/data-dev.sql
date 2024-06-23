@@ -1,13 +1,44 @@
+--characterType
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (1, '캐릭터1', '캐릭터1 이미지', 0, 1, '캐릭터1 설명'),
+                                                                                           (10, '캐릭터1-1', '캐릭터1-1 이미지', 1, 1, '캐릭터1-1 설명'),
+                                                                                           (100, '캐릭터1-2', '캐릭터1-2 이미지', 2, 1, '캐릭터1-2 설명');
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (2, '캐릭터2', '캐릭터2 이미지', 0, 2, '캐릭터2 설명'),
+                                                                                           (20, '캐릭터2-1', '캐릭터2-1 이미지', 1, 2, '캐릭터2-1 설명'),
+                                                                                           (200, '캐릭터2-2', '캐릭터2-2 이미지', 2, 2, '캐릭터2-2 설명');
+insert into character_type (character_type_id, name, img, level, species, description) values
+                                                                                           (3, '캐릭터3', '캐릭터3 이미지', 0, 3, '캐릭터3 설명'),
+                                                                                           (30, '캐릭터3-1', '캐릭터3-1 이미지', 1, 3, '캐릭터3-1 설명'),
+                                                                                           (300, '캐릭터3-2', '캐릭터3-2 이미지', 2, 3, '캐릭터3-2 설명');
+
 --member
-insert into member (member_id, email, nickname, password, description, main_character_img, coin, type, last_upload) values
-                                                                                                                        (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 100, 'LOCAL', current_timestamp), -- 베팅 생성
-                                                                                                                        (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                                        (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                                        (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                                        (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                                        (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                                        (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp),
-                                                                                                                        (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', '이미지 주소', 0, 'LOCAL', current_timestamp);
+insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values
+                                                                                                                        (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 100, 'LOCAL', current_timestamp), -- 베팅 생성
+                                                                                                                        (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                                        (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                                        (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                                        (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                                        (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                                        (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                                        (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
+insert into characters (character_id, exp, character_type_id, member_id) values (1, 250, 1, 1),
+                                                                                (2, 200, 2, 1),
+                                                                                (3, 100, 1, 2),
+                                                                                (4, 100, 1, 20000),
+                                                                                (5, 100, 2, 20001),
+                                                                                (6, 100, 3, 20002),
+                                                                                (7, 100, 2, 20003),
+                                                                                (8, 100, 1, 30000);
+
+update member set main_character_id = 1 where member_id = 1;
+update member set main_character_id = 2 where member_id = 2;
+update member set main_character_id = 3 where member_id = 3;
+update member set main_character_id = 4 where member_id = 20000;
+update member set main_character_id = 5 where member_id = 20001;
+update member set main_character_id = 6 where member_id = 20002;
+update member set main_character_id = 7 where member_id = 20003;
+update member set main_character_id = 8 where member_id = 30000;
 
 --relation
 insert into relation (member_id, friend_id, status) values
@@ -91,17 +122,3 @@ insert into item_type (item_type_id, name, img, price, grade, exp, description) 
                                                                                     (3, '테스트 아이템3', '테스트 아이템 이미지3', 30, '테스트 아이템 등급3', 30, '테스트 아이템 설명3'),
                                                                                     (4, '테스트 아이템4', '테스트 아이템 이미지4', 40, '테스트 아이템 등급4', 40, '테스트 아이템 설명4'),
                                                                                     (20000, '아이템 이름', '이미지 url', 10, '아이템 등급', 10, '아이템 설명');
-
---characterType
-insert into character_type (character_type_id, name, img, level, species, description) values
-                                                                                           (1, '캐릭터1', '캐릭터1 이미지', 0, 1, '캐릭터1 설명'),
-                                                                                           (10, '캐릭터1-1', '캐릭터1-1 이미지', 1, 1, '캐릭터1-1 설명'),
-                                                                                           (100, '캐릭터1-2', '캐릭터1-2 이미지', 2, 1, '캐릭터1-2 설명');
-insert into character_type (character_type_id, name, img, level, species, description) values
-                                                                                           (2, '캐릭터2', '캐릭터2 이미지', 0, 2, '캐릭터2 설명'),
-                                                                                           (20, '캐릭터2-1', '캐릭터2-1 이미지', 1, 2, '캐릭터2-1 설명'),
-                                                                                           (200, '캐릭터2-2', '캐릭터2-2 이미지', 2, 2, '캐릭터2-2 설명');
-insert into character_type (character_type_id, name, img, level, species, description) values
-                                                                                           (3, '캐릭터3', '캐릭터3 이미지', 0, 3, '캐릭터3 설명'),
-                                                                                           (30, '캐릭터3-1', '캐릭터3-1 이미지', 1, 3, '캐릭터3-1 설명'),
-                                                                                           (300, '캐릭터3-2', '캐릭터3-2 이미지', 2, 3, '캐릭터3-2 설명');

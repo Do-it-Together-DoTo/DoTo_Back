@@ -30,11 +30,11 @@ public class CharacterDto {
                 .build();
     }
 
-    public static Integer calculateLevel(Integer exp) {
+    private static Integer calculateLevel(Integer exp) {
         return exp/100;
     }
 
-    public static Integer calculateExp(Integer exp) {
+    private static Integer calculateExp(Integer exp) {
         return exp%100;
     }
 }

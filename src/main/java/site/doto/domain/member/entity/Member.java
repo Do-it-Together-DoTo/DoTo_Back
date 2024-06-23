@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import site.doto.domain.character.entity.Character;
 import site.doto.domain.member.type.MemberType;
 
 import javax.persistence.*;
@@ -28,7 +29,9 @@ public class Member {
 
     private String description;
 
-    private String mainCharacterImg;
+    @OneToOne
+    @JoinColumn(name = "main_character_id")
+    private Character mainCharacter;
 
     @Column(name = "coin", columnDefinition = "integer NOT NULL CHECK (coin >= 0)")
     private Integer coin;
@@ -38,5 +41,9 @@ public class Member {
     private MemberType type;
 
     private LocalDateTime lastUpload;
+
+    public String getMainCharacterImg() {
+        return mainCharacter.getCharacterType().getImg();
+    }
 
 }
