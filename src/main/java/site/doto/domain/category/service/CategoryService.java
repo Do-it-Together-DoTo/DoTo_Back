@@ -57,7 +57,7 @@ public class CategoryService {
         return CategoryDetailsRes.toDto(category);
     }
 
-    public CategoryListRes listCategory(Long memberId) {
+    public CategoryListRes findCategory(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
@@ -186,6 +186,12 @@ public class CategoryService {
 
     private void updateIsPublic(Category category, Boolean isPublic) {
         if(isPublic != null) {
+            if(!isPublic) {
+                Todo todo = todoRepository.findTodoIfOngoingBetting(category);
+                if(todo != null) {
+                    throw new CustomException(CATEGORY_CHANGE_RESTRICTED);
+                }
+            }
             category.updateIsPublic(isPublic);
         }
     }

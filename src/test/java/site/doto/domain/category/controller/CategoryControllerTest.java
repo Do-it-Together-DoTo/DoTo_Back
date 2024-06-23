@@ -192,7 +192,7 @@ class CategoryControllerTest {
     public void category_modify_success() throws Exception {
         //given
         CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
-        categoryModifyReq.setContents("카테고리1");
+        categoryModifyReq.setContents("카테고리3");
         categoryModifyReq.setIsPublic(false);
         categoryModifyReq.setColor("YELLOW");
         categoryModifyReq.setIsActivated(false);
@@ -201,7 +201,7 @@ class CategoryControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/categories/{categoryId}", 10001L)
+                patch("/categories/{categoryId}", 10003L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -212,7 +212,7 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_MODIFY_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_MODIFY_OK.getMessage()))
-                .andExpect(jsonPath("$.body.contents").value("카테고리1"))
+                .andExpect(jsonPath("$.body.contents").value("카테고리3"))
                 .andExpect(jsonPath("$.body.isPublic").value(false))
                 .andExpect(jsonPath("$.body.color").value("YELLOW"))
                 .andExpect(jsonPath("$.body.isActivated").value(false))
@@ -550,7 +550,7 @@ class CategoryControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                patch("/categories/{categoryId}", 10001L)
+                patch("/categories/{categoryId}", 10003L)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -629,6 +629,32 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 수정 실패 - 베팅이 진행중일 때 비공개 카테고리로 변경")
+    public void category_modify_fail_is_ongoing_betting() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("테스트 카테고리 1");
+        categoryAddReq.setIsPublic(false);
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories/{categoryId}", 10001L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_CHANGE_RESTRICTED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_CHANGE_RESTRICTED.getMessage()));
     }
 
     @Test

@@ -29,7 +29,11 @@ public class BettingController {
     @PostMapping("/{bettingId}")
     public ResponseDto<?> bettingJoin(
             @PathVariable Long bettingId,
-            @RequestBody BettingJoinReq bettingJoinReq) {
+            @RequestBody @Valid BettingJoinReq bettingJoinReq) {
+        Long memberId = 1L;
+
+        bettingService.joinBetting(memberId, bettingId, bettingJoinReq);
+
         return ResponseDto.success(SuccessCode.BETTING_JOIN_CREATED, null);
     }
 

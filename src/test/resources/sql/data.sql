@@ -57,6 +57,10 @@ insert into relation (member_id, friend_id, status) values
                                                               (1, 20001, 'BLOCKED'),
                                                               (20003, 1, 'BLOCKED'),
                                                               (1, 20005, 'BLOCKED'),
+                                                              (1, 20007, 'BLOCKED'),
+                                                              (20008, 1, 'BLOCKED'),
+                                                              (1, 20006, 'WAITING'),
+                                                              (1, 20008, 'WAITING'),
                                                               (20005, 1, 'WAITING'),
                                                               (20004, 1, 'WAITING');
 
@@ -84,17 +88,19 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
                                                                                                  (10020, 1, '테스트_카테고리',true, false, 'BLUE', 1),
                                                                                                  (10021, 1, '테스트_카테고리',true, false, 'BLUE', 1),
                                                                                                  (10022, 2, '테스트_카테고리2',true, true, 'PINK', 1), -- 베팅 생성 실패
-                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1);
+                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1),
+                                                                                                 (10024, 4, '테스트_카테고리4',true, true, 'PINK', 1);
 
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values
                                                                                 (20001, 1, 10001, '투두1', current_date, false), -- 베팅 생성, 삭제
                                                                                 (20002, 2, 10021, '투두2', current_date, false), -- 베팅 생성 실패, 삭제 실패
-                                                                                (20003, 1, 10001, '투두3', '2024-01-01', true), -- 베팅 생성 실패
+                                                                                (20003, 1, 10001, '투두3', dateadd('DAY', -1, current_date), true), -- 베팅 생성 실패
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
-                                                                                (20005, 2, 10022, '투두5', '2024-01-01', true), -- 나의 베팅 조회
+                                                                                (20005, 2, 10022, '투두5', dateadd('DAY', -1, current_date), true), -- 나의 베팅 조회
                                                                                 (20006, 3, 10023, '투두6', current_date, false),
-                                                                                (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false);
+                                                                                (20007, 1, 10002, '투두7', dateadd('DAY', -1, current_date), false),
+                                                                                (20008, 4, 10024, '투두8', current_date, false);
 
 --betting
 insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
@@ -102,8 +108,8 @@ insert into betting (betting_id, member_id, todo_id, name, is_achieved) values
                                                                             (30002, 2, 20002, '베팅2', null), -- 베팅 삭제 실패
                                                                             (30003, 2, 20005, '베팅3', true), -- 나의 베팅 조회
                                                                             (30004, 3, 20006, '베팅4', null),
-                                                                            (30005, 1, 20007, '베팅5', null);
-
+                                                                            (30005, 1, 20007, '베팅5', false),
+                                                                            (30006, 4, 20008, '베팅6', null);
 
 --chatRoom
 insert into chat_room (chat_room_id, betting_id) values
