@@ -2,6 +2,8 @@ package site.doto.domain.todo.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import java.time.LocalDate;
 import java.util.List;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.todo.entity.Todo;
@@ -22,4 +24,13 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<Todo> findTodoIfOngoingBetting(Category category) {
+        return jpaQueryFactory.select(todo)
+                .from(todo)
+                .innerJoin(betting).on(todo.id.eq(betting.todo.id))
+                .where(todo.category.id.eq(category.getId()))
+                .where(todo.date.goe(LocalDate.now()))
+                .fetch();
+    }
 }

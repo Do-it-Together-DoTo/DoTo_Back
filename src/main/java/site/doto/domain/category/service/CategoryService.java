@@ -186,6 +186,12 @@ public class CategoryService {
 
     private void updateIsPublic(Category category, Boolean isPublic) {
         if(isPublic != null) {
+            if(!isPublic) {
+                List<Todo> todoList = todoRepository.findTodoIfOngoingBetting(category);
+                if(!todoList.isEmpty()) {
+                    throw new CustomException(CATEGORY_CHANGE_RESTRICTED);
+                }
+            }
             category.updateIsPublic(isPublic);
         }
     }
