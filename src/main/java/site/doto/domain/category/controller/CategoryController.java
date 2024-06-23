@@ -30,7 +30,7 @@ public class CategoryController {
     public ResponseDto<CategoryListRes> categoryList() {
         Long memberId = 1L;
 
-        CategoryListRes result = categoryService.listCategory(memberId);
+        CategoryListRes result = categoryService.findCategory(memberId);
 
         return ResponseDto.success(CATEGORIES_INQUIRY_OK, result);
     }
