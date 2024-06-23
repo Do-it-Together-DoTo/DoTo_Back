@@ -80,6 +80,10 @@ public class BettingService {
         Betting betting = bettingRepository.findById(bettingId)
                 .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
 
+        if (bettingJoinReq.getCost() % 5 != 0) {
+            throw new CustomException(BIND_EXCEPTION);
+        }
+
         Long friendId = betting.getMember().getId();
 
         if (memberId.equals(friendId)) {
