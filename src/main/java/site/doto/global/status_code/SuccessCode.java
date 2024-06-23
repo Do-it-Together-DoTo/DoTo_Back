@@ -10,6 +10,7 @@ public enum SuccessCode {
     EMAIL_AUTH_OK(200, "이메일 인증번호 확인 성공"),
     LOGIN_OK(200, "로그인 성공"),
     MEMBER_MODIFY_OK(200, "회원 정보 수정 성공"),
+    MEMBER_INQUIRY_OK(200, "회원 정보 조회 성공"),
     PWD_MODIFY_OK(200, "비밀번호 변경 성공"),
     PWD_FIND_OK(200, "비밀번호 찾기 성공"),
     MEMBERS_SEARCH_OK(200, "유저 검색 성공"),

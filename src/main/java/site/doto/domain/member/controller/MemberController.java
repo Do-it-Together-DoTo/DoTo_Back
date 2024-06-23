@@ -126,4 +126,20 @@ public class MemberController {
 
         return ResponseDto.success(FRIENDS_RANKING_OK, result);
     }
+
+    @GetMapping
+    public ResponseDto<MemberDetailsRes> memberDetails() {
+        Long memberId = 1L;
+
+        MemberDetailsRes result = MemberDetailsRes.builder()
+                .nickname("회원 닉네임")
+                .description("회원 한줄소개")
+                .mainCharacterExp(30)
+                .mainCharacterLevel(3)
+                .mainCharacterImg("이미지url")
+                .coin(100)
+                .build();
+
+        return ResponseDto.success(MEMBER_INQUIRY_OK, result);
+    }
 }
