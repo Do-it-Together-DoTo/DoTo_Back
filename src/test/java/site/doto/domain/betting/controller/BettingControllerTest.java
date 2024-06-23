@@ -236,6 +236,7 @@ class BettingControllerTest {
     @DisplayName("베팅 참여 - 성공")
     public void betting_join_success() throws Exception {
         //given
+        Long bettingId = 30004L;
         BettingJoinReq bettingAddReq = new BettingJoinReq();
         bettingAddReq.setCost(50);
         bettingAddReq.setPrediction(true);
@@ -243,7 +244,7 @@ class BettingControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                post("/betting/{bettingId}", 10001L)
+                post("/betting/{bettingId}", bettingId)
                         .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content));
@@ -289,6 +290,198 @@ class BettingControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 검증 실패")
+    public void betting_join_validation_fail() throws Exception {
+        //given
+        Long bettingId = 30004L;
+
+        BettingJoinReq bettingAddReq1 = new BettingJoinReq();
+        bettingAddReq1.setCost(50);
+        String content1 = gson.toJson(bettingAddReq1);
+
+        BettingJoinReq bettingAddReq2 = new BettingJoinReq();
+        bettingAddReq2.setCost(0);
+        bettingAddReq2.setPrediction(true);
+        String content2 = gson.toJson(bettingAddReq2);
+
+        BettingJoinReq bettingAddReq3 = new BettingJoinReq();
+        bettingAddReq3.setCost(100);
+        bettingAddReq3.setPrediction(true);
+        String content3 = gson.toJson(bettingAddReq3);
+
+        BettingJoinReq bettingAddReq4 = new BettingJoinReq();
+        bettingAddReq4.setCost(13);
+        bettingAddReq4.setPrediction(true);
+        String content4 = gson.toJson(bettingAddReq4);
+
+        //when
+        ResultActions notEnoughRequestFields = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1));
+
+        ResultActions tooLittleBet = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2));
+
+        ResultActions tooMuchBet = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content3));
+
+        ResultActions notMultipleOfFive = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content4));
+
+        //then
+        notEnoughRequestFields
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        tooLittleBet
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        tooMuchBet
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        notMultipleOfFive
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 존재하지 않는 베팅")
+    public void betting_join_not_found() throws Exception {
+        //given
+        Long bettingId = 31001L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 자신의 베팅에 참여")
+    public void betting_join_betting_self_join() throws Exception {
+        //given
+        Long bettingId = 30001L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_SELF_JOIN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_SELF_JOIN.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 친구가 아닌 유저의 베팅")
+    public void betting_join_betting_not_friend() throws Exception {
+        //given
+        Long bettingId = 30006L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NOT_FRIEND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NOT_FRIEND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 종료된 베팅")
+    public void betting_join_betting_closed() throws Exception {
+        //given
+        Long bettingId = 30003L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_CLOSED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_CLOSED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 참여 - 이미 참여한 베팅")
+    public void betting_join_already_joining() throws Exception {
+        //given
+        Long bettingId = 30002L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_ALREADY_JOINING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_ALREADY_JOINING.getMessage()));
     }
 
     @Test

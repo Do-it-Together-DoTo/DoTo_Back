@@ -8,7 +8,9 @@ import site.doto.domain.member_betting.entity.MemberBettingPK;
 import java.util.List;
 
 public interface MemberBettingRepository extends JpaRepository<MemberBetting, MemberBettingPK> {
-    boolean existsByBettingId(Long bettingId);
+    Boolean existsByBettingId(Long bettingId);
+
+    Boolean existsByMemberIdAndBettingId(Long memberId, Long bettingId);
 
     @EntityGraph(attributePaths = "member")
     List<MemberBetting> findByBettingId(Long bettingId);
