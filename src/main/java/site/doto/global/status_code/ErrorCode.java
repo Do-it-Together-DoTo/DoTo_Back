@@ -41,7 +41,7 @@ public enum ErrorCode {
     BETTING_ALREADY_JOINING(400, "이미 참여한 베팅입니다."),
     BETTING_CANCEL_FAILED(400, "다른 사람이 참여한 베팅은 취소할 수 없습니다."),
     BETTING_SELF_JOIN(400, "자신이 연 베팅에는 참여할 수 없습니다."),
-    BETTING_CLOSED(400, "종료된 베팅입니다.."),
+    BETTING_CLOSED(400, "종료된 베팅입니다."),
     TODO_ALREADY_PAST(400, "과거의 투두는 베팅을 열 수 없습니다."),
     TODO_ALREADY_DONE(400, "이미 완료한 투두는 베팅을 열 수 없습니다."),
     BETTING_NOT_FOUND(404, "존재하지 않는 베팅입니다."),
