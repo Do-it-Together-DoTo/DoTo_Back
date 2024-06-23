@@ -57,7 +57,7 @@ public class CategoryService {
         return CategoryDetailsRes.toDto(category);
     }
 
-    public CategoryListRes listCategory(Long memberId) {
+    public CategoryListRes findCategory(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
