@@ -19,7 +19,6 @@ public class CharacterBuyReq {
                 .member(member)
                 .characterType(characterType)
                 .exp(0)
-                .isMain(false)
                 .build();
     }
 }

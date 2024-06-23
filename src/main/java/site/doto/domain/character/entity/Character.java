@@ -30,6 +30,4 @@ public class Character {
 
     private Integer exp;
 
-    private Boolean isMain;
-
 }
