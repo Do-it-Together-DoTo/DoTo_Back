@@ -25,12 +25,12 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
     }
 
     @Override
-    public List<Todo> findTodoIfOngoingBetting(Category category) {
+    public Todo findTodoIfOngoingBetting(Category category) {
         return jpaQueryFactory.select(todo)
                 .from(todo)
                 .innerJoin(betting).on(todo.id.eq(betting.todo.id))
                 .where(todo.category.id.eq(category.getId()))
                 .where(todo.date.goe(LocalDate.now()))
-                .fetch();
+                .fetchFirst();
     }
 }
