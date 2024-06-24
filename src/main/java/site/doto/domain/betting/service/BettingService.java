@@ -24,8 +24,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static site.doto.domain.relation.enums.RelationStatus.BLOCKED;
-import static site.doto.domain.relation.enums.RelationStatus.WAITING;
+import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
 
 @Service
@@ -160,11 +159,29 @@ public class BettingService {
         Betting betting = bettingRepository.findByIdWithChatRoom(bettingId)
                 .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
 
+        if (!betting.getMember().getId().equals(memberId)) {
+            Long friendId = betting.getMember().getId();
+
+            Optional<Relation> relation = relationRepository.findById(new RelationPK(friendId, memberId));
+
+            if (!relation.isPresent() || relation.get().getStatus().equals(WAITING)) {
+                throw new CustomException(NOT_FRIEND);
+            }
+
+            if (relation.get().getStatus().equals(BLOCKED)) {
+                throw new CustomException(BETTING_NOT_FOUND);
+            }
+        }
+
         List<MemberBetting> memberBetting = memberBettingRepository.findByBettingId(bettingId);
 
         BettingDetailsRes bettingDetailsRes = new BettingDetailsRes(betting, memberBetting, memberId);
 
         addTodoDataToBettingDetails(betting, bettingDetailsRes);
+
+        if (bettingDetailsRes.getIsFinished() && !bettingDetailsRes.getIsParticipating()) {
+            throw new CustomException(BETTING_CLOSED);
+        }
 
         return bettingDetailsRes;
     }
