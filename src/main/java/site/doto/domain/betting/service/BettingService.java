@@ -114,6 +114,8 @@ public class BettingService {
         MemberBetting memberBetting = bettingJoinReq.toEntity(member, betting);
 
         memberBettingRepository.save(memberBetting);
+
+        redisUtils.updateRecordToRedis(memberId, LocalDate.now().getYear(), LocalDate.now().getMonthValue(), "betParticipation", 1);
     }
 
     @Transactional(readOnly = true)
