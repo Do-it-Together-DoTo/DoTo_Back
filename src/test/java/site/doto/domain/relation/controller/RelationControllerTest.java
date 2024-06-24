@@ -1084,6 +1084,30 @@ class RelationControllerTest {
     }
 
     @Test
+    @DisplayName("유저 차단 취소 - 나를 차단한 사용자")
+    public void friend_unblock_member_block() throws Exception {
+        // given
+        RelationUnblockReq relationUnblockReq = new RelationUnblockReq();
+        relationUnblockReq.setFriendId(20003L);
+
+        String content = gson.toJson(relationUnblockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                delete("/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
     @DisplayName("유저 차단 취소 - 차단하지 않은 사용자")
     public void friend_unblock_bad_request() throws Exception {
         // given

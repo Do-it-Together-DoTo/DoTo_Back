@@ -247,6 +247,17 @@ public class RelationService {
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
+
+        if(friendToMember.isPresent()) {
+            Relation existingFriendToMember = friendToMember.get();
+
+            if(existingFriendToMember.getStatus().equals(BLOCKED)) {
+                throw new CustomException(MEMBER_NOT_FOUND);
+            }
+        }
 
         Relation existingMemberToFriend = relationRepository.findById(memberAndFriendPK)
                 .orElseThrow(() -> new CustomException(BAD_REQUEST));
