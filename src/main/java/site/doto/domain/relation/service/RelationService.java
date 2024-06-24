@@ -3,10 +3,7 @@ package site.doto.domain.relation.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.relation.dto.RelationCanceledReq;
-import site.doto.domain.relation.dto.RelationDeclinedReq;
-import site.doto.domain.relation.dto.RelationRequestReq;
-import site.doto.domain.relation.dto.RelationResponseReq;
+import site.doto.domain.relation.dto.*;
 import site.doto.domain.relation.entity.Relation;
 import site.doto.domain.relation.entity.RelationPK;
 import site.doto.domain.relation.enums.RelationStatus;
@@ -199,6 +196,47 @@ public class RelationService {
 
         relationRepository.delete(existingMemberToFriend);
         relationRepository.delete(existingFriendToMember);
+    }
+
+    public void blockRelation(Long memberId, RelationBlockReq relationBlockReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Member friend = memberRepository.findById(relationBlockReq.getFriendId())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> memberToFriend = relationRepository.findById(memberAndFriendPK);
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
+
+        if(friendToMember.isPresent()) {
+            Relation existingFriendToMember = friendToMember.get();
+
+            if(existingFriendToMember.getStatus().equals(BLOCKED)) {
+                throw new CustomException(MEMBER_NOT_FOUND);
+            }
+        }
+
+        if(memberToFriend.isPresent()) {
+            Relation existingMemberToFriend = memberToFriend.get();
+
+            if(existingMemberToFriend.getStatus().equals(BLOCKED)) {
+                throw new CustomException(BLOCKED_MEMBER);
+            }
+        }
+
+        if(friendToMember.isPresent()) {
+            Relation existingFriendToMember = friendToMember.get();
+            relationRepository.delete(existingFriendToMember);
+        }
+
+        if(memberToFriend.isPresent()) {
+            relationRepository.updateRelationStatus(memberAndFriendPK, BLOCKED);
+        } else {
+            relationRepository.save(new Relation(memberAndFriendPK, member, friend, BLOCKED));
+        }
     }
 
     private void updateRelationRequestToRedis(Long memberId, Long friendId) {

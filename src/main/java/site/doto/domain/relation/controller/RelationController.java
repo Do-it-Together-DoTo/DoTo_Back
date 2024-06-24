@@ -111,6 +111,9 @@ public class RelationController {
     @PostMapping("/block")
     ResponseDto<?> relationBlock(
             @RequestBody @Valid RelationBlockReq relationBlockReq) {
+        Long memberId = 1L;
+
+        relationService.blockRelation(memberId, relationBlockReq);
 
         return ResponseDto.success(FRIEND_BLOCK_OK, null);
     }
