@@ -882,11 +882,11 @@ class RelationControllerTest {
     }
 
     @Test
-    @DisplayName("유저 차단 성공")
+    @DisplayName("유저 차단 - 성공")
     public void friend_block_success() throws Exception {
         // given
         RelationBlockReq relationBlockReq = new RelationBlockReq();
-        relationBlockReq.setMemberId(2L);
+        relationBlockReq.setFriendId(2L);
 
         String content = gson.toJson(relationBlockReq);
 
@@ -914,26 +914,94 @@ class RelationControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestFields(
-                                        List.of(
-                                                fieldWithPath("memberId").type(JsonFieldType.NUMBER)
-                                                        .description("유저 Id")
-                                        )
+                                        fieldWithPath("friendId").type(JsonFieldType.NUMBER)
+                                                .description("유저 Id")
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body").type(JsonFieldType.NULL)
+                                                .description("내용 없음")
                                 )
                                 .requestSchema(Schema.schema("유저 차단 Request"))
                                 .responseSchema(Schema.schema("유저 차단 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("유저 차단 - 존재하지 않는 사용자")
+    public void friend_block_member_not_found() throws Exception {
+        // given
+        RelationBlockReq relationBlockReq = new RelationBlockReq();
+        relationBlockReq.setFriendId(10000L);
+
+        String content = gson.toJson(relationBlockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("유저 차단 - 상대방이 먼저 차단")
+    public void friend_block_already_member_not_found() throws Exception {
+        // given
+        RelationBlockReq relationBlockReq = new RelationBlockReq();
+        relationBlockReq.setFriendId(20003L);
+
+        String content = gson.toJson(relationBlockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(MEMBER_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(MEMBER_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("유저 차단 - 이미 차단한 사용자")
+    public void friend_block_blocked_member() throws Exception {
+        // given
+        RelationBlockReq relationBlockReq = new RelationBlockReq();
+        relationBlockReq.setFriendId(20005L);
+
+        String content = gson.toJson(relationBlockReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/friends/block")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BLOCKED_MEMBER.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BLOCKED_MEMBER.getMessage()));
     }
 
     @Test
