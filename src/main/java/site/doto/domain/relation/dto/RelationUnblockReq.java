@@ -7,5 +7,5 @@ import javax.validation.constraints.NotNull;
 @Data
 public class RelationUnblockReq {
     @NotNull
-    private Long memberId;
+    private Long friendId;
 }
