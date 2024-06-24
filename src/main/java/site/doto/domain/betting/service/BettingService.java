@@ -42,7 +42,7 @@ public class BettingService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        Todo todo = todoRepository.findById(bettingAddReq.getTodoId())
+        Todo todo = todoRepository.findByIdWithCategory(bettingAddReq.getTodoId())
                 .orElseThrow(() -> new CustomException(TODO_NOT_FOUND));
 
         if (!todo.getMember().getId().equals(memberId)) {
@@ -51,6 +51,10 @@ public class BettingService {
 
         if (todo.getDate().isBefore(LocalDate.now())) {
             throw new CustomException(TODO_ALREADY_PAST);
+        }
+
+        if (!todo.getCategory().getIsPublic()) {
+            throw new CustomException(CATEGORY_INACTIVATED);
         }
 
         if (todo.getIsDone()) {
