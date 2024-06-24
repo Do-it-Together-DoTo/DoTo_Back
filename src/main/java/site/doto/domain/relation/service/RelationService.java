@@ -197,10 +197,6 @@ public class RelationService {
         Relation existingMemberToFriend = memberToFriend.get();
         Relation existingFriendToMember = friendToMember.get();
 
-        if(existingMemberToFriend.getStatus().equals(BLOCKED)) {
-            throw new CustomException(BLOCKED_MEMBER);
-        }
-
         relationRepository.delete(existingMemberToFriend);
         relationRepository.delete(existingFriendToMember);
     }

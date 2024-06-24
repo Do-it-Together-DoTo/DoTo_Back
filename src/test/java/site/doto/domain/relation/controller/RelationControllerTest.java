@@ -753,26 +753,6 @@ class RelationControllerTest {
     }
 
     @Test
-    @DisplayName("친구 삭제 - 차단한 사용자")
-    public void friend_remove_blocked_member() throws Exception {
-        // given
-        Long friendId = 20009L;
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                delete("/friends/{friendId}", friendId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON));
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BLOCKED_MEMBER.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BLOCKED_MEMBER.getMessage()));
-    }
-
-    @Test
     @DisplayName("친구 목록 성공")
     public void friend_List_success() throws Exception {
         // given
