@@ -29,7 +29,7 @@ public class Member {
 
     private String description;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "main_character_id")
     private Character mainCharacter;
 
