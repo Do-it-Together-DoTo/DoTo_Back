@@ -28,15 +28,20 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "and t.date >= current_date")
     List<Betting> findAfterToday(@Param("memberId") Long memberId, Pageable pageable);
 
-    @EntityGraph(attributePaths = "member")
     @Query("select b " +
             "from Betting b " +
+            "join fetch b.member m " +
+            "join fetch m.mainCharacter c " +
+            "join fetch c.characterType t " +
             "where b.member.id = :memberId")
     List<Betting> findAllByMember(@Param("memberId") Long memberId);
 
-    @EntityGraph(attributePaths = {"member", "todo"})
     @Query("select b " +
             "from Betting b " +
+            "join fetch b.todo t " +
+            "join fetch b.member m " +
+            "join fetch m.mainCharacter c " +
+            "join fetch c.characterType t " +
             "join MemberBetting mb " +
             "on mb.betting = b " +
             "where mb.member.id = :memberId")
