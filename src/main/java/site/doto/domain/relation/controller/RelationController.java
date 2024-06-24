@@ -60,9 +60,12 @@ public class RelationController {
         return ResponseDto.success(FRIEND_REQUEST_CANCELED, null);
     }
 
-    @DeleteMapping("/{memberId}")
+    @DeleteMapping("/{friendId}")
     public ResponseDto<?> relationRemove(
-            @PathVariable Long memberId) {
+            @PathVariable Long friendId) {
+        Long memberId = 1L;
+
+        relationService.removeRelation(memberId, friendId);
 
         return ResponseDto.success(FRIEND_DELETED, null);
     }

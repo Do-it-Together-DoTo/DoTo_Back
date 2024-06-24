@@ -26,6 +26,7 @@ insert into member (member_id, email, nickname, password, description, coin, typ
                                                                                                     (20006, 'test20006@naver.com', 'test_user20006', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20007, 'test20007@naver.com', 'test_user20007', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20008, 'test20008@naver.com', 'test_user20008', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20009, 'test20009@naver.com', 'test_user20009', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (30000, 'test30000@naver.com', 'test_user30000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp);
 
 insert into characters (character_id, exp, character_type_id, member_id) values (1, 250, 1, 1),
@@ -40,7 +41,8 @@ insert into characters (character_id, exp, character_type_id, member_id) values 
                                                                                 (10, 100, 1, 20006),
                                                                                 (11, 100, 2, 20007),
                                                                                 (12, 100, 3, 20008),
-                                                                                (13, 100, 1, 30000);
+                                                                                (13, 100, 1, 30000),
+                                                                                (14, 100, 2, 20009);
 
 update member set main_character_id = 1 where member_id = 1;
 update member set main_character_id = 2 where member_id = 2;
@@ -66,6 +68,8 @@ insert into relation (member_id, friend_id, status) values
                                                               (1, 20005, 'BLOCKED'),
                                                               (1, 20007, 'BLOCKED'),
                                                               (20008, 1, 'BLOCKED'),
+                                                              (20009, 1, 'BLOCKED'),
+                                                              (1, 20009, 'BLOCKED'),
                                                               (1, 20006, 'WAITING'),
                                                               (1, 20008, 'WAITING'),
                                                               (20005, 1, 'WAITING'),
