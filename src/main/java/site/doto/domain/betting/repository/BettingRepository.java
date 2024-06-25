@@ -4,6 +4,7 @@ import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.todo.entity.Todo;
@@ -48,4 +49,14 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
     List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
 
     Betting findBettingByTodo(Todo todo);
+
+    @Modifying
+    @Query("delete " +
+            "from Betting b " +
+            "where b.todo is null " +
+            "or b.todo.id in " +
+            "(select t.id " +
+            "from Todo t " +
+            "where t.date < current_date)")
+    void deleteFinishedBetting();
 }

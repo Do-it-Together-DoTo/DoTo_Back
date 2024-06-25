@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.*;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
+import site.doto.domain.chatroom.repository.ChatRoomRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.member_betting.entity.MemberBetting;
@@ -36,6 +37,7 @@ public class BettingService {
     private final MemberBettingRepository memberBettingRepository;
     private final TodoRepository todoRepository;
     private final RelationRepository relationRepository;
+    private final ChatRoomRepository chatRoomRepository;
     private final RedisUtils redisUtils;
 
     public void addBetting(Long memberId, BettingAddReq bettingAddReq) {
@@ -227,5 +229,12 @@ public class BettingService {
         bettingRepository.delete(betting);
 
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
+    }
+
+    public void deleteFinishedBetting() {
+        chatRoomRepository.detachBettingFromChatRoom();
+        memberBettingRepository.deleteRelatedMemberBetting();
+        bettingRepository.deleteFinishedBetting();
+        chatRoomRepository.deleteOrphanChatRoom();
     }
 }
