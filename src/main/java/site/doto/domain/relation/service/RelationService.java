@@ -239,6 +239,36 @@ public class RelationService {
         }
     }
 
+    public void unblockRelation(Long memberId, RelationUnblockReq relationUnblockReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Member friend = memberRepository.findById(relationUnblockReq.getFriendId())
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        RelationPK memberAndFriendPK = new RelationPK(member.getId(), friend.getId());
+        RelationPK friendAndMemberPK = new RelationPK(friend.getId(), member.getId());
+
+        Optional<Relation> friendToMember = relationRepository.findById(friendAndMemberPK);
+
+        if(friendToMember.isPresent()) {
+            Relation existingFriendToMember = friendToMember.get();
+
+            if(existingFriendToMember.getStatus().equals(BLOCKED)) {
+                throw new CustomException(MEMBER_NOT_FOUND);
+            }
+        }
+
+        Relation existingMemberToFriend = relationRepository.findById(memberAndFriendPK)
+                .orElseThrow(() -> new CustomException(BAD_REQUEST));
+
+        if(!existingMemberToFriend.getStatus().equals(BLOCKED)) {
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        relationRepository.delete(existingMemberToFriend);
+    }
+
     private void updateRelationRequestToRedis(Long memberId, Long friendId) {
         String key = "relationRequest:" + memberId + ":" + friendId;
         redisUtils.setDataWithExpiration(key, "WAITING", 300L);

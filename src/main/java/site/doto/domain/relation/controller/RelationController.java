@@ -121,6 +121,9 @@ public class RelationController {
     @DeleteMapping("/block")
     ResponseDto<?> relationUnblock(
             @RequestBody @Valid RelationUnblockReq relationUnblockReq) {
+        Long memberId = 1L;
+
+        relationService.unblockRelation(memberId, relationUnblockReq);
 
         return ResponseDto.success(FRIEND_UNBLOCK_OK, null);
     }
