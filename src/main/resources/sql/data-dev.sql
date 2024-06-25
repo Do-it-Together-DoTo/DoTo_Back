@@ -103,13 +103,13 @@ insert into category (category_id, member_id, contents, is_public, is_activated,
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values
                                                                                 (20001, 1, 10001, '투두1', current_date, false), -- 베팅 생성, 삭제
                                                                                 (20002, 2, 10021, '투두2', current_date, false), -- 베팅 생성 실패, 삭제 실패
-                                                                                (20003, 1, 10001, '투두3', date_add('DAY', -1, current_date), true), -- 베팅 생성 실패
+                                                                                (20003, 1, 10001, '투두3', date_add(current_date, interval -1 day), true), -- 베팅 생성 실패
                                                                                 (20004, 1, 10001, '투두4', current_date, true), -- 베팅 생성 실패
-                                                                                (20005, 2, 10022, '투두5', date_add('DAY', -1, current_date), true), -- 나의 베팅 조회
+                                                                                (20005, 2, 10022, '투두5', date_add(current_date, interval -1 day), true), -- 나의 베팅 조회
                                                                                 (20006, 3, 10023, '투두6', current_date, false),
-                                                                                (20007, 1, 10002, '투두7', date_add('DAY', -1, current_date), false),
+                                                                                (20007, 1, 10002, '투두7', date_add(current_date, interval -1 day), false),
                                                                                 (20008, 4, 10024, '투두8', current_date, false),
-                                                                                (20009, 3, 10023, '투두9', date_add('DAY', -1, current_date), false),
+                                                                                (20009, 3, 10023, '투두9', date_add(current_date, interval -1 day), false),
                                                                                 (20010, 1, 10002, '투두10', current_date, false);
 
 --betting
