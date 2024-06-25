@@ -20,6 +20,7 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
         return jpaQueryFactory.select(todo)
                 .from(todo)
                 .innerJoin(betting).on(todo.id.eq(betting.todo.id))
+                .fetchJoin()
                 .where(todo.category.id.eq(category.getId()))
                 .fetch();
     }
@@ -29,6 +30,7 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
         return jpaQueryFactory.select(todo)
                 .from(todo)
                 .innerJoin(betting).on(todo.id.eq(betting.todo.id))
+                .fetchJoin()
                 .where(todo.category.id.eq(category.getId()))
                 .where(todo.date.goe(LocalDate.now()))
                 .fetchFirst();
