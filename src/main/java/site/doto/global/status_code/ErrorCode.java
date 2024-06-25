@@ -24,7 +24,7 @@ public enum ErrorCode {
     COIN_NOT_ENOUGH(400, "코인이 부족합니다."),
     ITEM_NOT_FOUND(404, "존재하지 않는 아이템입니다."),
     TODO_LIMIT(400, "더이상 투두를 생성할 수 없습니다."),
-    CATEGORY_INACTIVATED(400, "비활성화된 카테고리에 투두를 생성할 수 없습니다."),
+    CATEGORY_INACTIVATED(400, "카테고리가 비활성화되어 있습니다."),
     CATEGORY_CHANGE_RESTRICTED(400, "베팅이 진행중인 투두가 있어 카테고리를 비공개로 변경할 수 없습니다."),
     TODO_NOT_FOUND(404, "존재하지 않는 투두입니다."),
     FRIEND_ALREADY_REQUESTING(400, "친구 신청이 이미 진행중입니다."),

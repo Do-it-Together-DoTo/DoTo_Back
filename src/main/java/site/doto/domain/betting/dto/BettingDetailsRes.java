@@ -26,11 +26,15 @@ public class BettingDetailsRes {
 
     private Integer participantCount;
 
-    private Boolean isParticipating;
-
     private Boolean isFinished;
 
     private Boolean isAchieved;
+
+    private Boolean isParticipating;
+
+    private Boolean myBetOn;
+
+    private Integer myBetCoins;
 
     public BettingDetailsRes(Betting betting, List<MemberBetting> memberBetting, Long memberId) {
         this.bettingId = betting.getId();
@@ -54,6 +58,9 @@ public class BettingDetailsRes {
 
                     if (mb.getMember().getId().equals(memberId)) {
                         isParticipating = true;
+
+                        this.myBetOn = mb.getPrediction();
+                        this.myBetCoins = mb.getCost();
                     }
                 });
     }

@@ -210,6 +210,29 @@ class BettingControllerTest {
     }
 
     @Test
+    @DisplayName("베팅 생성 - 비활성화된 카테고리")
+    public void betting_add_category_inactivated() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(20010L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_INACTIVATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
+    }
+
+    @Test
     @DisplayName("베팅 생성 - 이미 완료된 투두")
     public void betting_add_todo_already_done() throws Exception {
         //given
@@ -230,6 +253,29 @@ class BettingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_ALREADY_DONE.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(TODO_ALREADY_DONE.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 생성 - 이미 베팅 개최 중")
+    public void betting_add_betting_already_holing() throws Exception {
+        //given
+        BettingAddReq bettingAddReq = new BettingAddReq();
+        bettingAddReq.setTodoId(20001L);
+        bettingAddReq.setName("베팅 이름");
+        String content = gson.toJson(bettingAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/betting")
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_ALREADY_HOLDING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_ALREADY_HOLDING.getMessage()));
     }
 
     @Test
@@ -649,6 +695,8 @@ class BettingControllerTest {
                                                 .description("베팅 ID"),
                                         fieldWithPath("body.bettingName").type(JsonFieldType.STRING)
                                                 .description("베팅 이름"),
+                                        fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
+                                                .description("채팅방 ID"),
                                         fieldWithPath("body.memberId").type(JsonFieldType.NUMBER)
                                                 .description("멤버 ID"),
                                         fieldWithPath("body.memberNickname").type(JsonFieldType.STRING)
@@ -661,14 +709,16 @@ class BettingControllerTest {
                                                 .description("실패에 베팅된 코인"),
                                         fieldWithPath("body.participantCount").type(JsonFieldType.NUMBER)
                                                 .description("베팅 참여 인원"),
+                                        fieldWithPath("body.isFinished").type(JsonFieldType.BOOLEAN)
+                                                .description("베팅 종료 여부"),
+                                        fieldWithPath("body.isAchieved").type(JsonFieldType.BOOLEAN)
+                                                .description("베팅 달성 여부").optional(),
                                         fieldWithPath("body.isParticipating").type(JsonFieldType.BOOLEAN)
                                                 .description("베팅 참가 여부"),
-                                        fieldWithPath("body.chatRoomId").type(JsonFieldType.NUMBER)
-                                                .description("채팅방 ID"),
-                                        fieldWithPath("body.isFinished").type(JsonFieldType.BOOLEAN)
-                                                .description("채팅방 ID").optional(),
-                                        fieldWithPath("body.isAchieved").type(JsonFieldType.BOOLEAN)
-                                                .description("채팅방 ID").optional()
+                                        fieldWithPath("body.myBetOn").type(JsonFieldType.BOOLEAN)
+                                                .description("내 베팅 예측").optional(),
+                                        fieldWithPath("body.myBetCoins").type(JsonFieldType.BOOLEAN)
+                                                .description("내 베팅 코인").optional()
                                 )
                                 .responseSchema(Schema.schema("베팅 단일 조회 Response"))
                                 .build()
@@ -693,6 +743,44 @@ class BettingControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_NOT_FOUND.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(BETTING_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 단일 조회 - 친구의 것이 아닌 베팅")
+    public void betting_details_betting_not_friend() throws Exception {
+        //given
+        Long bettingId = 30006L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NOT_FRIEND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NOT_FRIEND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("베팅 단일 조회 - 종료된 베팅")
+    public void betting_details_betting_closed() throws Exception {
+        //given
+        Long bettingId = 30007L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                get("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_CLOSED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_CLOSED.getMessage()));
     }
 
     @Test
