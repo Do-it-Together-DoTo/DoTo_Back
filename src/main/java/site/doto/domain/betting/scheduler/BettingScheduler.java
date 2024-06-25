@@ -10,7 +10,7 @@ import site.doto.domain.betting.service.BettingService;
 public class BettingScheduler {
     private final BettingService bettingService;
 
-    @Scheduled(cron = "0 56 15 * * *")
+    @Scheduled(cron = "0 30 23 * * *")
     public void deleteFinishedBetting() {
         bettingService.deleteFinishedBetting();
     }
