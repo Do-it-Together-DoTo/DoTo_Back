@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.category.dto.*;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
+import site.doto.domain.category.enums.Scope;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static site.doto.domain.category.enums.Scope.PRIVATE;
 import static site.doto.global.status_code.ErrorCode.*;
 
 
@@ -47,6 +49,7 @@ public class CategoryService {
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
         validateColor(categoryAddReq.getColor());
+        validateScope(categoryAddReq.getScope());
 
         Integer activeCount = calculateSequence(memberId, true);
         validateActiveCount(activeCount);
@@ -143,6 +146,12 @@ public class CategoryService {
         return categoryRepository.categorySeqByMemberId(memberId, isActivated);
     }
 
+    private void validateScope(String scope) {
+        if(!EnumUtils.isValidEnumIgnoreCase(Scope.class, scope)) {
+            throw new CustomException(SCOPE_NOT_FOUND);
+        }
+    }
+
     private void validateColor(String color) {
         if(!EnumUtils.isValidEnumIgnoreCase(Color.class, color)) {
             throw new CustomException(COLOR_NOT_FOUND);
@@ -170,7 +179,7 @@ public class CategoryService {
 
     private void updateCategory(Long memberId, Category category, CategoryModifyReq categoryModifyReq) {
         updateContents(category, categoryModifyReq.getContents());
-        updateIsPublic(category, categoryModifyReq.getIsPublic());
+        updateScope(category, categoryModifyReq.getScope());
         updateIsActivated(memberId, category, categoryModifyReq.getIsActivated());
         updateColor(category, categoryModifyReq.getColor());
     }
@@ -184,15 +193,18 @@ public class CategoryService {
         }
     }
 
-    private void updateIsPublic(Category category, Boolean isPublic) {
-        if(isPublic != null) {
-            if(!isPublic) {
+    private void updateScope(Category category, String scopeName) {
+        if(scopeName != null) {
+            validateScope(scopeName);
+
+            Scope scope = Scope.valueOf(scopeName.toUpperCase());
+            if(scope.equals(PRIVATE)) {
                 Todo todo = todoRepository.findTodoIfOngoingBetting(category);
                 if(todo != null) {
                     throw new CustomException(CATEGORY_CHANGE_RESTRICTED);
                 }
             }
-            category.updateIsPublic(isPublic);
+            category.updateScope(scope);
         }
     }
 

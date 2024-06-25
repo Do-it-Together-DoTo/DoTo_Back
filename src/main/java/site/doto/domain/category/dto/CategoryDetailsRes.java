@@ -4,6 +4,7 @@ import lombok.Builder;
 import lombok.Data;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.enums.Color;
+import site.doto.domain.category.enums.Scope;
 
 @Data
 @Builder
@@ -12,7 +13,7 @@ public class CategoryDetailsRes {
 
     private String contents;
 
-    private Boolean isPublic;
+    private Scope scope;
 
     private Boolean isActivated;
 
@@ -24,7 +25,7 @@ public class CategoryDetailsRes {
         return CategoryDetailsRes.builder()
                 .id(category.getId())
                 .contents(category.getContents())
-                .isPublic(category.getIsPublic())
+                .scope(category.getScope())
                 .isActivated(category.getIsActivated())
                 .color(category.getColor())
                 .seq(category.getSeq())

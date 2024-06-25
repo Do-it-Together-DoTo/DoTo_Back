@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.*;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
+import site.doto.domain.category.enums.Scope;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.member_betting.entity.MemberBetting;
@@ -24,6 +25,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+import static site.doto.domain.category.enums.Scope.PRIVATE;
 import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -53,8 +55,8 @@ public class BettingService {
             throw new CustomException(TODO_ALREADY_PAST);
         }
 
-        if (!todo.getCategory().getIsPublic()) {
-            throw new CustomException(CATEGORY_INACTIVATED);
+        if (todo.getCategory().getScope().equals(PRIVATE)) {
+            throw new CustomException(CATEGORY_IS_PRIVATE);
         }
 
         if (todo.getIsDone()) {
