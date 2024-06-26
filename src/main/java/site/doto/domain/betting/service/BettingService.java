@@ -234,10 +234,10 @@ public class BettingService {
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
     }
 
-    public void deleteFinishedBetting() {
+    public void deleteClosedBetting() {
         chatRoomRepository.detachBettingFromChatRoom();
         memberBettingRepository.deleteRelatedMemberBetting();
-        bettingRepository.deleteFinishedBetting();
+        bettingRepository.deleteClosedBetting();
         chatRoomRepository.deleteOrphanChatRoom();
     }
 

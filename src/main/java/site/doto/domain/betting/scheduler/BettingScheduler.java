@@ -12,7 +12,7 @@ public class BettingScheduler {
 
     @Scheduled(cron = "0 30 23 * * *")
     public void deleteFinishedBetting() {
-        bettingService.deleteFinishedBetting();
+        bettingService.deleteClosedBetting();
     }
 
     @Scheduled(cron = "5 0 0 * * *")

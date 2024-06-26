@@ -29,12 +29,10 @@ public interface MemberBettingRepository extends JpaRepository<MemberBetting, Me
     @Modifying
     @Query("delete " +
             "from MemberBetting m " +
-            "where m.betting.id in " +
-            "(select b.id from Betting b " +
-            "where b.todo is null " +
-            "or b.todo.id in " +
-            "(select t.id from Todo t " +
-            "where t.date < current_date))")
+            "where m.betting in " +
+            "(select b " +
+            "from Betting b " +
+            "where b.isAchieved is not null)")
     void deleteRelatedMemberBetting();
 
 }

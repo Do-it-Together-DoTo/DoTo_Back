@@ -59,12 +59,8 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
     @Modifying
     @Query("delete " +
             "from Betting b " +
-            "where b.todo is null " +
-            "or b.todo.id in " +
-            "(select t.id " +
-            "from Todo t " +
-            "where t.date < current_date)")
-    void deleteFinishedBetting();
+            "where b.isAchieved is not null")
+    void deleteClosedBetting();
 
     @Modifying
     @Query("update " +

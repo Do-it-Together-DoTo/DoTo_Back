@@ -14,14 +14,10 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
     @Query("update " +
             "ChatRoom c " +
             "set c.betting = null " +
-            "where c.betting.id in " +
-            "(select b.id " +
+            "where c.betting in " +
+            "(select b " +
             "from Betting b " +
-            "where b.todo is null " +
-            "or b.todo.id in " +
-            "(select t.id " +
-            "from Todo t " +
-            "where t.date < current_date))")
+            "where b.isAchieved is not null)")
     void detachBettingFromChatRoom();
 
     @Modifying
