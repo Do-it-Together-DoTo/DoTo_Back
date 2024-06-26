@@ -7,7 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.betting.dto.*;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.betting.repository.BettingRepository;
-import site.doto.domain.category.enums.Scope;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
 import site.doto.domain.member_betting.entity.MemberBetting;
@@ -229,5 +228,17 @@ public class BettingService {
         bettingRepository.delete(betting);
 
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
+    }
+
+    public void disconnectBetting(Betting betting) {
+        if(betting.getIsAchieved() == null) {
+            throw new CustomException(DELETE_NOT_ALLOWED);
+        }
+
+        TodoRedisDto todoRedisDto = TodoRedisDto.toDto(betting.getTodo());
+        redisUtils.saveTodoToRedis(todoRedisDto, betting.getId());
+
+        betting.todoDisconnected();
+        bettingRepository.save(betting);
     }
 }
