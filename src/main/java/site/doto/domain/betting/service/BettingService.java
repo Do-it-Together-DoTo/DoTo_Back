@@ -236,7 +236,7 @@ public class BettingService {
 
     public void deleteClosedBetting() {
         chatRoomRepository.detachBettingFromChatRoom();
-        memberBettingRepository.deleteRelatedMemberBetting();
+        memberBettingRepository.deleteClosedMemberBetting();
         bettingRepository.deleteClosedBetting();
         chatRoomRepository.deleteOrphanChatRoom();
     }

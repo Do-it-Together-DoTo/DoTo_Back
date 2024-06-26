@@ -33,6 +33,6 @@ public interface MemberBettingRepository extends JpaRepository<MemberBetting, Me
             "(select b " +
             "from Betting b " +
             "where b.isAchieved is not null)")
-    void deleteRelatedMemberBetting();
+    void deleteClosedMemberBetting();
 
 }
