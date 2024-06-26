@@ -73,31 +73,31 @@ insert into relation (member_id, friend_id, status) values
                                                               (20004, 1, 'WAITING');
 
 --category
-insert into category (category_id, member_id, contents, is_public, is_activated, color, seq) values
-                                                                                                 (10001, 1, '테스트_카테고리',true, true, 'BLUE', 1), -- 베팅 생성, 생성 실패
-                                                                                                 (10002, 1, '테스트_카테고리',false, true, 'BLUE', 2),
-                                                                                                 (10003, 1, '테스트_카테고리',true, true, 'BLUE', 3),
-                                                                                                 (10004, 1, '테스트_카테고리',true, true, 'BLUE', 4),
-                                                                                                 (10005, 1, '테스트_카테고리',true, true, 'BLUE', 5),
-                                                                                                 (10006, 1, '테스트_카테고리',true, true, 'BLUE', 6),
-                                                                                                 (10007, 1, '테스트_카테고리',true, true, 'BLUE', 7),
-                                                                                                 (10008, 1, '테스트_카테고리',true, true, 'BLUE', 8),
-                                                                                                 (10009, 1, '테스트_카테고리',true, true, 'BLUE', 9),
-                                                                                                 (10010, 1, '테스트_카테고리',true, true, 'BLUE', 10),
-                                                                                                 (10011, 1, '테스트_카테고리',true, true, 'BLUE', 11),
-                                                                                                 (10012, 1, '테스트_카테고리',true, true, 'BLUE', 12),
-                                                                                                 (10013, 1, '테스트_카테고리',true, true, 'BLUE', 13),
-                                                                                                 (10014, 1, '테스트_카테고리',true, true, 'BLUE', 14),
-                                                                                                 (10015, 1, '테스트_카테고리',true, true, 'BLUE', 15),
-                                                                                                 (10016, 1, '테스트_카테고리',true, true, 'BLUE', 16),
-                                                                                                 (10017, 1, '테스트_카테고리',true, true, 'BLUE', 17),
-                                                                                                 (10018, 1, '테스트_카테고리',true, true, 'BLUE', 18),
-                                                                                                 (10019, 1, '테스트_카테고리',true, true, 'BLUE', 19),
-                                                                                                 (10020, 1, '테스트_카테고리',true, false, 'BLUE', 1),
-                                                                                                 (10021, 1, '테스트_카테고리',true, false, 'BLUE', 1),
-                                                                                                 (10022, 2, '테스트_카테고리2',true, true, 'PINK', 1), -- 베팅 생성 실패
-                                                                                                 (10023, 3, '테스트_카테고리3',true, true, 'PINK', 1),
-                                                                                                 (10024, 4, '테스트_카테고리4',true, true, 'PINK', 1);
+insert into category (category_id, member_id, contents, scope, is_activated, color, seq) values
+                                                                                                 (10001, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 1), -- 베팅 생성, 생성 실패
+                                                                                                 (10002, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 2),
+                                                                                                 (10003, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 3),
+                                                                                                 (10004, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 4),
+                                                                                                 (10005, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 5),
+                                                                                                 (10006, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 6),
+                                                                                                 (10007, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 7),
+                                                                                                 (10008, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 8),
+                                                                                                 (10009, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 9),
+                                                                                                 (10010, 1, '테스트_카테고리','PUBLIC', true, 'BLUE', 10),
+                                                                                                 (10011, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 11),
+                                                                                                 (10012, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 12),
+                                                                                                 (10013, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 13),
+                                                                                                 (10014, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 14),
+                                                                                                 (10015, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 15),
+                                                                                                 (10016, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 16),
+                                                                                                 (10017, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 17),
+                                                                                                 (10018, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 18),
+                                                                                                 (10019, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 19),
+                                                                                                 (10020, 1, '테스트_카테고리','FRIENDS', false, 'BLUE', 1),
+                                                                                                 (10021, 1, '테스트_카테고리','PUBLIC', false, 'BLUE', 1),
+                                                                                                 (10022, 2, '테스트_카테고리2','PUBLIC', true, 'PINK', 1), -- 베팅 생성 실패
+                                                                                                 (10023, 3, '테스트_카테고리3','PUBLIC', true, 'PINK', 1),
+                                                                                                 (10024, 4, '테스트_카테고리4','PUBLIC', true, 'PINK', 1);
 
 --todo
 insert into todo (todo_id, member_id, category_id, contents, date, is_done) values

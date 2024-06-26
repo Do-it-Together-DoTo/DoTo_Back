@@ -6,7 +6,7 @@ import lombok.Data;
 public class CategoryModifyReq {
     private String contents;
 
-    private Boolean isPublic;
+    private String scope;
 
     private Boolean isActivated;
 

@@ -60,7 +60,7 @@ class CategoryControllerTest {
         //given
         CategoryAddReq categoryAddReq = new CategoryAddReq();
         categoryAddReq.setContents("테스트_카테고리");
-        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setScope("PUBLIC");
         categoryAddReq.setColor("BLUE");
 
         String content = gson.toJson(categoryAddReq);
@@ -79,7 +79,7 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_CREATED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_CREATED.getMessage()))
                 .andExpect(jsonPath("$.body.contents").value("테스트_카테고리"))
-                .andExpect(jsonPath("$.body.isPublic").value(true))
+                .andExpect(jsonPath("$.body.scope").value("PUBLIC"))
                 .andExpect(jsonPath("$.body.isActivated").value(true))
                 .andExpect(jsonPath("$.body.color").value("BLUE"))
                 .andDo(document(
@@ -96,8 +96,8 @@ class CategoryControllerTest {
                                         List.of(
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
                                                         .description("카테고리 내용"),
-                                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("공개 여부"),
+                                                fieldWithPath("scope").type(JsonFieldType.STRING)
+                                                        .description("공개 타입"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING)
                                                         .description("카테고리 색상")
                                         )
@@ -112,8 +112,8 @@ class CategoryControllerTest {
                                                         .description("카테고리 ID"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("카테고리 내용"),
-                                                fieldWithPath("body.isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("카테고리 공개 여부"),
+                                                fieldWithPath("body.scope").type(JsonFieldType.STRING)
+                                                        .description("카테고리 공개 타입"),
                                                 fieldWithPath("body.isActivated").type(JsonFieldType.BOOLEAN)
                                                         .description("카테고리 활성화 여부"),
                                                 fieldWithPath("body.color").type(JsonFieldType.STRING)
@@ -127,6 +127,170 @@ class CategoryControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - 없는 색상")
+    public void category_add_fail_color_not_found() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("카테고리");
+        categoryAddReq.setScope("PUBLIC");
+        categoryAddReq.setColor("RED");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(COLOR_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(COLOR_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - 없는 공개 유형 값")
+    public void category_add_fail_scope_not_found() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("카테고리");
+        categoryAddReq.setScope("PRIMARY");
+        categoryAddReq.setColor("BLUE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(SCOPE_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(SCOPE_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - 활성화된 개수 초과")
+    public void category_add_fail_active_category_limit() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("카테고리");
+        categoryAddReq.setScope("PRIVATE");
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contents is null")
+    public void category_add_fail_contents_is_null() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents(null);
+        categoryAddReq.setScope("PRIVATE");
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contents 빈값")
+    public void category_add_fail_contents_is_blank() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("");
+        categoryAddReq.setScope("PRIVATE");
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 등록 실패 - contetns length 초과")
+    public void category_add_fail_contents_limit_length() throws Exception {
+        //given
+        CategoryAddReq categoryAddReq = new CategoryAddReq();
+        categoryAddReq.setContents("1234567891011121234444342");
+        categoryAddReq.setScope("PRIVATE");
+        categoryAddReq.setColor("PURPLE");
+
+        String content = gson.toJson(categoryAddReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/categories")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
 
     @Test
@@ -171,8 +335,8 @@ class CategoryControllerTest {
                                                         .description("카테고리 ID"),
                                                 fieldWithPath("body.*[].contents").type(JsonFieldType.STRING)
                                                         .description("카테고리 내용"),
-                                                fieldWithPath("body.*[].isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("카테고리 공개 여부"),
+                                                fieldWithPath("body.*[].scope").type(JsonFieldType.STRING)
+                                                        .description("카테고리 공개 타입"),
                                                 fieldWithPath("body.*[].isActivated").type(JsonFieldType.BOOLEAN)
                                                         .description("카테고리 활성화 여부"),
                                                 fieldWithPath("body.*[].color").type(JsonFieldType.STRING)
@@ -193,7 +357,7 @@ class CategoryControllerTest {
         //given
         CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
         categoryModifyReq.setContents("카테고리3");
-        categoryModifyReq.setIsPublic(false);
+        categoryModifyReq.setScope("FRIENDS");
         categoryModifyReq.setColor("YELLOW");
         categoryModifyReq.setIsActivated(false);
 
@@ -213,7 +377,7 @@ class CategoryControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_MODIFY_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_MODIFY_OK.getMessage()))
                 .andExpect(jsonPath("$.body.contents").value("카테고리3"))
-                .andExpect(jsonPath("$.body.isPublic").value(false))
+                .andExpect(jsonPath("$.body.scope").value("FRIENDS"))
                 .andExpect(jsonPath("$.body.color").value("YELLOW"))
                 .andExpect(jsonPath("$.body.isActivated").value(false))
                 .andExpect(jsonPath("$.body.seq").value(2))
@@ -232,8 +396,8 @@ class CategoryControllerTest {
                                         List.of(
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
                                                         .description("카테고리 내용(Optional)"),
-                                                fieldWithPath("isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("공개 여부(Optional)"),
+                                                fieldWithPath("scope").type(JsonFieldType.STRING)
+                                                        .description("공개 타입(Optional)"),
                                                 fieldWithPath("color").type(JsonFieldType.STRING)
                                                         .description("카테고리 색상(Optional)"),
                                                 fieldWithPath("isActivated").type(JsonFieldType.BOOLEAN)
@@ -250,8 +414,8 @@ class CategoryControllerTest {
                                                         .description("카테고리 ID"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("카테고리 내용"),
-                                                fieldWithPath("body.isPublic").type(JsonFieldType.BOOLEAN)
-                                                        .description("카테고리 공개 여부"),
+                                                fieldWithPath("body.scope").type(JsonFieldType.STRING)
+                                                        .description("카테고리 공개 타입"),
                                                 fieldWithPath("body.isActivated").type(JsonFieldType.BOOLEAN)
                                                         .description("카테고리 활성화 여부"),
                                                 fieldWithPath("body.color").type(JsonFieldType.STRING)
@@ -265,254 +429,6 @@ class CategoryControllerTest {
                                 .build()
                         ))
                 );
-    }
-
-    @Test
-    @DisplayName("카테고리 삭제_성공")
-    public void category_remove_success() throws Exception {
-        //given
-        Long categoryId = 10002L;
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                delete("/categories/{categoryId}", categoryId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()))
-                .andDo(document(
-                        "카테고리 삭제",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Category API")
-                                .summary("카테고리 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
-                                )
-                                .responseSchema(Schema.schema("카테고리 삭제 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    @DisplayName("카테고리 순서 변경_성공")
-    public void category_arrange_success() throws Exception {
-        CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
-        List<Long> activatedList = new ArrayList<>();
-        List<Long> inactivatedList = new ArrayList<>();
-
-        for(int i = 1; i <= 10; i++) {
-            activatedList.add(10000L+i);
-        }
-
-        for(int i = 11; i <= 21; i++) {
-            inactivatedList.add(10000L+i);
-        }
-
-        categoryArrangeReq.setActivated(activatedList);
-        categoryArrangeReq.setInactivated(inactivatedList);
-
-        String content = gson.toJson(categoryArrangeReq);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                patch("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_ARRANGE_OK.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_ARRANGE_OK.getMessage()))
-                .andDo(document(
-                        "카테고리 순서 변경",
-                        preprocessRequest(prettyPrint()),
-                        preprocessResponse(prettyPrint()),
-                        resource(ResourceSnippetParameters.builder()
-                                .tag("Category API")
-                                .summary("카테고리 순서 변경 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestFields(
-                                        List.of(
-                                                fieldWithPath("activated").type(JsonFieldType.ARRAY)
-                                                        .description("활성화된 카테고리 아이디"),
-                                                fieldWithPath("inactivated").type(JsonFieldType.ARRAY)
-                                                        .description("비활성화된 카테고리 아이디")
-                                        )
-                                )
-                                .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body").type(JsonFieldType.NULL)
-                                                        .description("내용 없음")
-                                        )
-                                )
-                                .requestSchema(Schema.schema("카테고리 순서 변경 Request"))
-                                .responseSchema(Schema.schema("카테고리 순서 변경 Response"))
-                                .build()
-                        ))
-                );
-    }
-
-    @Test
-    @DisplayName("카테고리 등록 실패 - 없는 색상")
-    public void category_add_fail_color_not_found() throws Exception {
-        //given
-        CategoryAddReq categoryAddReq = new CategoryAddReq();
-        categoryAddReq.setContents("카테고리");
-        categoryAddReq.setIsPublic(true);
-        categoryAddReq.setColor("RED");
-
-        String content = gson.toJson(categoryAddReq);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(COLOR_NOT_FOUND.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(COLOR_NOT_FOUND.getMessage()));
-    }
-
-    @Test
-    @DisplayName("카테고리 등록 실패 - 활성화된 개수 초과")
-    public void category_add_fail_active_category_limit() throws Exception {
-        //given
-        CategoryAddReq categoryAddReq = new CategoryAddReq();
-        categoryAddReq.setContents("카테고리");
-        categoryAddReq.setIsPublic(true);
-        categoryAddReq.setColor("PURPLE");
-
-        String content = gson.toJson(categoryAddReq);
-
-        mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(ACTIVATED_CATEGORY_LIMIT.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(ACTIVATED_CATEGORY_LIMIT.getMessage()));
-    }
-
-    @Test
-    @DisplayName("카테고리 등록 실패 - contents is null")
-    public void category_add_fail_contents_is_null() throws Exception {
-        //given
-        CategoryAddReq categoryAddReq = new CategoryAddReq();
-        categoryAddReq.setContents(null);
-        categoryAddReq.setIsPublic(true);
-        categoryAddReq.setColor("PURPLE");
-
-        String content = gson.toJson(categoryAddReq);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
-    }
-
-    @Test
-    @DisplayName("카테고리 등록 실패 - contents 빈값")
-    public void category_add_fail_contents_is_blank() throws Exception {
-        //given
-        CategoryAddReq categoryAddReq = new CategoryAddReq();
-        categoryAddReq.setContents("");
-        categoryAddReq.setIsPublic(true);
-        categoryAddReq.setColor("PURPLE");
-
-        String content = gson.toJson(categoryAddReq);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
-    }
-
-    @Test
-    @DisplayName("카테고리 등록 실패 - contetns length 초과")
-    public void category_add_fail_contents_limit_length() throws Exception {
-        //given
-        CategoryAddReq categoryAddReq = new CategoryAddReq();
-        categoryAddReq.setContents("1234567891011121234444342");
-        categoryAddReq.setIsPublic(true);
-        categoryAddReq.setColor("PURPLE");
-
-        String content = gson.toJson(categoryAddReq);
-
-        //when
-        ResultActions actions = mockMvc.perform(
-                post("/categories")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
-
-        //then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
 
     @Test
@@ -588,12 +504,37 @@ class CategoryControllerTest {
     }
 
     @Test
+    @DisplayName("카테고리 수정 실패 - 잘못된 scope 값")
+    public void category_modify_fail_scope_not_found() throws Exception {
+        CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
+        categoryModifyReq.setContents("카테고리 수정");
+        categoryModifyReq.setScope("PRIMARY");
+
+        String content = gson.toJson(categoryModifyReq);
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                patch("/categories/{categoryId}", 10001L)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(SCOPE_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(SCOPE_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
     @DisplayName("카테고리 수정 실패 - 활성화 개수 초과")
     public void category_modify_fail_active_category_limit() throws Exception {
         //given
         CategoryAddReq categoryAddReq = new CategoryAddReq();
         categoryAddReq.setContents("테스트 카테고리 20");
-        categoryAddReq.setIsPublic(true);
+        categoryAddReq.setScope("PRIVATE");
         categoryAddReq.setColor("PURPLE");
 
         CategoryModifyReq categoryModifyReq = new CategoryModifyReq();
@@ -637,7 +578,7 @@ class CategoryControllerTest {
         //given
         CategoryAddReq categoryAddReq = new CategoryAddReq();
         categoryAddReq.setContents("테스트 카테고리 1");
-        categoryAddReq.setIsPublic(false);
+        categoryAddReq.setScope("PRIVATE");
         categoryAddReq.setColor("PURPLE");
 
         String content = gson.toJson(categoryAddReq);
@@ -655,6 +596,77 @@ class CategoryControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_CHANGE_RESTRICTED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_CHANGE_RESTRICTED.getMessage()));
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제_성공")
+    public void category_remove_success() throws Exception {
+        //given
+        Long categoryId = 10002L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/categories/{categoryId}", categoryId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()))
+                .andDo(document(
+                        "카테고리 삭제",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Category API")
+                                .summary("카테고리 삭제 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .responseSchema(Schema.schema("카테고리 삭제 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    @DisplayName("카테고리 삭제 - redis에 값이 존재하는지 테스트")
+    public void category_remove_success_redis_value_present_test() throws Exception {
+        //given
+        Long categoryId = 10002L;
+
+        System.out.println(LocalDate.now().toString());
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                delete("/categories/{categoryId}", categoryId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()));
+
+        TodoRedisDto savedTodo = (TodoRedisDto) redisUtils.getData("todo:" + 30005L);
+        assertThat(savedTodo).isNotNull();
+        assertThat(savedTodo.getContents()).isEqualTo("투두7");
+        assertThat(savedTodo.getYear()).isEqualTo(LocalDate.now().minusDays(1).getYear());
+        assertThat(savedTodo.getMonth()).isEqualTo(LocalDate.now().minusDays(1).getMonthValue());
+        assertThat(savedTodo.getDate()).isEqualTo(LocalDate.now().minusDays(1).getDayOfMonth());
     }
 
     @Test
@@ -696,31 +708,71 @@ class CategoryControllerTest {
     }
 
     @Test
-    @DisplayName("카테고리 삭제 - redis에 값이 존재하는지 테스트")
-    public void category_remove_success_redis_value_present_test() throws Exception {
-        //given
-        Long categoryId = 10002L;
+    @DisplayName("카테고리 순서 변경_성공")
+    public void category_arrange_success() throws Exception {
+        CategoryArrangeReq categoryArrangeReq = new CategoryArrangeReq();
+        List<Long> activatedList = new ArrayList<>();
+        List<Long> inactivatedList = new ArrayList<>();
 
-        System.out.println(LocalDate.now().toString());
+        for(int i = 1; i <= 10; i++) {
+            activatedList.add(10000L+i);
+        }
+
+        for(int i = 11; i <= 21; i++) {
+            inactivatedList.add(10000L+i);
+        }
+
+        categoryArrangeReq.setActivated(activatedList);
+        categoryArrangeReq.setInactivated(inactivatedList);
+
+        String content = gson.toJson(categoryArrangeReq);
 
         //when
         ResultActions actions = mockMvc.perform(
-                delete("/categories/{categoryId}", categoryId)
+                patch("/categories")
                         .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
 
         //then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_DELETED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_DELETED.getMessage()));
-
-        TodoRedisDto savedTodo = (TodoRedisDto) redisUtils.getData("todo:" + 30005L);
-        assertThat(savedTodo).isNotNull();
-        assertThat(savedTodo.getContents()).isEqualTo("투두7");
-        assertThat(savedTodo.getYear()).isEqualTo(LocalDate.now().minusDays(1).getYear());
-        assertThat(savedTodo.getMonth()).isEqualTo(LocalDate.now().minusDays(1).getMonthValue());
-        assertThat(savedTodo.getDate()).isEqualTo(LocalDate.now().minusDays(1).getDayOfMonth());
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_ARRANGE_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_ARRANGE_OK.getMessage()))
+                .andDo(document(
+                        "카테고리 순서 변경",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Category API")
+                                .summary("카테고리 순서 변경 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestFields(
+                                        List.of(
+                                                fieldWithPath("activated").type(JsonFieldType.ARRAY)
+                                                        .description("활성화된 카테고리 아이디"),
+                                                fieldWithPath("inactivated").type(JsonFieldType.ARRAY)
+                                                        .description("비활성화된 카테고리 아이디")
+                                        )
+                                )
+                                .responseFields(
+                                        List.of(
+                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                        .description("성공 코드"),
+                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                        .description("성공 메시지"),
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
+                                        )
+                                )
+                                .requestSchema(Schema.schema("카테고리 순서 변경 Request"))
+                                .responseSchema(Schema.schema("카테고리 순서 변경 Response"))
+                                .build()
+                        ))
+                );
     }
 
     @Test

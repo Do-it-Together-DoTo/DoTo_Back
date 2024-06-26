@@ -228,8 +228,8 @@ class BettingControllerTest {
         //then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_INACTIVATED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_IS_PRIVATE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_IS_PRIVATE.getMessage()));
     }
 
     @Test

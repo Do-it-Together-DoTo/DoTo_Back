@@ -7,7 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import site.doto.domain.betting.entity.Betting;
-import site.doto.domain.todo.entity.Todo;
 
 import java.util.Optional;
 import java.util.List;
@@ -48,8 +47,6 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "where mb.member.id = :memberId")
     List<Betting> findJoiningBetting(@Param("memberId") Long memberId);
 
-    Betting findBettingByTodo(Todo todo);
-
     @Query("select b " +
             "from Betting b " +
             "join fetch b.todo t " +
@@ -68,4 +65,5 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "set b.isAchieved = :isAchieved " +
             "where b in :betting")
     void updateIsAchieved(@Param("betting") List<Betting> betting, @Param("isAchieved") Boolean isAchieved);
+
 }

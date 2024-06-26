@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static site.doto.domain.category.enums.Scope.PRIVATE;
 import static java.util.stream.Collectors.groupingBy;
 import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -58,8 +59,8 @@ public class BettingService {
             throw new CustomException(TODO_ALREADY_PAST);
         }
 
-        if (!todo.getCategory().getIsPublic()) {
-            throw new CustomException(CATEGORY_INACTIVATED);
+        if (todo.getCategory().getScope().equals(PRIVATE)) {
+            throw new CustomException(CATEGORY_IS_PRIVATE);
         }
 
         if (todo.getIsDone()) {
@@ -233,6 +234,17 @@ public class BettingService {
 
         redisUtils.updateRecordToRedis(memberId, betting.getDate().getYear(), betting.getDate().getMonthValue(), "myBetOpen", -1);
     }
+
+    public void disconnectBetting(Betting betting) {
+        if(betting.getIsAchieved() == null) {
+            throw new CustomException(DELETE_NOT_ALLOWED);
+        }
+
+        TodoRedisDto todoRedisDto = TodoRedisDto.toDto(betting.getTodo());
+        redisUtils.saveTodoToRedis(todoRedisDto, betting.getId());
+
+        betting.todoDisconnected();
+        bettingRepository.save(betting);
 
     public void deleteClosedBetting() {
         chatRoomRepository.detachBettingFromChatRoom();

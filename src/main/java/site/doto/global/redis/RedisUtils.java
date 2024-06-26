@@ -11,6 +11,7 @@ import site.doto.domain.record.dto.RecordUpdateDto;
 import site.doto.domain.record.entity.Record;
 import site.doto.domain.record.entity.RecordPK;
 import site.doto.domain.record.repository.RecordRepository;
+import site.doto.domain.todo.dto.TodoRedisDto;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -104,5 +105,11 @@ public class RedisUtils {
 
             recordRepository.updateRecord(update);
         }
+    }
+
+    public void saveTodoToRedis(TodoRedisDto dto, Long bettingId) {
+        String key = "todo:" + bettingId;
+
+        setData(key, dto);
     }
 }
