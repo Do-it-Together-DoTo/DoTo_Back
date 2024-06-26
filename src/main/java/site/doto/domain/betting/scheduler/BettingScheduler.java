@@ -14,4 +14,9 @@ public class BettingScheduler {
     public void deleteFinishedBetting() {
         bettingService.deleteFinishedBetting();
     }
+
+    @Scheduled(cron = "5 0 0 * * *")
+    public void closeBetting() {
+        bettingService.closeBetting();
+    }
 }

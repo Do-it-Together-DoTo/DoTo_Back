@@ -22,9 +22,12 @@ import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import static java.util.stream.Collectors.groupingBy;
 import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
 
@@ -97,7 +100,7 @@ public class BettingService {
 
         Optional<Relation> relation = relationRepository.findById(new RelationPK(friendId, memberId));
 
-        if (!relation.isPresent() || relation.get().getStatus().equals(WAITING)) {
+        if (relation.isEmpty() || relation.get().getStatus().equals(WAITING)) {
             throw new CustomException(NOT_FRIEND);
         }
 
@@ -136,7 +139,7 @@ public class BettingService {
         List<BettingDto> joiningBetting = myBettingListRes.getJoiningBetting();
         List<BettingDto> closedBetting = myBettingListRes.getClosedBetting();
 
-        bettingList.stream()
+        bettingList
                 .forEach(betting -> {
                     LocalDate todoDate;
 
@@ -172,7 +175,7 @@ public class BettingService {
 
             Optional<Relation> relation = relationRepository.findById(new RelationPK(friendId, memberId));
 
-            if (!relation.isPresent() || relation.get().getStatus().equals(WAITING)) {
+            if (relation.isEmpty() || relation.get().getStatus().equals(WAITING)) {
                 throw new CustomException(NOT_FRIEND);
             }
 
@@ -236,5 +239,75 @@ public class BettingService {
         memberBettingRepository.deleteRelatedMemberBetting();
         bettingRepository.deleteFinishedBetting();
         chatRoomRepository.deleteOrphanChatRoom();
+    }
+
+    public void closeBetting() {
+        List<Betting> closedBetting = bettingRepository.findClosedBetting();
+
+        Map<Boolean, List<Betting>> groupedBetting = closedBetting.stream()
+                .collect(groupingBy(betting -> betting.getTodo().getIsDone()));
+
+        bettingRepository.updateIsAchieved(groupedBetting.get(true), true);
+        bettingRepository.updateIsAchieved(groupedBetting.get(false), false);
+
+        List<MemberBetting> closedMemberBetting = memberBettingRepository.findClosedMemberBetting(closedBetting);
+        Map<Long, List<MemberBetting>> groupedMemberBetting = closedMemberBetting.stream()
+                .collect(groupingBy(mb -> mb.getBetting().getId()));
+
+        Map<Long, Integer> bettingPrizes = new HashMap<>();
+
+        LocalDate todoDate = LocalDate.now().minusDays(1);
+
+        for (Long bettingId : groupedMemberBetting.keySet()) {
+            List<MemberBetting> bets = groupedMemberBetting.get(bettingId);
+
+            Betting betting =  bets.get(0).getBetting();
+            Boolean isAchieved = betting.getTodo().getIsDone();
+
+            int successCoins = 0;
+            int failureCoins = 0;
+
+            for (MemberBetting memberBetting : bets) {
+                if (memberBetting.getPrediction()) {
+                    successCoins += memberBetting.getCost();
+                } else {
+                    failureCoins += memberBetting.getCost();
+                }
+            }
+
+            double winCoins = isAchieved ? successCoins : failureCoins;
+            int totalCoins = successCoins + failureCoins;
+
+            Long hostId = betting.getMember().getId();
+            int hostCoins = Math.min(bets.size(), 30);
+
+            memberRepository.updateCoin(hostId, hostCoins);
+            redisUtils.updateRecordToRedis(hostId, todoDate.getYear(), todoDate.getMonthValue(), "coinEarned", hostCoins);
+
+            for (MemberBetting memberBetting : bets) {
+                Long participantId = memberBetting.getMember().getId();
+
+                redisUtils.updateRecordToRedis(participantId, todoDate.getYear(), todoDate.getMonthValue(), "betParticipation", 1);
+
+                if (memberBetting.getPrediction().equals(isAchieved)) {
+                    Integer coin = (int) (totalCoins / winCoins * memberBetting.getCost()) + 1;
+                    updateCoin(participantId, coin, bettingPrizes);
+                }
+            }
+        }
+
+        for (Long memberId : bettingPrizes.keySet()) {
+            memberRepository.updateCoin(memberId, bettingPrizes.get(memberId));
+            redisUtils.updateRecordToRedis(memberId, todoDate.getYear(), todoDate.getMonthValue(), "coinEarned", bettingPrizes.get(memberId));
+            redisUtils.updateRecordToRedis(memberId, todoDate.getYear(), todoDate.getMonthValue(), "betProfit", bettingPrizes.get(memberId));
+        }
+    }
+
+    private void updateCoin(Long memberId, Integer coin, Map<Long, Integer> bettingPrizes) {
+        if (!bettingPrizes.containsKey(memberId)) {
+            bettingPrizes.put(memberId, coin);
+        } else {
+            bettingPrizes.put(memberId, bettingPrizes.get(memberId) + coin);
+        }
     }
 }

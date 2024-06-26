@@ -50,6 +50,12 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
 
     Betting findBettingByTodo(Todo todo);
 
+    @Query("select b " +
+            "from Betting b " +
+            "join fetch b.todo t " +
+            "where t.date < current_date")
+    List<Betting> findClosedBetting();
+
     @Modifying
     @Query("delete " +
             "from Betting b " +
@@ -59,4 +65,11 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "from Todo t " +
             "where t.date < current_date)")
     void deleteFinishedBetting();
+
+    @Modifying
+    @Query("update " +
+            "from Betting b " +
+            "set b.isAchieved = :isAchieved " +
+            "where b in :betting")
+    void updateIsAchieved(@Param("betting") List<Betting> betting, @Param("isAchieved") Boolean isAchieved);
 }
