@@ -1,6 +1,7 @@
 package site.doto.domain.betting.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -89,7 +90,9 @@ public class BettingService {
         Betting betting = bettingRepository.findById(bettingId)
                 .orElseThrow(() -> new CustomException(BETTING_NOT_FOUND));
 
-        if (bettingJoinReq.getCost() % 5 != 0) {
+        Integer betCoins = bettingJoinReq.getCost();
+
+        if (betCoins % 5 != 0) {
             throw new CustomException(BIND_EXCEPTION);
         }
 
@@ -117,11 +120,20 @@ public class BettingService {
             throw new CustomException(BETTING_ALREADY_JOINING);
         }
 
-        MemberBetting memberBetting = bettingJoinReq.toEntity(member, betting);
+        if (member.getCoin() < betCoins) {
+            throw new CustomException(COIN_NOT_ENOUGH);
+        }
 
+        try {
+            memberRepository.updateCoin(memberId, -betCoins);
+        } catch (DataIntegrityViolationException e) {
+            throw new CustomException(COIN_NOT_ENOUGH);
+        }
+
+        MemberBetting memberBetting = bettingJoinReq.toEntity(member, betting);
         memberBettingRepository.save(memberBetting);
 
-        redisUtils.updateRecordToRedis(memberId, LocalDate.now().getYear(), LocalDate.now().getMonthValue(), "betParticipation", 1);
+        redisUtils.updateRecordToRedis(memberId, LocalDate.now().getYear(), LocalDate.now().getMonthValue(), "coinUsage", betCoins);
     }
 
     @Transactional(readOnly = true)
@@ -236,7 +248,7 @@ public class BettingService {
     }
 
     public void disconnectBetting(Betting betting) {
-        if(betting.getIsAchieved() == null) {
+        if (betting.getIsAchieved() == null) {
             throw new CustomException(DELETE_NOT_ALLOWED);
         }
 
@@ -245,6 +257,7 @@ public class BettingService {
 
         betting.todoDisconnected();
         bettingRepository.save(betting);
+    }
 
     public void deleteClosedBetting() {
         chatRoomRepository.detachBettingFromChatRoom();
@@ -300,6 +313,7 @@ public class BettingService {
                 Long participantId = memberBetting.getMember().getId();
 
                 redisUtils.updateRecordToRedis(participantId, todoDate.getYear(), todoDate.getMonthValue(), "betParticipation", 1);
+                redisUtils.updateRecordToRedis(participantId, todoDate.getYear(), todoDate.getMonthValue(), "betAmount", memberBetting.getCost());
 
                 if (memberBetting.getPrediction().equals(isAchieved)) {
                     Integer coin = (int) (totalCoins / winCoins * memberBetting.getCost()) + 1;
