@@ -22,8 +22,8 @@ public interface MemberBettingRepository extends JpaRepository<MemberBetting, Me
     @EntityGraph(attributePaths = "member")
     @Query("select mb " +
             "from MemberBetting mb " +
-            "where mb.betting in :finishedBetting")
-    List<MemberBetting> findClosedMemberBetting(@Param("finishedBetting")List<Betting> finishedBetting);
+            "where mb.betting in :closedBetting")
+    List<MemberBetting> findClosedMemberBetting(@Param("closedBetting")List<Betting> closedBetting);
 
 
     @Modifying
