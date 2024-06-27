@@ -15,10 +15,10 @@ insert into character_type (character_type_id, name, img, level, species, descri
 --member
 insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values
                                                                                                     (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 100, 'LOCAL', current_timestamp), -- 베팅 생성
-                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
-                                                                                                    (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
+                                                                                                    (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', TIMESTAMPADD(MINUTE, -5, CURRENT_TIMESTAMP)), -- 베팅 생성 실패
+                                                                                                    (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', TIMESTAMPADD(MINUTE, -10, CURRENT_TIMESTAMP)), -- 베팅 생성 실패
                                                                                                     (4, 'test4@naver.com', 'test_user4', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
-                                                                                                    (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
+                                                                                                    (20000, 'test20000@naver.com', 'test_user20000', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', null),
                                                                                                     (20001, 'test20001@naver.com', 'test_user20001', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20002, 'test20002@naver.com', 'test_user20002', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
                                                                                                     (20003, 'test20003@naver.com', 'test_user20003', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),
