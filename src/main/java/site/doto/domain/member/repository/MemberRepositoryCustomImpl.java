@@ -36,7 +36,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(ltLastUpload(relationListReq))
+                .where(condition(relationListReq))
                 .orderBy(member.lastUpload.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -44,9 +44,15 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
     }
 
-    private BooleanExpression ltLastUpload(RelationListReq relationListReq) {
+    private BooleanExpression condition(RelationListReq relationListReq) {
+        Long friendId = relationListReq.getLastFriendId();
         LocalDateTime lastUpload = relationListReq.getLastFriendLastUpload();
 
-        return lastUpload == null ? null : member.lastUpload.lt(lastUpload);
+        if(lastUpload == null && friendId == null) {
+            return null;
+        }
+
+        return member.lastUpload.lt(lastUpload)
+                .or(member.lastUpload.eq(lastUpload).and(member.id.lt(friendId)));
     }
 }

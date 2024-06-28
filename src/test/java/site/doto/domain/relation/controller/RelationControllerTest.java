@@ -756,13 +756,14 @@ class RelationControllerTest {
 
     @Test
     @DisplayName("친구 목록 - 성공")
-    public void friend_List_success() throws Exception {
+    public void friend_list_success() throws Exception {
         // given
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
                         .header("Authorization", jwtToken)
+                        .param("lastFriendId", "")
                         .param("lastFriendLastUpload", "")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -784,6 +785,7 @@ class RelationControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestParameters(
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
                                         parameterWithName("lastFriendLastUpload").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
                                 .responseFields(
@@ -812,6 +814,28 @@ class RelationControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("친구 목록 - 파라미터 중 하나만 null인 경우")
+    public void friend_list_bind_exception() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/friends")
+                        .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(2L))
+                        .param("lastFriendLastUpload", "")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
 
     @Test
