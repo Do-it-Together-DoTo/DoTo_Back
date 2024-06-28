@@ -204,8 +204,7 @@ public class RelationService {
 
     @Transactional(readOnly = true)
     public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
-        if((relationListReq.getLastFriendId() == null && relationListReq.getLastFriendLastUpload() != null)
-                || (relationListReq.getLastFriendId() != null && relationListReq.getLastFriendLastUpload() == null)) {
+        if(relationListReq.getLastFriendId() == null ^ relationListReq.getLastFriendLastUpload() == null) {
             throw new CustomException(BIND_EXCEPTION);
         }
 
