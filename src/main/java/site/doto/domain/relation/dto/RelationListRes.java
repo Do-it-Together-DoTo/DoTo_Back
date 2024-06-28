@@ -10,6 +10,10 @@ import site.doto.global.dto.SliceDto;
 public class RelationListRes {
     private SliceDto<RelationDto> friends;
 
+    public RelationListRes(SliceDto<RelationDto> friendDtoSliceDto) {
+        friends = friendDtoSliceDto;
+    }
+
     public RelationListRes(Slice<RelationDto> friendDtoSlice) {
         friends = new SliceDto<>(friendDtoSlice);
     }

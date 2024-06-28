@@ -16,6 +16,8 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.relation.dto.*;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -753,18 +755,16 @@ class RelationControllerTest {
     }
 
     @Test
-    @DisplayName("친구 목록 성공")
-    public void friend_List_success() throws Exception {
+    @DisplayName("친구 목록 - 성공")
+    public void friend_list_success() throws Exception {
         // given
-        Long lastFriendId = 1L;
-        String lastFriendTodoDate = "2024-05-19 00:00:00";
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
                         .header("Authorization", jwtToken)
-                        .param("lastFriendId", String.valueOf(lastFriendId))
-                        .param("lastFriendTodoDate", lastFriendTodoDate)
+                        .param("lastFriendId", "")
+                        .param("lastFriendLastUpload", "")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -786,36 +786,56 @@ class RelationControllerTest {
                                 )
                                 .requestParameters(
                                         parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
-                                        parameterWithName("lastFriendTodoDate").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
+                                        parameterWithName("lastFriendLastUpload").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body.friends.content").type(JsonFieldType.ARRAY)
-                                                        .description("친구 목록"),
-                                                fieldWithPath("body.friends.*[].memberId").type(JsonFieldType.NUMBER)
-                                                        .description("친구 Id"),
-                                                fieldWithPath("body.friends.*[].nickname").type(JsonFieldType.STRING)
-                                                        .description("친구 닉네임"),
-                                                fieldWithPath("body.friends.*[].mainCharacterImg").type(JsonFieldType.STRING)
-                                                        .description("친구 메인 캐릭터 이미지"),
-                                                fieldWithPath("body.friends.sliceNumber").type(JsonFieldType.NUMBER)
-                                                        .description("슬라이스 번호"),
-                                                fieldWithPath("body.friends.size").type(JsonFieldType.NUMBER)
-                                                        .description("슬라이스 크기"),
-                                                fieldWithPath("body.friends.hasNext").type(JsonFieldType.BOOLEAN)
-                                                        .description("다음 슬라이스 여부"),
-                                                fieldWithPath("body.friends.numberOfElements").type(JsonFieldType.NUMBER)
-                                                        .description("요소의 수")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.friends.content").type(JsonFieldType.ARRAY)
+                                                .description("친구 목록"),
+                                        fieldWithPath("body.friends.*[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("친구 Id"),
+                                        fieldWithPath("body.friends.*[].nickname").type(JsonFieldType.STRING)
+                                                .description("친구 닉네임"),
+                                        fieldWithPath("body.friends.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("친구 메인 캐릭터 이미지"),
+                                        fieldWithPath("body.friends.sliceNumber").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 번호"),
+                                        fieldWithPath("body.friends.size").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 크기"),
+                                        fieldWithPath("body.friends.hasNext").type(JsonFieldType.BOOLEAN)
+                                                .description("다음 슬라이스 여부"),
+                                        fieldWithPath("body.friends.numberOfElements").type(JsonFieldType.NUMBER)
+                                                .description("요소의 수")
                                 )
                                 .responseSchema(Schema.schema("친구 목록 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("친구 목록 - 파라미터 중 하나만 null인 경우")
+    public void friend_list_bind_exception() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/friends")
+                        .header("Authorization", jwtToken)
+                        .param("lastFriendId", String.valueOf(2L))
+                        .param("lastFriendLastUpload", "")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
     }
 
     @Test

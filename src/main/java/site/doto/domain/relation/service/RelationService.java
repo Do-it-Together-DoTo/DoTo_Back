@@ -1,6 +1,8 @@
 package site.doto.domain.relation.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import site.doto.domain.relation.dto.*;
@@ -10,9 +12,11 @@ import site.doto.domain.relation.enums.RelationStatus;
 import site.doto.domain.relation.repository.RelationRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.global.dto.SliceDto;
 import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static site.doto.domain.relation.enums.RelationStatus.*;
@@ -196,6 +200,25 @@ public class RelationService {
 
         relationRepository.delete(existingMemberToFriend);
         relationRepository.delete(existingFriendToMember);
+    }
+
+    @Transactional(readOnly = true)
+    public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
+        if(relationListReq.getLastFriendId() == null ^ relationListReq.getLastFriendLastUpload() == null) {
+            throw new CustomException(BIND_EXCEPTION);
+        }
+
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, relationListReq, pageable);
+
+        SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(member ->
+            RelationDto.builder()
+                    .memberId(member.getId())
+                    .nickname(member.getNickname())
+                    .mainCharacterImg(member.getMainCharacterImg())
+                    .build()
+        ));
+
+        return new RelationListRes(relationDtoSliceDto);
     }
 
     public void blockRelation(Long memberId, RelationBlockReq relationBlockReq) {

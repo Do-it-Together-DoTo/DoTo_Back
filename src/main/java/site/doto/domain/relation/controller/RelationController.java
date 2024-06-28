@@ -1,8 +1,11 @@
 package site.doto.domain.relation.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.relation.dto.*;
 import site.doto.domain.relation.service.RelationService;
@@ -72,19 +75,11 @@ public class RelationController {
 
     @GetMapping
     public ResponseDto<RelationListRes> relationList(
-            @ModelAttribute RelationListReq relationListReq) {
-        List<RelationDto> friends = new ArrayList<>();
+            @ModelAttribute RelationListReq relationListReq,
+            @PageableDefault(size = 20) Pageable pageable) {
+        Long memberId = 1L;
 
-        for (int i = 1; i <= 10; i++) {
-            friends.add(RelationDto.builder()
-                    .memberId(10000L + i)
-                    .nickname("닉네임" + i)
-                    .mainCharacterImg("메인 캐릭터" + i)
-                    .build());
-        }
-
-        Slice<RelationDto> friendDtoSlice = new SliceImpl<>(friends);
-        RelationListRes result = new RelationListRes(friendDtoSlice);
+        RelationListRes result = relationService.findRelation(memberId, relationListReq, pageable);
 
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
