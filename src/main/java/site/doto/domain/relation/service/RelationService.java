@@ -203,12 +203,40 @@ public class RelationService {
     }
 
     @Transactional(readOnly = true)
-    public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
-        if(relationListReq.getLastFriendId() == null ^ relationListReq.getLastFriendLastUpload() == null) {
+    public RelationDetailListRes findRelationDetail(Long memberId, RelationDetailListReq relationDetailListReq, Pageable pageable) {
+        Long lastFriendId = relationDetailListReq.getLastFriendId();
+        LocalDateTime lastFriendLastUpload = relationDetailListReq.getLastFriendLastUpload();
+
+        if(lastFriendId == null ^ lastFriendLastUpload == null) {
             throw new CustomException(BIND_EXCEPTION);
         }
 
-        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, relationListReq, pageable);
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
+
+        SliceDto<RelationDetailDto> relationDetailDtoSliceDto = new SliceDto<>(members.map(member ->
+                RelationDetailDto.builder()
+                        .memberId(member.getId())
+                        .nickname(member.getNickname())
+                        .description(member.getDescription())
+                        .mainCharacterImg(member.getMainCharacterImg())
+                        .mainCharacterExp(member.getMainCharacter().getExp())
+                        .mainCharacterLevel(member.getMainCharacter().getExp() / 100 + 1)
+                        .build()
+        ));
+
+        return new RelationDetailListRes(relationDetailDtoSliceDto);
+    }
+
+    @Transactional(readOnly = true)
+    public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
+        Long lastFriendId = relationListReq.getLastFriendId();
+        LocalDateTime lastFriendLastUpload = relationListReq.getLastFriendLastUpload();
+
+        if(lastFriendId == null ^ lastFriendLastUpload == null) {
+            throw new CustomException(BIND_EXCEPTION);
+        }
+
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
         SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(member ->
             RelationDto.builder()
