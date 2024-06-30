@@ -43,7 +43,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -66,7 +65,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -89,7 +87,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -120,7 +117,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -141,7 +137,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -162,7 +157,6 @@ public class TodoController {
             todoDetailsResList.add(TodoDetailsRes.builder()
                     .id(value)
                     .contents("Mock Todo" + value)
-                    .date("2024-05-19 00:00:00")
                     .isDone(false)
                     .build());
         }
@@ -185,7 +179,6 @@ public class TodoController {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(todoId)
                 .contents("Modified Mock Todo")
-                .date("2024-05-19 00:00:00")
                 .isDone(false)
                 .build();
 
@@ -204,7 +197,6 @@ public class TodoController {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(todoId)
                 .contents("Modified Done Mock Todo")
-                .date("2024-05-19 00:00:00")
                 .isDone(false)
                 .build();
 

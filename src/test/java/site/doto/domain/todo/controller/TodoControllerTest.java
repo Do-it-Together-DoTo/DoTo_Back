@@ -73,7 +73,6 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.header.message").value(TODO_CRATED.getMessage()))
                 .andExpect(jsonPath("$.body.id").value(20011L))
                 .andExpect(jsonPath("$.body.contents").value("투두 생성"))
-                .andExpect(jsonPath("$.body.date").value(LocalDate.now().toString()))
                 .andExpect(jsonPath("$.body.isDone").value(false))
                 .andDo(document(
                         "Todo 생성",
@@ -103,8 +102,6 @@ class TodoControllerTest {
                                                         .description("Todo Id"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("Todo 내용"),
-                                                fieldWithPath("body.date").type(JsonFieldType.STRING)
-                                                        .description("Todo 생성 날짜"),
                                                 fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
@@ -169,8 +166,6 @@ class TodoControllerTest {
                                                 .description("Todo Id"),
                                         fieldWithPath("body.todoList[].*[].contents").type(JsonFieldType.STRING)
                                                 .description("Todo 내용"),
-                                        fieldWithPath("body.todoList[].*[].date").type(JsonFieldType.STRING)
-                                                .description("Todo 날짜"),
                                         fieldWithPath("body.todoList[].*[].isDone").type(JsonFieldType.BOOLEAN)
                                                 .description("Todo 완료 여부")
                                 )
@@ -234,8 +229,6 @@ class TodoControllerTest {
                                                 .description("Todo Id"),
                                         fieldWithPath("body.todoList[].*[].contents").type(JsonFieldType.STRING)
                                                 .description("Todo 내용"),
-                                        fieldWithPath("body.todoList[].*[].date").type(JsonFieldType.STRING)
-                                                .description("Todo 날짜"),
                                         fieldWithPath("body.todoList[].*[].isDone").type(JsonFieldType.BOOLEAN)
                                                 .description("Todo 완료 여부")
                                 )
@@ -300,8 +293,6 @@ class TodoControllerTest {
                                                         .description("Todo Id"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("Todo 내용"),
-                                                fieldWithPath("body.date").type(JsonFieldType.STRING)
-                                                        .description("Todo 생성 날짜"),
                                                 fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
@@ -395,8 +386,6 @@ class TodoControllerTest {
                                                         .description("Todo Id"),
                                                 fieldWithPath("body.contents").type(JsonFieldType.STRING)
                                                         .description("Todo 내용"),
-                                                fieldWithPath("body.date").type(JsonFieldType.STRING)
-                                                        .description("Todo 생성 날짜"),
                                                 fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
                                                         .description("Todo 완료 여부")
                                         )
