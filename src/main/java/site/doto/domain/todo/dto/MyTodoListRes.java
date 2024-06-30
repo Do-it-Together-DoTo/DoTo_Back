@@ -6,6 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class TodoListRes {
-    private List<TodoCategoryDto> todoList = new ArrayList<>();
+public class MyTodoListRes {
+    private List<MyTodoCategoryDto> todoList = new ArrayList<>();
 }

@@ -11,15 +11,12 @@ public class TodoDetailsRes {
 
     private String contents;
 
-    private String date;
-
     private Boolean isDone;
 
     public static TodoDetailsRes toDto(Todo todo) {
         return TodoDetailsRes.builder()
                 .id(todo.getId())
                 .contents(todo.getContents())
-                .date(todo.getDate().toString())
                 .isDone(todo.getIsDone())
                 .build();
     }
