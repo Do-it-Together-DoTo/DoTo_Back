@@ -14,12 +14,10 @@ public class RedisEvent {
     @PostConstruct
     public void init() {
         redisUtils.updateRecordToDB();
-        redisUtils.flushRedis();
     }
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 3 * * *")
     public void schedule() {
         redisUtils.updateRecordToDB();
-        redisUtils.flushRedis();
     }
 }
