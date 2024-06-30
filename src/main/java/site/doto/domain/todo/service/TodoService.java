@@ -13,6 +13,7 @@ import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.global.exception.CustomException;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -37,9 +38,10 @@ public class TodoService {
         validateMemberCategory(memberId, category.getMember().getId());
 
         Todo todo = todoAddReq.toEntity(member, category);
+        member.updateLastUpload(LocalDateTime.now());
 
         todoRepository.save(todo);
-
+        memberRepository.save(member);
         return TodoDetailsRes.toDto(todo);
     }
 

@@ -46,4 +46,8 @@ public class Member {
         return mainCharacter.getCharacterType().getImg();
     }
 
+    public void updateLastUpload(LocalDateTime lastUpload) {
+        this.lastUpload = lastUpload;
+    }
+
 }
