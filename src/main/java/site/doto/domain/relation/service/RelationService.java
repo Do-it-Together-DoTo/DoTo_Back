@@ -213,16 +213,7 @@ public class RelationService {
 
         Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
-        SliceDto<RelationDetailDto> relationDetailDtoSliceDto = new SliceDto<>(members.map(member ->
-                RelationDetailDto.builder()
-                        .memberId(member.getId())
-                        .nickname(member.getNickname())
-                        .description(member.getDescription())
-                        .mainCharacterImg(member.getMainCharacterImg())
-                        .mainCharacterExp(member.getMainCharacter().getExp())
-                        .mainCharacterLevel(member.getMainCharacter().getExp() / 100 + 1)
-                        .build()
-        ));
+        SliceDto<RelationDetailDto> relationDetailDtoSliceDto = new SliceDto<>(members.map(RelationDetailDto::new));
 
         return new RelationDetailListRes(relationDetailDtoSliceDto);
     }
@@ -238,13 +229,7 @@ public class RelationService {
 
         Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
-        SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(member ->
-            RelationDto.builder()
-                    .memberId(member.getId())
-                    .nickname(member.getNickname())
-                    .mainCharacterImg(member.getMainCharacterImg())
-                    .build()
-        ));
+        SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(RelationDto::new));
 
         return new RelationListRes(relationDtoSliceDto);
     }
