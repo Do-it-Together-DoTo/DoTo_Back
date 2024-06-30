@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static site.doto.domain.category.enums.Color.*;
+import static site.doto.domain.category.enums.Scope.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
@@ -27,6 +28,82 @@ public class TodoController {
         TodoDetailsRes result = todoService.addTodo(memberId, todoAddReq);
 
         return ResponseDto.success(TODO_CRATED, result);
+    }
+
+    @GetMapping
+    public ResponseDto<MyTodoListRes> myTodoList(
+            @ModelAttribute TodoListReq todoListReq) {
+        MyTodoListRes result = new MyTodoListRes();
+
+        // 1
+        List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            Long value = 1L + i;
+
+            todoDetailsResList.add(TodoDetailsRes.builder()
+                    .id(value)
+                    .contents("Mock Todo" + value)
+                    .date("2024-05-19 00:00:00")
+                    .isDone(false)
+                    .build());
+        }
+
+        MyTodoCategoryDto myTodoCategoryDto = MyTodoCategoryDto.builder()
+                .categoryId(1L)
+                .categoryContents("Mock Category1")
+                .categoryIsActivated(true)
+                .categoryColor(SKYBLUE)
+                .categoryScope(PUBLIC)
+                .todoDetailsResList(todoDetailsResList)
+                .build();
+        result.getTodoList().add(myTodoCategoryDto);
+
+        // 2
+        todoDetailsResList = new ArrayList<>();
+        for (int i = 3; i < 6; i++) {
+            Long value = 1L + i;
+
+            todoDetailsResList.add(TodoDetailsRes.builder()
+                    .id(value)
+                    .contents("Mock Todo" + value)
+                    .date("2024-05-19 00:00:00")
+                    .isDone(false)
+                    .build());
+        }
+        myTodoCategoryDto = MyTodoCategoryDto.builder()
+                .categoryId(2L)
+                .categoryContents("Mock Category2")
+                .categoryIsActivated(true)
+                .categoryColor(PINK)
+                .categoryScope(PRIVATE)
+                .todoDetailsResList(todoDetailsResList)
+                .build();
+
+        result.getTodoList().add(myTodoCategoryDto);
+
+        // 3
+        todoDetailsResList = new ArrayList<>();
+        for (int i = 6; i < 9; i++) {
+            Long value = 1L + i;
+
+            todoDetailsResList.add(TodoDetailsRes.builder()
+                    .id(value)
+                    .contents("Mock Todo" + value)
+                    .date("2024-05-19 00:00:00")
+                    .isDone(false)
+                    .build());
+        }
+        myTodoCategoryDto = MyTodoCategoryDto.builder()
+                .categoryId(3L)
+                .categoryContents("Mock Category3")
+                .categoryIsActivated(true)
+                .categoryColor(YELLOW)
+                .categoryScope(FRIENDS)
+                .todoDetailsResList(todoDetailsResList)
+                .build();
+        result.getTodoList().add(myTodoCategoryDto);
+
+        return ResponseDto.success(TODO_INQUIRY_OK, result);
     }
 
     @GetMapping("/{memberId}")
