@@ -264,6 +264,7 @@ public class BettingService {
         memberBettingRepository.deleteClosedMemberBetting();
         bettingRepository.deleteClosedBetting();
         chatRoomRepository.deleteOrphanChatRoom();
+        redisUtils.deleteTodoFromRedis();
     }
 
     public void closeBetting() {

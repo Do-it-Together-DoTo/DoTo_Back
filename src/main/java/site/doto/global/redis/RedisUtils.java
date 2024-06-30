@@ -86,6 +86,7 @@ public class RedisUtils {
             String pk = split[0];
             String field = split[1];
             Integer variance = (Integer) getData(key);
+            deleteData(key);
 
             if (!map.containsKey(pk)) {
                 map.put(pk, new RecordUpdateDto(pk.split(":")));
@@ -111,5 +112,13 @@ public class RedisUtils {
         String key = "todo:" + bettingId;
 
         setData(key, dto);
+    }
+
+    public void deleteTodoFromRedis() {
+        Set<String> keys = findKeys("todo:*");
+
+        for (String key : keys) {
+            deleteData(key);
+        }
     }
 }
