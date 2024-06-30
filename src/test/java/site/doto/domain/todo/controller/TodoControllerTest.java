@@ -118,7 +118,70 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("Todo 전체 조회 성공")
+    @DisplayName("나의 Todo 전체 조회 성공")
+    public void my_todo_list_success() throws Exception {
+        // given
+        String date = "2024-05-19 00:00:00";
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/todo")
+                        .header("Authorization", jwtToken)
+                        .param("date", date)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_INQUIRY_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_INQUIRY_OK.getMessage()))
+                .andDo(document(
+                        "나의 Todo 전체 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Todo API")
+                                .summary("나의 Todo 전체 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestParameters(
+                                        parameterWithName("date").description("해당 날짜")
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.todoList[].categoryId").type(JsonFieldType.NUMBER)
+                                                .description("카테고리 Id"),
+                                        fieldWithPath("body.todoList[].categoryContents").type(JsonFieldType.STRING)
+                                                .description("카테고리 내용"),
+                                        fieldWithPath("body.todoList[].categoryIsActivated").type(JsonFieldType.BOOLEAN)
+                                                .description("카테고리 활성화 여부"),
+                                        fieldWithPath("body.todoList[].categoryColor").type(JsonFieldType.STRING)
+                                                .description("카테고리 색상"),
+                                        fieldWithPath("body.todoList[].categoryScope").type(JsonFieldType.STRING)
+                                                .description("카테고리 공개 범위"),
+                                        fieldWithPath("body.todoList[].*[].id").type(JsonFieldType.NUMBER)
+                                                .description("Todo Id"),
+                                        fieldWithPath("body.todoList[].*[].contents").type(JsonFieldType.STRING)
+                                                .description("Todo 내용"),
+                                        fieldWithPath("body.todoList[].*[].date").type(JsonFieldType.STRING)
+                                                .description("Todo 날짜"),
+                                        fieldWithPath("body.todoList[].*[].isDone").type(JsonFieldType.BOOLEAN)
+                                                .description("Todo 완료 여부")
+                                )
+                                .responseSchema(Schema.schema("나의 Todo 전체 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
+    @DisplayName("친구 Todo 전체 조회 성공")
     public void todo_list_success() throws Exception {
         // given
         long memberId = 1L;
@@ -139,12 +202,12 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_INQUIRY_OK.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(TODO_INQUIRY_OK.getMessage()))
                 .andDo(document(
-                        "Todo 전체 조회",
+                        "친구 Todo 전체 조회",
                         preprocessRequest(prettyPrint()),
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
-                                .summary("Todo 전체 조회 API")
+                                .summary("친구 Todo 전체 조회 API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -176,7 +239,7 @@ class TodoControllerTest {
                                         fieldWithPath("body.todoList[].*[].isDone").type(JsonFieldType.BOOLEAN)
                                                 .description("Todo 완료 여부")
                                 )
-                                .responseSchema(Schema.schema("Todo 전체 조회 Response"))
+                                .responseSchema(Schema.schema("친구 Todo 전체 조회 Response"))
                                 .build()
                         ))
                 );
