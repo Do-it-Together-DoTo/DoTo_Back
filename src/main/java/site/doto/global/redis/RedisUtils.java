@@ -113,4 +113,12 @@ public class RedisUtils {
 
         setData(key, dto);
     }
+
+    public void deleteTodoFromRedis() {
+        Set<String> keys = findKeys("todo:*");
+
+        for (String key : keys) {
+            deleteData(key);
+        }
+    }
 }
