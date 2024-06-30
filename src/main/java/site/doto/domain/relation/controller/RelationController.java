@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.relation.dto.*;
@@ -18,12 +17,11 @@ import java.util.List;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
-@RequestMapping("/friends")
 @RequiredArgsConstructor
 public class RelationController {
     private final RelationService relationService;
 
-    @PostMapping("/request")
+    @PostMapping("/friends/request")
     public ResponseDto<?> relationRequest(
             @RequestBody @Valid RelationRequestReq relationRequestReq) {
         Long memberId = 1L;
@@ -33,7 +31,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_REQUEST_CREATED, null);
     }
 
-    @PostMapping("/response")
+    @PostMapping("/friends/response")
     public ResponseDto<?> relationResponse(
             @RequestBody @Valid RelationResponseReq relationResponseReq) {
         Long memberId = 1L;
@@ -43,7 +41,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_CREATED, null);
     }
 
-    @DeleteMapping("/response")
+    @DeleteMapping("/friends/response")
     public ResponseDto<?> relationDeclined(
             @RequestBody @Valid RelationDeclinedReq relationDeclinedReq) {
         Long memberId = 1L;
@@ -53,7 +51,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_REQUEST_DELETED, null);
     }
 
-    @DeleteMapping("/request")
+    @DeleteMapping("/friends/request")
     public ResponseDto<?> relationCanceled(
             @RequestBody @Valid RelationCanceledReq relationCanceledReq) {
         Long memberId = 1L;
@@ -63,7 +61,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_REQUEST_CANCELED, null);
     }
 
-    @DeleteMapping("/{friendId}")
+    @DeleteMapping("/friends/{friendId}")
     public ResponseDto<?> relationRemove(
             @PathVariable Long friendId) {
         Long memberId = 1L;
@@ -73,7 +71,18 @@ public class RelationController {
         return ResponseDto.success(FRIEND_DELETED, null);
     }
 
-    @GetMapping
+    @GetMapping("/members/friends")
+    public ResponseDto<RelationDetailListRes> relationDetailList(
+            @ModelAttribute RelationDetailListReq relationDetailListReq,
+            @PageableDefault(size = 20) Pageable pageable) {
+        Long memberId = 1L;
+
+        RelationDetailListRes result = relationService.findRelationDetail(memberId, relationDetailListReq, pageable);
+
+        return ResponseDto.success(FRIENDS_INQUIRY_DETAIL_OK, result);
+    }
+
+    @GetMapping("/friends")
     public ResponseDto<RelationListRes> relationList(
             @ModelAttribute RelationListReq relationListReq,
             @PageableDefault(size = 20) Pageable pageable) {
@@ -84,7 +93,7 @@ public class RelationController {
         return ResponseDto.success(FRIENDS_INQUIRY_OK, result);
     }
 
-    @GetMapping("/block")
+    @GetMapping("/friends/block")
     ResponseDto<?> relationBlockList(
             @ModelAttribute RelationBlockListReq relationBlockListReq) {
         List<RelationDto> friends = new ArrayList<>();
@@ -103,7 +112,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_BLOCK_LIST_OK, result);
     }
 
-    @PostMapping("/block")
+    @PostMapping("/friends/block")
     ResponseDto<?> relationBlock(
             @RequestBody @Valid RelationBlockReq relationBlockReq) {
         Long memberId = 1L;
@@ -113,7 +122,7 @@ public class RelationController {
         return ResponseDto.success(FRIEND_BLOCK_OK, null);
     }
 
-    @DeleteMapping("/block")
+    @DeleteMapping("/friends/block")
     ResponseDto<?> relationUnblock(
             @RequestBody @Valid RelationUnblockReq relationUnblockReq) {
         Long memberId = 1L;

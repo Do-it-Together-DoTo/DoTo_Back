@@ -25,7 +25,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public Slice<Member> findAllByMemberIdAndStatus(Long memberId, RelationListReq relationListReq, Pageable pageable) {
+    public Slice<Member> findAllByMemberIdAndStatus(Long memberId, Long lastFriendId, LocalDateTime lastFriendLastUpload, Pageable pageable) {
         JPQLQuery<Member> subQuery = JPAExpressions.select(member)
                 .from(member)
                 .join(relation).on(member.id.eq(relation.member.id))
@@ -36,7 +36,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(condition(relationListReq))
+                .where(condition(lastFriendId, lastFriendLastUpload))
                 .orderBy(member.lastUpload.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -44,15 +44,12 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
     }
 
-    private BooleanExpression condition(RelationListReq relationListReq) {
-        Long friendId = relationListReq.getLastFriendId();
-        LocalDateTime lastUpload = relationListReq.getLastFriendLastUpload();
-
-        if(lastUpload == null && friendId == null) {
+    private BooleanExpression condition(Long lastFriendId, LocalDateTime lastFriendLastUpload) {
+        if(lastFriendLastUpload == null && lastFriendId == null) {
             return null;
         }
 
-        return member.lastUpload.lt(lastUpload)
-                .or(member.lastUpload.eq(lastUpload).and(member.id.lt(friendId)));
+        return member.lastUpload.lt(lastFriendLastUpload)
+                .or(member.lastUpload.eq(lastFriendLastUpload).and(member.id.lt(lastFriendId)));
     }
 }

@@ -203,20 +203,33 @@ public class RelationService {
     }
 
     @Transactional(readOnly = true)
-    public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
-        if(relationListReq.getLastFriendId() == null ^ relationListReq.getLastFriendLastUpload() == null) {
+    public RelationDetailListRes findRelationDetail(Long memberId, RelationDetailListReq relationDetailListReq, Pageable pageable) {
+        Long lastFriendId = relationDetailListReq.getLastFriendId();
+        LocalDateTime lastFriendLastUpload = relationDetailListReq.getLastFriendLastUpload();
+
+        if(lastFriendId == null ^ lastFriendLastUpload == null) {
             throw new CustomException(BIND_EXCEPTION);
         }
 
-        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, relationListReq, pageable);
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
-        SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(member ->
-            RelationDto.builder()
-                    .memberId(member.getId())
-                    .nickname(member.getNickname())
-                    .mainCharacterImg(member.getMainCharacterImg())
-                    .build()
-        ));
+        SliceDto<RelationDetailDto> relationDetailDtoSliceDto = new SliceDto<>(members.map(RelationDetailDto::new));
+
+        return new RelationDetailListRes(relationDetailDtoSliceDto);
+    }
+
+    @Transactional(readOnly = true)
+    public RelationListRes findRelation(Long memberId, RelationListReq relationListReq, Pageable pageable) {
+        Long lastFriendId = relationListReq.getLastFriendId();
+        LocalDateTime lastFriendLastUpload = relationListReq.getLastFriendLastUpload();
+
+        if(lastFriendId == null ^ lastFriendLastUpload == null) {
+            throw new CustomException(BIND_EXCEPTION);
+        }
+
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
+
+        SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(RelationDto::new));
 
         return new RelationListRes(relationDtoSliceDto);
     }

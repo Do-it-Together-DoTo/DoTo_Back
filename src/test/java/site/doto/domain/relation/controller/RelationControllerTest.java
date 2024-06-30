@@ -755,6 +755,74 @@ class RelationControllerTest {
     }
 
     @Test
+    @DisplayName("친구 상세 목록 - 성공")
+    public void friend_detail_list_success() throws Exception {
+        // given
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/members/friends")
+                        .header("Authorization", jwtToken)
+                        .param("lastFriendId", "")
+                        .param("lastFriendLastUpload", "")
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FRIENDS_INQUIRY_DETAIL_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FRIENDS_INQUIRY_DETAIL_OK.getMessage()))
+                .andDo(document(
+                        "친구 상세 목록 (홈)",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Friend API")
+                                .summary("친구 상세 목록 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestParameters(
+                                        parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
+                                        parameterWithName("lastFriendLastUpload").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.relations.content").type(JsonFieldType.ARRAY)
+                                                .description("친구 목록"),
+                                        fieldWithPath("body.relations.*[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("친구 Id"),
+                                        fieldWithPath("body.relations.*[].nickname").type(JsonFieldType.STRING)
+                                                .description("친구 닉네임"),
+                                        fieldWithPath("body.relations.*[].description").type(JsonFieldType.STRING)
+                                                .description("친구 한줄소개"),
+                                        fieldWithPath("body.relations.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("친구 메인 캐릭터 이미지"),
+                                        fieldWithPath("body.relations.*[].mainCharacterExp").type(JsonFieldType.NUMBER)
+                                                .description("친구 메인 캐릭터 경험치"),
+                                        fieldWithPath("body.relations.*[].mainCharacterLevel").type(JsonFieldType.NUMBER)
+                                                .description("친구 메인 캐릭터 레벨"),
+                                        fieldWithPath("body.relations.sliceNumber").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 번호"),
+                                        fieldWithPath("body.relations.size").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 크기"),
+                                        fieldWithPath("body.relations.hasNext").type(JsonFieldType.BOOLEAN)
+                                                .description("다음 슬라이스 여부"),
+                                        fieldWithPath("body.relations.numberOfElements").type(JsonFieldType.NUMBER)
+                                                .description("요소의 수")
+                                )
+                                .responseSchema(Schema.schema("친구 목록 Response"))
+                                .build()
+                        ))
+                );
+    }
+
+    @Test
     @DisplayName("친구 목록 - 성공")
     public void friend_list_success() throws Exception {
         // given

@@ -45,6 +45,7 @@ public enum SuccessCode {
     BETTING_JOIN_CREATED(201, "베팅 참여 성공"),
     BETTING_DELETED(204, "베팅 삭제 성공"),
     FRIENDS_INQUIRY_OK(200, "친구 목록 성공"),
+    FRIENDS_INQUIRY_DETAIL_OK(200, "친구 상세 목록 성공"),
     FRIENDS_RANKING_OK(200, "랭킹 조회 성공"),
     FRIEND_BLOCK_OK(200, "친구 차단 성공"),
     FRIEND_BLOCK_LIST_OK(200, "친구 차단 목록 성공"),
