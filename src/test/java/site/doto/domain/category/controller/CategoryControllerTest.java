@@ -14,6 +14,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import site.doto.BaseTest;
 import site.doto.domain.category.dto.CategoryAddReq;
 import site.doto.domain.category.dto.CategoryArrangeReq;
 import site.doto.domain.category.dto.CategoryModifyReq;
@@ -42,7 +43,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
-class CategoryControllerTest {
+class CategoryControllerTest extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
 
