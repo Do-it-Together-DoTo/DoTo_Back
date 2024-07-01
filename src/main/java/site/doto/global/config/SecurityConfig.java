@@ -1,6 +1,7 @@
 package site.doto.global.config;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -22,9 +23,31 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @ConditionalOnProperty(value = "spring.config.activate.on-profile", havingValue = "local")
+    public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
+        http
+                .authorizeRequests()
+                .antMatchers("/h2-console/**")
+                .permitAll()
+                .and()
+
+                .headers().frameOptions().disable();
+
+        http
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        return http.build();
+    }
+
+    @Bean
+    @ConditionalOnProperty(value = "spring.config.activate.on-profile", havingValue = "dev")
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .formLogin().disable()
