@@ -1,8 +1,8 @@
 package site.doto.global.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -23,7 +23,7 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
-    @ConditionalOnProperty(value = "spring.config.activate.on-profile", havingValue = "local")
+    @Profile("local")
     public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
@@ -46,7 +46,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    @ConditionalOnProperty(value = "spring.config.activate.on-profile", havingValue = "dev")
+    @Profile("!local")
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
