@@ -18,7 +18,6 @@ import site.doto.domain.todo.dto.TodoAddReq;
 import site.doto.domain.todo.dto.TodoModifyReq;
 import site.doto.domain.todo.dto.TodoRedoReq;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -27,11 +26,11 @@ import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
+import static site.doto.global.status_code.ErrorCode.FORBIDDEN;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -54,6 +53,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10001L);
         todoAddReq.setContents("투두 생성");
+        todoAddReq.setDate("20240701");
 
         String content = gson.toJson(todoAddReq);
 
@@ -89,7 +89,9 @@ class TodoControllerTest {
                                                 fieldWithPath("categoryId").type(JsonFieldType.NUMBER)
                                                         .description("카테고리 Id"),
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
-                                                        .description("Todo 내용")
+                                                        .description("Todo 내용"),
+                                                fieldWithPath("date").type(JsonFieldType.STRING)
+                                                        .description("Todo 날짜")
                                         )
                                 )
                                 .responseFields(
@@ -111,6 +113,202 @@ class TodoControllerTest {
                                 .build()
                         ))
                 );
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - contents 빈 값")
+    public void todo_add_fail_contents_is_empty() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10001L);
+        todoAddReq.setContents(" ");
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - contents is null")
+    public void todo_add_fail_contents_is_null() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10001L);
+        todoAddReq.setContents(null);
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - categoryId is null")
+    public void todo_add_fail_category_id_is_null() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(null);
+        todoAddReq.setContents("투두 생성 테스트");
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - 없는 카테고리 값")
+    public void todo_add_fail_not_exist_category() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10038L);
+        todoAddReq.setContents("투두 생성 테스트");
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - 비활성 카테고리에 투두 생성")
+    public void todo_add_fail_category_is_in_activated() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10020L);
+        todoAddReq.setContents("투두 생성 테스트");
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_INACTIVATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - 본인 카테고리가 아닌 경우")
+    public void todo_add_fail_category_is_not_mine() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10022L);
+        todoAddReq.setContents("투두 생성 테스트");
+        todoAddReq.setDate("20240701");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 생성 실패 - 범위를 벗어난 날짜")
+    public void todo_add_fail_invalid_date_format() throws Exception {
+        // given
+        TodoAddReq todoAddReq = new TodoAddReq();
+        todoAddReq.setCategoryId(10022L);
+        todoAddReq.setContents("투두 생성 테스트");
+        todoAddReq.setDate("10090304");
+
+        String content = gson.toJson(todoAddReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
 
     }
 
@@ -401,8 +599,8 @@ class TodoControllerTest {
     public void todo_redo_success() throws Exception {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(1L);
-        todoRedoReq.setDate("2024-05-19 00:00:00");
+        todoRedoReq.setId(20001L);
+        todoRedoReq.setDate("20240519");
 
         String content = gson.toJson(todoRedoReq);
 
@@ -445,18 +643,18 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("투두 생성 실패 - contents 빈 값")
-    public void todo_add_fail_contents_is_empty() throws Exception {
+    @DisplayName("투두 또하기 실패 - 없는 투두")
+    public void todo_redo_fail_todo_not_found() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10001L);
-        todoAddReq.setContents(" ");
+        TodoRedoReq todoRedoReq = new TodoRedoReq();
+        todoRedoReq.setId(30000L);
+        todoRedoReq.setDate("20240702");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(todoRedoReq);
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/todo")
+                post("/todo/date")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -466,132 +664,24 @@ class TodoControllerTest {
         // then
         actions
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_NOT_FOUND.getMessage()));
 
     }
 
     @Test
-    @DisplayName("투두 생성 실패 - contents is null")
-    public void todo_add_fail_contents_is_null() throws Exception {
+    @DisplayName("투두 또하기 실패 - 나의 투두가 아닌 경우")
+    public void todo_redo_fail_not_my_todo() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10001L);
-        todoAddReq.setContents(null);
+        TodoRedoReq todoRedoReq = new TodoRedoReq();
+        todoRedoReq.setId(20002L);
+        todoRedoReq.setDate("20240702");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(todoRedoReq);
 
         // when
         ResultActions actions = mockMvc.perform(
-                post("/todo")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("투두 생성 실패 - categoryId is null")
-    public void todo_add_fail_category_id_is_null() throws Exception {
-        // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(null);
-        todoAddReq.setContents("투두 생성 테스트");
-
-        String content = gson.toJson(todoAddReq);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                post("/todo")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("투두 생성 실패 - 없는 카테고리 값")
-    public void todo_add_fail_not_exist_category() throws Exception {
-        // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10038L);
-        todoAddReq.setContents("투두 생성 테스트");
-
-        String content = gson.toJson(todoAddReq);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                post("/todo")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_NOT_FOUND.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_NOT_FOUND.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("투두 생성 실패 - 비활성 카테고리에 투두 생성")
-    public void todo_add_fail_category_is_in_activated() throws Exception {
-        // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10020L);
-        todoAddReq.setContents("투두 생성 테스트");
-
-        String content = gson.toJson(todoAddReq);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                post("/todo")
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        actions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_INACTIVATED.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
-
-    }
-
-    @Test
-    @DisplayName("투두 생성 실패 - 본인 카테고리가 아닌 경우")
-    public void todo_add_fail_category_is_not_mine() throws Exception {
-        // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10022L);
-        todoAddReq.setContents("투두 생성 테스트");
-
-        String content = gson.toJson(todoAddReq);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                post("/todo")
+                post("/todo/date")
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -603,6 +693,61 @@ class TodoControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+
+
+    }
+
+    @Test
+    @DisplayName("투두 또하기 실패 - 범위를 벗어난 날짜")
+    public void todo_redo_fail_invalid_date_format() throws Exception {
+        // given
+        TodoRedoReq todoRedoReq = new TodoRedoReq();
+        todoRedoReq.setId(20001L);
+        todoRedoReq.setDate("22000702");
+
+        String content = gson.toJson(todoRedoReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo/date")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 또하기 실패 - 비활성화된 카테고리에 투두 또하기")
+    public void todo_redo_fail_category_is_in_activated() throws Exception {
+        // given
+        TodoRedoReq todoRedoReq = new TodoRedoReq();
+        todoRedoReq.setId(20010L);
+        todoRedoReq.setDate("20240702");
+
+        String content = gson.toJson(todoRedoReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                post("/todo/date")
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CATEGORY_INACTIVATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
 
     }
 }

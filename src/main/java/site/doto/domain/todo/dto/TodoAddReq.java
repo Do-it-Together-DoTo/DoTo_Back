@@ -17,12 +17,15 @@ public class TodoAddReq {
     @NotBlank
     private String contents;
 
-    public Todo toEntity(Member member, Category category) {
+    @NotBlank
+    private String date;
+
+    public Todo toEntity(Member member, Category category, LocalDate date) {
         return Todo.builder()
                 .member(member)
                 .category(category)
                 .contents(contents)
-                .date(LocalDate.now())
+                .date(date)
                 .isDone(false)
                 .build();
     }
