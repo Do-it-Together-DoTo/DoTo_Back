@@ -2,6 +2,7 @@ package site.doto.global.config;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -22,9 +23,31 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Profile("local")
+    public SecurityFilterChain localFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManager authenticationManager = authenticationConfiguration.getAuthenticationManager();
 
+        http
+                .authorizeRequests()
+                .antMatchers("/h2-console/**")
+                .permitAll()
+                .and()
+
+                .headers().frameOptions().disable();
+
+        http
+                .csrf().disable()
+                .formLogin().disable()
+                .httpBasic().disable()
+                .cors(withDefaults())
+                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        return http.build();
+    }
+
+    @Bean
+    @Profile("!local")
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
                 .formLogin().disable()
