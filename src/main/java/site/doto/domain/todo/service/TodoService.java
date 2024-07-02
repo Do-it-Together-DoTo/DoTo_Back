@@ -16,7 +16,6 @@ import site.doto.global.exception.CustomException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -37,13 +36,11 @@ public class TodoService {
         Category category = categoryRepository.findById(todoAddReq.getCategoryId())
                 .orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
-        LocalDate date = toLocalDate(todoAddReq.getDate());
-
-        validateDateRange(date);
+        validateDateRange(todoAddReq.getDate());
         validateActivatedCategory(category.getIsActivated());
         validateMemberCategory(memberId, category.getMember().getId());
 
-        Todo todo = todoAddReq.toEntity(member, category, date);
+        Todo todo = todoAddReq.toEntity(member, category);
         member.updateLastUpload(LocalDateTime.now());
 
         todoRepository.save(todo);
@@ -65,13 +62,11 @@ public class TodoService {
         Todo todo = todoRepository.findById(todoRedoReq.getId())
                 .orElseThrow(() -> new CustomException(TODO_NOT_FOUND));
 
-        LocalDate date = toLocalDate(todoRedoReq.getDate());
-
-        validateDateRange(date);
+        validateDateRange(todoRedoReq.getDate());
         validateMemberTodo(todo.getMember().getId(), member.getId());
         validateActivatedCategory(todo.getCategory().getIsActivated());
 
-        Todo redoTodo = todoRedoReq.toEntity(member, todo.getCategory(), todo, date);
+        Todo redoTodo = todoRedoReq.toEntity(member, todo.getCategory(), todo);
 
         todoRepository.save(redoTodo);
     }
@@ -95,11 +90,5 @@ public class TodoService {
         if(!isActivated) {
             throw new CustomException(CATEGORY_INACTIVATED);
         }
-    }
-
-    private LocalDate toLocalDate(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
-        return LocalDate.parse(date , formatter);
     }
 }

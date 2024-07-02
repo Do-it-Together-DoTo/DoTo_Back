@@ -1,5 +1,6 @@
 package site.doto.domain.todo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Data;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.member.entity.Member;
@@ -14,9 +15,10 @@ public class TodoRedoReq {
     private Long id;
 
     @NotNull
-    private String date;
+    @JsonFormat(pattern = "yyyyMMdd")
+    private LocalDate date;
 
-    public Todo toEntity(Member member, Category category, Todo todo, LocalDate date) {
+    public Todo toEntity(Member member, Category category, Todo todo) {
         return Todo.builder()
                 .member(member)
                 .category(category)

@@ -18,6 +18,7 @@ import site.doto.domain.todo.dto.TodoAddReq;
 import site.doto.domain.todo.dto.TodoModifyReq;
 import site.doto.domain.todo.dto.TodoRedoReq;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -53,7 +54,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10001L);
         todoAddReq.setContents("투두 생성");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -123,7 +124,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10001L);
         todoAddReq.setContents(" ");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -151,7 +152,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10001L);
         todoAddReq.setContents(null);
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -179,7 +180,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(null);
         todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -207,7 +208,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10038L);
         todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -235,7 +236,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10020L);
         todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -263,7 +264,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10022L);
         todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate("20240701");
+        todoAddReq.setDate(LocalDate.parse("20240701"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -291,7 +292,7 @@ class TodoControllerTest {
         TodoAddReq todoAddReq = new TodoAddReq();
         todoAddReq.setCategoryId(10022L);
         todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate("10090304");
+        todoAddReq.setDate(LocalDate.parse("10090304"));
 
         String content = gson.toJson(todoAddReq);
 
@@ -600,7 +601,7 @@ class TodoControllerTest {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
         todoRedoReq.setId(20001L);
-        todoRedoReq.setDate("20240519");
+        todoRedoReq.setDate(LocalDate.parse("20240519"));
 
         String content = gson.toJson(todoRedoReq);
 
@@ -648,7 +649,7 @@ class TodoControllerTest {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
         todoRedoReq.setId(30000L);
-        todoRedoReq.setDate("20240702");
+        todoRedoReq.setDate(LocalDate.parse("20240702"));
 
         String content = gson.toJson(todoRedoReq);
 
@@ -675,7 +676,7 @@ class TodoControllerTest {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
         todoRedoReq.setId(20002L);
-        todoRedoReq.setDate("20240702");
+        todoRedoReq.setDate(LocalDate.parse("20240702"));
 
         String content = gson.toJson(todoRedoReq);
 
@@ -703,7 +704,7 @@ class TodoControllerTest {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
         todoRedoReq.setId(20001L);
-        todoRedoReq.setDate("22000702");
+        todoRedoReq.setDate(LocalDate.parse("22000702"));
 
         String content = gson.toJson(todoRedoReq);
 
@@ -730,7 +731,7 @@ class TodoControllerTest {
         // given
         TodoRedoReq todoRedoReq = new TodoRedoReq();
         todoRedoReq.setId(20010L);
-        todoRedoReq.setDate("20240702");
+        todoRedoReq.setDate(LocalDate.parse("20240702"));
 
         String content = gson.toJson(todoRedoReq);
 
