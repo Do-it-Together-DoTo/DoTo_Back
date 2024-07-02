@@ -206,6 +206,10 @@ public class TodoController {
     @PostMapping("/date")
     public ResponseDto<TodoDetailsRes> todoRedo(
             @RequestBody TodoRedoReq todoRedoReq) {
+        Long memberId = 1L;
+
+        todoService.redoTodo(memberId, todoRedoReq);
+
         return ResponseDto.success(TODO_RE_CREATED, null);
     }
 }
