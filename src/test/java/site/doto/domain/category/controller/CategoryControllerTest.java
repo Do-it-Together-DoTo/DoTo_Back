@@ -381,7 +381,7 @@ class CategoryControllerTest extends BaseTest {
                 .andExpect(jsonPath("$.body.scope").value("FRIENDS"))
                 .andExpect(jsonPath("$.body.color").value("YELLOW"))
                 .andExpect(jsonPath("$.body.isActivated").value(false))
-                .andExpect(jsonPath("$.body.seq").value(2))
+                .andExpect(jsonPath("$.body.seq").value(3))
                 .andDo(document(
                         "카테고리 수정",
                         preprocessRequest(prettyPrint()),
