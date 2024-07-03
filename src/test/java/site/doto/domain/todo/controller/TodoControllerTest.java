@@ -745,4 +745,53 @@ class TodoControllerTest {
                 .andExpect(jsonPath("$.header.message").value(CATEGORY_INACTIVATED.getMessage()));
 
     }
+
+    @Test
+    @DisplayName("투두 개수 조회 성공")
+    public void todo_count_success() throws Exception {
+        // given
+        String date = "202407";
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                get("/todo/count")
+                        .header("Authorization", jwtToken)
+                        .param("date", date)
+        );
+
+        // then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_COUNT_INQUIRY_OK.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_COUNT_INQUIRY_OK.getMessage()))
+                .andDo(document(
+                        "Todo 개수 조회",
+                        preprocessRequest(prettyPrint()),
+                        preprocessResponse(prettyPrint()),
+                        resource(ResourceSnippetParameters.builder()
+                                .tag("Todo API")
+                                .summary("Todo 개수 조회 API")
+                                .requestHeaders(
+                                        headerWithName("Authorization").description("JWT 토큰")
+                                )
+                                .requestParameters(
+                                        parameterWithName("date").description("해당 날짜")
+                                )
+                                .responseFields(
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.countList[].day").type(JsonFieldType.NUMBER)
+                                                .description("일"),
+                                        fieldWithPath("body.countList[].finishedTodo").type(JsonFieldType.NUMBER)
+                                                .description("완료한 투두 개수"),
+                                        fieldWithPath("body.countList[].ongoingTodo").type(JsonFieldType.NUMBER)
+                                                .description("진행중인 투두 개수")
+                                )
+                                .responseSchema(Schema.schema("Todo 개수 조회 Response"))
+                                .build()
+                        ))
+                );
+    }
 }
