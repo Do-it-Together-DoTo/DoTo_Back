@@ -195,7 +195,8 @@ class MemberControllerTest {
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("성공 코드"),
                                                 fieldWithPath("header.message").type(JsonFieldType.STRING).description("성공 메시지"),
-                                                fieldWithPath("body.token").type(JsonFieldType.STRING).description("회원 토큰")
+                                                fieldWithPath("body.token").type(JsonFieldType.STRING).description("회원 토큰"),
+                                                fieldWithPath("body.memberId").type(JsonFieldType.NUMBER).description("회원 Id")
                                         )
                                 )
                                 .requestSchema(Schema.schema("로그인 Request"))

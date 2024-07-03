@@ -8,4 +8,6 @@ import lombok.Data;
 public class LoginRes {
     String token;
 
+    Long memberId;
+
 }
