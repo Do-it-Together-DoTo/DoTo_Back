@@ -23,6 +23,7 @@ public enum SuccessCode {
     TODO_CRATED(201, "투두 생성 성공"),
     TODO_RE_CREATED(201, "투두 또하기 생성 성공"),
     TODO_DELETED(204, "투두 삭제 성공"),
+    TODO_COUNT_INQUIRY_OK(200, "투두 개수 조회 성공"),
     ITEMS_INQUIRY_OK(200, "보관함 조회 성공"),
     ITEM_USE_OK(200, "아이템 사용 성공"),
     STORE_INQUIRY_OK(200, "아이템 조회 성공"),
