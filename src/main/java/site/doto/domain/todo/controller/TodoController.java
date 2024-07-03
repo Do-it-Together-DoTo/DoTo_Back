@@ -8,6 +8,7 @@ import site.doto.global.dto.ResponseDto;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import static site.doto.domain.category.enums.Color.*;
@@ -211,5 +212,26 @@ public class TodoController {
         todoService.redoTodo(memberId, todoRedoReq);
 
         return ResponseDto.success(TODO_RE_CREATED, null);
+    }
+
+    @GetMapping("/count")
+    public ResponseDto<TodoCountRes> todoCount(
+            @ModelAttribute TodoCountReq todoCountReq) {
+        TodoCountRes result = new TodoCountRes();
+
+        Calendar cal = Calendar.getInstance();
+
+        cal.set(2024,Calendar.AUGUST,1);
+
+        for(int i = 1; i <= cal.getActualMaximum(Calendar.DAY_OF_MONTH); i++) {
+            TodoCountDto todoCountDto = TodoCountDto.builder()
+                    .day(i)
+                    .ongoingTodo(10+i)
+                    .finishedTodo(i)
+                    .build();
+            result.getCountList().add(todoCountDto);
+        }
+
+        return ResponseDto.success(TODO_COUNT_INQUIRY_OK, result);
     }
 }
