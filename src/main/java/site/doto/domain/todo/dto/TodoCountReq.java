@@ -7,5 +7,8 @@ import javax.validation.constraints.NotNull;
 @Data
 public class TodoCountReq {
     @NotNull
-    private String date;
+    private Integer year;
+
+    @NotNull
+    private Integer month;
 }

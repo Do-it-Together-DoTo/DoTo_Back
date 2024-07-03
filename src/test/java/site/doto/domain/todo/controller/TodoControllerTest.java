@@ -15,6 +15,8 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -750,13 +752,15 @@ class TodoControllerTest {
     @DisplayName("투두 개수 조회 성공")
     public void todo_count_success() throws Exception {
         // given
-        String date = "202407";
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("year", "2024");
+        params.add("month", "7");
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/todo/count")
                         .header("Authorization", jwtToken)
-                        .param("date", date)
+                        .params(params)
         );
 
         // then
@@ -775,7 +779,8 @@ class TodoControllerTest {
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
                                 .requestParameters(
-                                        parameterWithName("date").description("해당 날짜")
+                                        parameterWithName("year").description("연도"),
+                                        parameterWithName("month").description("월")
                                 )
                                 .responseFields(
                                         fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
