@@ -3,6 +3,7 @@ package site.doto.domain.todo.controller;
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +15,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.todo.dto.TodoAddReq;
-import site.doto.domain.todo.dto.TodoModifyReq;
-import site.doto.domain.todo.dto.TodoRedoReq;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
@@ -31,7 +28,6 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
-import static site.doto.global.status_code.ErrorCode.FORBIDDEN;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -48,16 +44,15 @@ class TodoControllerTest {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
     @Test
-    @DisplayName("Todo 생성 성공")
+    @DisplayName("투두 생성 성공")
     public void todo_add_success() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10001L);
-        todoAddReq.setContents("투두 생성");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10001L);
+        jsonObject.addProperty("contents", "투두 생성");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
-
+        String content = gson.toJson(jsonObject);
         // when
         ResultActions actions = mockMvc.perform(
              post("/todo")
@@ -121,12 +116,12 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - contents 빈 값")
     public void todo_add_fail_contents_is_empty() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10001L);
-        todoAddReq.setContents(" ");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10001L);
+        jsonObject.addProperty("contents", " ");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -149,12 +144,11 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - contents is null")
     public void todo_add_fail_contents_is_null() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10001L);
-        todoAddReq.setContents(null);
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10001L);
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -177,12 +171,11 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - categoryId is null")
     public void todo_add_fail_category_id_is_null() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(null);
-        todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("contents", "투두 생성");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -205,12 +198,12 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - 없는 카테고리 값")
     public void todo_add_fail_not_exist_category() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10038L);
-        todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10038L);
+        jsonObject.addProperty("contents", "투두 생성 테스트");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -233,12 +226,12 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - 비활성 카테고리에 투두 생성")
     public void todo_add_fail_category_is_in_activated() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10020L);
-        todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10020L);
+        jsonObject.addProperty("contents", "투두 생성 테스트");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -261,12 +254,12 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - 본인 카테고리가 아닌 경우")
     public void todo_add_fail_category_is_not_mine() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10022L);
-        todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate(LocalDate.parse("20240701"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10022L);
+        jsonObject.addProperty("contents", "투두 생성 테스트");
+        jsonObject.addProperty("date", "20240701");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -289,12 +282,12 @@ class TodoControllerTest {
     @DisplayName("투두 생성 실패 - 범위를 벗어난 날짜")
     public void todo_add_fail_invalid_date_format() throws Exception {
         // given
-        TodoAddReq todoAddReq = new TodoAddReq();
-        todoAddReq.setCategoryId(10022L);
-        todoAddReq.setContents("투두 생성 테스트");
-        todoAddReq.setDate(LocalDate.parse("10090304"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("categoryId", 10022L);
+        jsonObject.addProperty("contents", "투두 생성 테스트");
+        jsonObject.addProperty("date", "10090304");
 
-        String content = gson.toJson(todoAddReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -314,10 +307,10 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("나의 Todo 전체 조회 성공")
+    @DisplayName("나의 투두 전체 조회 성공")
     public void my_todo_list_success() throws Exception {
         // given
-        String date = "2024-05-19 00:00:00";
+        String date = "20240519";
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -375,11 +368,11 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("친구 Todo 전체 조회 성공")
+    @DisplayName("친구 투두 전체 조회 성공")
     public void todo_list_success() throws Exception {
         // given
         long memberId = 1L;
-        String date = "2024-05-19 00:00:00";
+        String date = "20240519";
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -438,19 +431,19 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("Todo 수정 성공")
+    @DisplayName("투두 수정 성공")
     public void todo_modify_success() throws Exception {
         // given
         long todoId = 1L;
-        TodoModifyReq todoModifyReq = new TodoModifyReq();
-        todoModifyReq.setContents("Todo 수정");
-        todoModifyReq.setDate("2024-05-19 00:00:00");
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("contents", "투두 수정");
+        jsonObject.addProperty("date", "20240519");
 
-        String content = gson.toJson(todoModifyReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
-                patch("/todo/{todoId}", 1L)
+                patch("/todo/{todoId}", todoId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -504,13 +497,14 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("Todo 삭제 성공")
+    @DisplayName("투두 삭제 성공")
     public void todo_remove_success() throws Exception {
         // given
+        Long todoId = 10001L;
 
         // when
         ResultActions actions = mockMvc.perform(
-                delete("/todo/{todoId}", 10001L)
+                delete("/todo/{todoId}", todoId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -546,14 +540,14 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("Todo 완료 여부 성공")
+    @DisplayName("투두 완료 여부 성공")
     public void todo_change_done_success() throws Exception {
         // given
         long todoId = 1L;
 
         // when
         ResultActions actions = mockMvc.perform(
-                patch("/todo/check/{todoId}", 1L)
+                patch("/todo/check/{todoId}", todoId)
                         .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -596,14 +590,14 @@ class TodoControllerTest {
     }
 
     @Test
-    @DisplayName("Todo 또하기 성공")
+    @DisplayName("투두 또하기 성공")
     public void todo_redo_success() throws Exception {
         // given
-        TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(20001L);
-        todoRedoReq.setDate(LocalDate.parse("20240519"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", 20001L);
+        jsonObject.addProperty("date", "20240519");
 
-        String content = gson.toJson(todoRedoReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -647,11 +641,11 @@ class TodoControllerTest {
     @DisplayName("투두 또하기 실패 - 없는 투두")
     public void todo_redo_fail_todo_not_found() throws Exception {
         // given
-        TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(30000L);
-        todoRedoReq.setDate(LocalDate.parse("20240702"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", 30000L);
+        jsonObject.addProperty("date", "20240702");
 
-        String content = gson.toJson(todoRedoReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -674,11 +668,11 @@ class TodoControllerTest {
     @DisplayName("투두 또하기 실패 - 나의 투두가 아닌 경우")
     public void todo_redo_fail_not_my_todo() throws Exception {
         // given
-        TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(20002L);
-        todoRedoReq.setDate(LocalDate.parse("20240702"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", 20002L);
+        jsonObject.addProperty("date", "20240702");
 
-        String content = gson.toJson(todoRedoReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -702,11 +696,11 @@ class TodoControllerTest {
     @DisplayName("투두 또하기 실패 - 범위를 벗어난 날짜")
     public void todo_redo_fail_invalid_date_format() throws Exception {
         // given
-        TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(20001L);
-        todoRedoReq.setDate(LocalDate.parse("22000702"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", 20001L);
+        jsonObject.addProperty("date", "22000702");
 
-        String content = gson.toJson(todoRedoReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
@@ -729,11 +723,11 @@ class TodoControllerTest {
     @DisplayName("투두 또하기 실패 - 비활성화된 카테고리에 투두 또하기")
     public void todo_redo_fail_category_is_in_activated() throws Exception {
         // given
-        TodoRedoReq todoRedoReq = new TodoRedoReq();
-        todoRedoReq.setId(20010L);
-        todoRedoReq.setDate(LocalDate.parse("20240702"));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("id", 20010L);
+        jsonObject.addProperty("date", "20240702");
 
-        String content = gson.toJson(todoRedoReq);
+        String content = gson.toJson(jsonObject);
 
         // when
         ResultActions actions = mockMvc.perform(
