@@ -14,7 +14,7 @@ insert into character_type (character_type_id, name, img, level, species, descri
 
 --member
 insert into member (member_id, email, nickname, password, description, coin, type, last_upload) values
-                                                                                                    (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 100, 'LOCAL', current_timestamp), -- 베팅 생성
+                                                                                                    (1, 'test@naver.com', 'test_user', '1234', '안뇽 나는 테스트 유저야!', 50000, 'LOCAL', current_timestamp), -- 베팅 생성
                                                                                                     (2, 'test2@naver.com', 'test_user2', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
                                                                                                     (3, 'test2@naver.com', 'test_user3', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp), -- 베팅 생성 실패
                                                                                                     (4, 'test4@naver.com', 'test_user4', '1234', '안뇽 나는 테스트 유저야!', 0, 'LOCAL', current_timestamp),

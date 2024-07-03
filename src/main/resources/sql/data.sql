@@ -94,7 +94,7 @@ insert into category (category_id, member_id, contents, scope, is_activated, col
                                                                                                  (10018, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 18),
                                                                                                  (10019, 1, '테스트_카테고리','FRIENDS', true, 'BLUE', 19),
                                                                                                  (10020, 1, '테스트_카테고리','FRIENDS', false, 'BLUE', 1),
-                                                                                                 (10021, 1, '테스트_카테고리','PUBLIC', false, 'BLUE', 1),
+                                                                                                 (10021, 1, '테스트_카테고리','PUBLIC', false, 'BLUE', 2),
                                                                                                  (10022, 2, '테스트_카테고리2','PUBLIC', true, 'PINK', 1), -- 베팅 생성 실패
                                                                                                  (10023, 3, '테스트_카테고리3','PUBLIC', true, 'PINK', 1),
                                                                                                  (10024, 4, '테스트_카테고리4','PUBLIC', true, 'PINK', 1);
