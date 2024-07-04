@@ -12,12 +12,15 @@ import site.doto.domain.relation.enums.RelationStatus;
 import site.doto.domain.relation.repository.RelationRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.global.dto.ResponseDto;
 import site.doto.global.dto.SliceDto;
 import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -211,7 +214,7 @@ public class RelationService {
             throw new CustomException(BIND_EXCEPTION);
         }
 
-        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatusAccepted(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
         SliceDto<RelationDetailDto> relationDetailDtoSliceDto = new SliceDto<>(members.map(RelationDetailDto::new));
 
@@ -227,11 +230,22 @@ public class RelationService {
             throw new CustomException(BIND_EXCEPTION);
         }
 
-        Slice<Member> members = memberRepository.findAllByMemberIdAndStatus(memberId, lastFriendId, lastFriendLastUpload, pageable);
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatusAccepted(memberId, lastFriendId, lastFriendLastUpload, pageable);
 
         SliceDto<RelationDto> relationDtoSliceDto = new SliceDto<>(members.map(RelationDto::new));
 
         return new RelationListRes(relationDtoSliceDto);
+    }
+
+    @Transactional(readOnly = true)
+    public RelationBlockListRes findRelationBlock(Long memberId, RelationBlockListReq relationBlockListReq, Pageable pageable) {
+        Long lastFriendId = relationBlockListReq.getLastFriendId();
+
+        Slice<Member> members = memberRepository.findAllByMemberIdAndStatusBlocked(memberId, lastFriendId, pageable);
+
+        SliceDto<RelationDto> relationBlockedDtoSliceDto = new SliceDto<>(members.map(RelationDto::new));
+
+        return new RelationBlockListRes(relationBlockedDtoSliceDto);
     }
 
     public void blockRelation(Long memberId, RelationBlockReq relationBlockReq) {
