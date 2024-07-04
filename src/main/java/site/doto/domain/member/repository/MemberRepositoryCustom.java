@@ -8,8 +8,12 @@ import site.doto.domain.member.entity.Member;
 import java.time.LocalDateTime;
 
 public interface MemberRepositoryCustom {
-    Slice<Member> findAllByMemberIdAndStatus(@Param("memberId") Long memberId,
-                                             @Param("lastFriendId") Long lastFriendId,
-                                             @Param("lastFriendLastUpload") LocalDateTime lastFriendLastUpload,
-                                             @Param("pageable") Pageable pageable);
+    Slice<Member> findAllByMemberIdAndStatusAccepted(@Param("memberId") Long memberId,
+                                                     @Param("lastFriendId") Long lastFriendId,
+                                                     @Param("lastFriendLastUpload") LocalDateTime lastFriendLastUpload,
+                                                     @Param("pageable") Pageable pageable);
+
+    Slice<Member> findAllByMemberIdAndStatusBlocked(@Param("memberId") Long memberId,
+                                                     @Param("lastFriendId") Long lastFriendId,
+                                                     @Param("pageable") Pageable pageable);
 }
