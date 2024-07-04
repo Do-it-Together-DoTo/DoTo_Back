@@ -779,7 +779,7 @@ class RelationControllerTest extends BaseTest {
                         preprocessResponse(prettyPrint()),
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
-                                .summary("친구 상세 목록 API")
+                                .summary("친구 상세 목록 (홈) API")
                                 .requestHeaders(
                                         headerWithName("Authorization").description("JWT 토큰")
                                 )
@@ -815,7 +815,7 @@ class RelationControllerTest extends BaseTest {
                                         fieldWithPath("body.relations.numberOfElements").type(JsonFieldType.NUMBER)
                                                 .description("요소의 수")
                                 )
-                                .responseSchema(Schema.schema("친구 목록 Response"))
+                                .responseSchema(Schema.schema("친구 상세 목록 (홈) Response"))
                                 .build()
                         ))
                 );
@@ -906,16 +906,15 @@ class RelationControllerTest extends BaseTest {
     }
 
     @Test
-    @DisplayName("친구 차단 목록 성공")
+    @DisplayName("친구 차단 목록 - 성공")
     public void friend_block_list_success() throws Exception {
         // given
-        Long lastFriendId = 1L;
 
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends/block")
                         .header("Authorization", jwtToken)
-                        .param("lastFriendId", String.valueOf(lastFriendId))
+                        .param("lastFriendId", "")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -939,28 +938,26 @@ class RelationControllerTest extends BaseTest {
                                         parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
                                 )
                                 .responseFields(
-                                        List.of(
-                                                fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
-                                                        .description("성공 코드"),
-                                                fieldWithPath("header.message").type(JsonFieldType.STRING)
-                                                        .description("성공 메시지"),
-                                                fieldWithPath("body.friends.content").type(JsonFieldType.ARRAY)
-                                                        .description("차단된 친구 목록"),
-                                                fieldWithPath("body.friends.*[].memberId").type(JsonFieldType.NUMBER)
-                                                        .description("친구 Id"),
-                                                fieldWithPath("body.friends.*[].nickname").type(JsonFieldType.STRING)
-                                                        .description("친구 닉네임"),
-                                                fieldWithPath("body.friends.*[].mainCharacterImg").type(JsonFieldType.STRING)
-                                                        .description("친구 메인 캐릭터 이미지"),
-                                                fieldWithPath("body.friends.sliceNumber").type(JsonFieldType.NUMBER)
-                                                        .description("슬라이스 번호"),
-                                                fieldWithPath("body.friends.size").type(JsonFieldType.NUMBER)
-                                                        .description("슬라이스 크기"),
-                                                fieldWithPath("body.friends.hasNext").type(JsonFieldType.BOOLEAN)
-                                                        .description("다음 슬라이스 여부"),
-                                                fieldWithPath("body.friends.numberOfElements").type(JsonFieldType.NUMBER)
-                                                        .description("요소의 수")
-                                        )
+                                        fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
+                                                .description("성공 코드"),
+                                        fieldWithPath("header.message").type(JsonFieldType.STRING)
+                                                .description("성공 메시지"),
+                                        fieldWithPath("body.relations.content").type(JsonFieldType.ARRAY)
+                                                .description("차단된 친구 목록"),
+                                        fieldWithPath("body.relations.*[].memberId").type(JsonFieldType.NUMBER)
+                                                .description("친구 Id"),
+                                        fieldWithPath("body.relations.*[].nickname").type(JsonFieldType.STRING)
+                                                .description("친구 닉네임"),
+                                        fieldWithPath("body.relations.*[].mainCharacterImg").type(JsonFieldType.STRING)
+                                                .description("친구 메인 캐릭터 이미지"),
+                                        fieldWithPath("body.relations.sliceNumber").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 번호"),
+                                        fieldWithPath("body.relations.size").type(JsonFieldType.NUMBER)
+                                                .description("슬라이스 크기"),
+                                        fieldWithPath("body.relations.hasNext").type(JsonFieldType.BOOLEAN)
+                                                .description("다음 슬라이스 여부"),
+                                        fieldWithPath("body.relations.numberOfElements").type(JsonFieldType.NUMBER)
+                                                .description("요소의 수")
                                 )
                                 .responseSchema(Schema.schema("친구 차단 목록 Response"))
                                 .build()
