@@ -94,20 +94,12 @@ public class RelationController {
     }
 
     @GetMapping("/friends/block")
-    ResponseDto<?> relationBlockList(
-            @ModelAttribute RelationBlockListReq relationBlockListReq) {
-        List<RelationDto> friends = new ArrayList<>();
+    ResponseDto<RelationBlockListRes> relationBlockList(
+            @ModelAttribute RelationBlockListReq relationBlockListReq,
+            @PageableDefault(size = 20) Pageable pageable) {
+        Long memberId = 1L;
 
-        for (int i = 1; i <= 10; i++) {
-            friends.add(RelationDto.builder()
-                    .memberId(10000L + i)
-                    .nickname("닉네임" + i)
-                    .mainCharacterImg("메인 캐릭터" + i)
-                    .build());
-        }
-
-        Slice<RelationDto> friendDtoSlice = new SliceImpl<>(friends);
-        RelationListRes result = new RelationListRes(friendDtoSlice);
+        RelationBlockListRes result = relationService.findRelationBlock(memberId, relationBlockListReq, pageable);
 
         return ResponseDto.success(FRIEND_BLOCK_LIST_OK, result);
     }

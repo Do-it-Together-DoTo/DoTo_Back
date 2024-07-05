@@ -13,8 +13,4 @@ public class RelationListRes {
     public RelationListRes(SliceDto<RelationDto> friendDtoSliceDto) {
         friends = friendDtoSliceDto;
     }
-
-    public RelationListRes(Slice<RelationDto> friendDtoSlice) {
-        friends = new SliceDto<>(friendDtoSlice);
-    }
 }

@@ -55,6 +55,8 @@ update member set main_character_id = 7 where member_id = 20003;
 update member set main_character_id = 8 where member_id = 20004;
 update member set main_character_id = 9 where member_id = 20005;
 update member set main_character_id = 10 where member_id = 30000;
+update member set main_character_id = 11 where member_id = 20007;
+update member set main_character_id = 12 where member_id = 20009;
 
 --relation
 insert into relation (member_id, friend_id, status) values
