@@ -19,7 +19,7 @@ public enum SuccessCode {
     MEMBER_DELETED(204, "회원 탈퇴 성공"),
     TODO_INQUIRY_OK(200, "투두 조회 성공"),
     TODO_MODIFY_OK(200, "투두 수정 성공"),
-    TODO_CHECK_OK(200, "투두 완료 여부 조회 성공"),
+    TODO_CHECK_OK(200, "투두 완료 여부 수정 성공"),
     TODO_CRATED(201, "투두 생성 성공"),
     TODO_RE_CREATED(201, "투두 또하기 생성 성공"),
     TODO_DELETED(204, "투두 삭제 성공"),

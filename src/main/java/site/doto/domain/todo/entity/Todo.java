@@ -43,8 +43,8 @@ public class Todo {
         return date.getMonthValue();
     }
 
-    public void updateIsDone() {
-        this.isDone = !this.isDone;
+    public void updateIsDone(Boolean isDone) {
+        this.isDone = isDone;
     }
 
 }

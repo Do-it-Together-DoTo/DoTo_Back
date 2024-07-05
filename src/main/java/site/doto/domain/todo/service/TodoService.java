@@ -72,7 +72,7 @@ public class TodoService {
     }
 
     @Transactional
-    public void changeDoneTodo(Long memberId, Long todoId) {
+    public void changeDoneTodo(Long memberId, Long todoId, Boolean isDone) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
@@ -81,7 +81,7 @@ public class TodoService {
 
         validateMemberTodo(todo.getMember().getId(), member.getId());
 
-        todo.updateIsDone();
+        todo.updateIsDone(isDone);
 
         todoRepository.save(todo);
     }

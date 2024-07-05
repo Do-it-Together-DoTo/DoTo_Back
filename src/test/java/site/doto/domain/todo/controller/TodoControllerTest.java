@@ -551,7 +551,8 @@ class TodoControllerTest {
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
                         .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
 
         // then
         actions
@@ -570,6 +571,9 @@ class TodoControllerTest {
                                 )
                                 .pathParameters(
                                         parameterWithName("todoId").description("Todo Id")
+                                )
+                                .requestParameters(
+                                        parameterWithName("option").description("완료 여부")
                                 )
                                 .responseFields(
                                         List.of(
@@ -597,7 +601,8 @@ class TodoControllerTest {
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
                         .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
 
         actions
                 .andExpect(status().isOk())
@@ -616,7 +621,8 @@ class TodoControllerTest {
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
                         .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
 
         actions
                 .andExpect(status().isOk())

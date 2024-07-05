@@ -194,10 +194,11 @@ public class TodoController {
 
     @PatchMapping("/check/{todoId}")
     public ResponseDto<TodoDetailsRes> todoChangeDone(
-            @PathVariable long todoId) {
+            @PathVariable long todoId,
+            @RequestParam("option") boolean isDone) {
         Long memberId = 1L;
 
-        todoService.changeDoneTodo(memberId, todoId);
+        todoService.changeDoneTodo(memberId, todoId, isDone);
 
         return ResponseDto.success(TODO_CHECK_OK, null);
     }
