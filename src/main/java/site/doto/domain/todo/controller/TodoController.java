@@ -195,13 +195,11 @@ public class TodoController {
     @PatchMapping("/check/{todoId}")
     public ResponseDto<TodoDetailsRes> todoChangeDone(
             @PathVariable long todoId) {
-        TodoDetailsRes result = TodoDetailsRes.builder()
-                .id(todoId)
-                .contents("Modified Done Mock Todo")
-                .isDone(false)
-                .build();
+        Long memberId = 1L;
 
-        return ResponseDto.success(TODO_CHECK_OK, result);
+        todoService.changeDoneTodo(memberId, todoId);
+
+        return ResponseDto.success(TODO_CHECK_OK, null);
     }
 
     @PostMapping("/date")
