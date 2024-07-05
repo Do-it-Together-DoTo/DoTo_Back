@@ -545,13 +545,14 @@ class TodoControllerTest {
     @DisplayName("투두 완료 여부 성공")
     public void todo_change_done_success() throws Exception {
         // given
-        long todoId = 1L;
+        long todoId = 20001L;
 
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
                         .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
 
         // then
         actions
@@ -571,24 +572,63 @@ class TodoControllerTest {
                                 .pathParameters(
                                         parameterWithName("todoId").description("Todo Id")
                                 )
+                                .requestParameters(
+                                        parameterWithName("option").description("완료 여부")
+                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
                                                         .description("성공 코드"),
                                                 fieldWithPath("header.message").type(JsonFieldType.STRING)
                                                         .description("성공 메시지"),
-                                                fieldWithPath("body.id").type(JsonFieldType.NUMBER)
-                                                        .description("Todo Id"),
-                                                fieldWithPath("body.contents").type(JsonFieldType.STRING)
-                                                        .description("Todo 내용"),
-                                                fieldWithPath("body.isDone").type(JsonFieldType.BOOLEAN)
-                                                        .description("Todo 완료 여부")
+                                                fieldWithPath("body").type(JsonFieldType.NULL)
+                                                        .description("내용 없음")
                                         )
                                 )
                                 .responseSchema(Schema.schema("Todo 완료 Response"))
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("투두 완료 여부 실패 - 없는 투두")
+    public void todo_change_done_fail_todo_not_found() throws Exception {
+        // given
+        long todoId = 20080L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/todo/check/{todoId}", todoId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(TODO_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(TODO_NOT_FOUND.getMessage()));
+
+    }
+
+    @Test
+    @DisplayName("투두 완료 여부 실패 - 나의 투두가 아닌 경우")
+    public void todo_change_done_fail_not_my_todo() throws Exception {
+        // given
+        long todoId = 20002L;
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/todo/check/{todoId}", todoId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .param("option", "true"));
+
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(FORBIDDEN.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(FORBIDDEN.getMessage()));
+
     }
 
     @Test

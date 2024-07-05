@@ -71,6 +71,21 @@ public class TodoService {
         todoRepository.save(redoTodo);
     }
 
+    @Transactional
+    public void changeDoneTodo(Long memberId, Long todoId, Boolean isDone) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        Todo todo = todoRepository.findById(todoId)
+                .orElseThrow(() -> new CustomException(TODO_NOT_FOUND));
+
+        validateMemberTodo(todo.getMember().getId(), member.getId());
+
+        todo.updateIsDone(isDone);
+
+        todoRepository.save(todo);
+    }
+
     private void validateDateRange(LocalDate date) {
         LocalDate startDate = LocalDate.of(2001, 1, 1);
         LocalDate endDate = LocalDate.of(2100, 12, 31);
