@@ -134,12 +134,12 @@ public class CategoryService {
 
     private void updateIsActivated(Long memberId, Category category, Boolean isActivated) {
         if(isActivated != null) {
-            if(isActivated) {
-                int activeCount = categoryRepository.countCategoryByMemberId(memberId);
-                validateActiveCount(activeCount);
-            }
-
             if(category.getIsActivated() != isActivated) {
+                if(isActivated) {
+                    int activeCount = categoryRepository.countCategoryByMemberId(memberId);
+                    validateActiveCount(activeCount);
+                }
+
                 Integer seq = calculateSequence(memberId, isActivated);
                 category.updateSeq(seq);
             }
