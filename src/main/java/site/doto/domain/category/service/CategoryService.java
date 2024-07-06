@@ -54,10 +54,12 @@ public class CategoryService {
         validateColor(categoryAddReq.getColor());
         validateScope(categoryAddReq.getScope());
 
-        Integer activeCount = calculateSequence(memberId, true);
+        Integer activeCount = categoryRepository.countCategoryByMemberId(memberId);
         validateActiveCount(activeCount);
 
-        Category category = categoryAddReq.toEntity(member, activeCount);
+        Integer seq = calculateSequence(memberId, true);
+
+        Category category = categoryAddReq.toEntity(member, seq);
         categoryRepository.save(category);
 
         return CategoryDetailsRes.toDto(category);
@@ -133,7 +135,7 @@ public class CategoryService {
     private void updateIsActivated(Long memberId, Category category, Boolean isActivated) {
         if(isActivated != null) {
             if(isActivated) {
-                int activeCount = calculateSequence(memberId, true);
+                int activeCount = categoryRepository.countCategoryByMemberId(memberId);
                 validateActiveCount(activeCount);
             }
 
