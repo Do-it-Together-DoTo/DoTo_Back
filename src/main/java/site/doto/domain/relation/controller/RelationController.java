@@ -2,8 +2,6 @@ package site.doto.domain.relation.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.relation.dto.*;
@@ -11,8 +9,6 @@ import site.doto.domain.relation.service.RelationService;
 import site.doto.global.dto.ResponseDto;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 import static site.doto.global.status_code.SuccessCode.*;
 

@@ -12,15 +12,12 @@ import site.doto.domain.relation.enums.RelationStatus;
 import site.doto.domain.relation.repository.RelationRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
-import site.doto.global.dto.ResponseDto;
 import site.doto.global.dto.SliceDto;
 import site.doto.global.exception.CustomException;
 import site.doto.global.redis.RedisUtils;
 
 import java.time.LocalDateTime;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static site.doto.domain.relation.enums.RelationStatus.*;
 import static site.doto.global.status_code.ErrorCode.*;
