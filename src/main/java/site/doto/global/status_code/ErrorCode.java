@@ -36,6 +36,7 @@ public enum ErrorCode {
     COLOR_NOT_FOUND(400, "존재하지 않는 색상입니다."),
     SCOPE_NOT_FOUND(400, "존재하지 않는 유형입니다."),
     ACTIVATED_CATEGORY_LIMIT(400, "카테고리는 20개까지 활성화 할 수 있습니다."),
+    MINIMUM_CATEGORY_COUNT(400, "최소 1개의 카테고리는 활성화가 되어있어야 합니다."),
     CATEGORY_NOT_FOUND(404, "존재하지 않는 카테고리입니다."),
     NOT_MATCH_CATEGORIES(400, "카테고리 개수가 맞지 않습니다"),
     DELETE_NOT_ALLOWED(400, "베팅이 진행중이므로 삭제할 수 없습니다."),
