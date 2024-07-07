@@ -134,7 +134,7 @@ public class CategoryService {
 
     private void updateIsActivated(Long memberId, Category category, Boolean isActivated) {
         if(isActivated != null) {
-            if(category.getIsActivated() != isActivated) {
+            if(!category.getIsActivated().equals(isActivated)) {
                 int activeCount = categoryRepository.countCategoryByMemberId(memberId);
                 if(isActivated) {
                     validateActiveCount(activeCount);
