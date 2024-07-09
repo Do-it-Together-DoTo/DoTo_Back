@@ -3,8 +3,6 @@ package site.doto.domain.item.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.item.dto.*;
-import site.doto.domain.item.dto.ItemTypeDto;
-import site.doto.domain.item.dto.StoreItemListRes;
 import site.doto.domain.item.service.ItemService;
 import site.doto.global.dto.ResponseDto;
 
@@ -30,6 +28,7 @@ public class ItemController {
                     .img("이미지 url")
                     .count(10+i)
                     .grade("NORMAL")
+                    .exp(100+i*50)
                     .build());
         }
 
