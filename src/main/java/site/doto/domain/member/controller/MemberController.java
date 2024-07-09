@@ -1,12 +1,14 @@
 package site.doto.domain.member.controller;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
 import site.doto.domain.member.enums.MemberRelation;
 import site.doto.domain.member.enums.RankingCriteria;
+import site.doto.domain.member.service.MemberService;
 import site.doto.global.dto.ResponseDto;
 
 import java.util.ArrayList;
@@ -16,8 +18,10 @@ import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
 @RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private final MemberService memberService;
 
     @PostMapping("/signup")
     public ResponseDto<?> memberAdd(
@@ -131,14 +135,7 @@ public class MemberController {
     public ResponseDto<MemberDetailsRes> memberDetails() {
         Long memberId = 1L;
 
-        MemberDetailsRes result = MemberDetailsRes.builder()
-                .nickname("회원 닉네임")
-                .description("회원 한줄소개")
-                .mainCharacterExp(30)
-                .mainCharacterLevel(3)
-                .mainCharacterImg("이미지url")
-                .coin(100)
-                .build();
+        MemberDetailsRes result = memberService.findMember(memberId);
 
         return ResponseDto.success(MEMBER_INQUIRY_OK, result);
     }
