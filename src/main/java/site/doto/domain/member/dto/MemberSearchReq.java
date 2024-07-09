@@ -5,7 +5,7 @@ import lombok.Data;
 import javax.validation.constraints.NotNull;
 
 @Data
-public class MembersSearchReq {
+public class MemberSearchReq {
     @NotNull
     private String searchWord;
 
