@@ -1,5 +1,6 @@
 package site.doto.domain.member.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -8,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import site.doto.domain.member.dto.MemberDto;
 import site.doto.domain.member.entity.Member;
 
 import java.time.LocalDateTime;
@@ -36,7 +38,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(conditionAccepted(lastFriendId, lastFriendLastUpload))
+                .where(conditionIdAndDate(lastFriendId, lastFriendLastUpload))
                 .orderBy(member.lastUpload.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -56,7 +58,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(conditionBlocked(lastFriendId))
+                .where(conditionId(lastFriendId))
                 .orderBy(member.id.asc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -64,16 +66,48 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
     }
 
-    private BooleanExpression conditionAccepted(Long lastFriendId, LocalDateTime lastFriendLastUpload) {
-        if(lastFriendLastUpload == null && lastFriendId == null) {
+    @Override
+    public Slice<MemberDto> findAllBySearchWord(Long memberId, String searchWord, Long lastMemberId, Pageable pageable) {
+        JPQLQuery<Member> blocked = JPAExpressions
+                .select(relation.member)
+                .from(relation)
+                .where(relation.friend.id.eq(memberId))
+                .where(relation.status.eq(BLOCKED));
+
+        JPQLQuery<Member> blocking = JPAExpressions
+                .select(relation.friend)
+                .from(relation)
+                .where(relation.member.id.eq(memberId))
+                .where(relation.status.eq(BLOCKED));
+
+        List<MemberDto> members = queryFactory.select(Projections.constructor(
+                MemberDto.class, member.id, member.nickname, characterType.img, relation.status))
+                .from(member)
+                .leftJoin(member.mainCharacter, character)
+                .leftJoin(character.characterType, characterType)
+                .leftJoin(relation).on(member.id.eq(relation.friend.id))
+                .where(member.id.ne(memberId))
+                .where(member.nickname.contains(searchWord))
+                .where(member.notIn(blocked))
+                .where(member.notIn(blocking))
+                .where(conditionId(lastMemberId))
+                .orderBy(member.id.asc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
+    }
+
+    private BooleanExpression conditionIdAndDate(Long id, LocalDateTime date) {
+        if(date == null && id == null) {
             return null;
         }
 
-        return member.lastUpload.lt(lastFriendLastUpload)
-                .or(member.lastUpload.eq(lastFriendLastUpload).and(member.id.lt(lastFriendId)));
+        return member.lastUpload.lt(date)
+                .or(member.lastUpload.eq(date).and(member.id.lt(id)));
     }
 
-    private BooleanExpression conditionBlocked(Long lastFriendId) {
-        return lastFriendId == null ? null : member.id.lt(lastFriendId);
+    private BooleanExpression conditionId(Long id) {
+        return id == null ? null : member.id.lt(id);
     }
 }
