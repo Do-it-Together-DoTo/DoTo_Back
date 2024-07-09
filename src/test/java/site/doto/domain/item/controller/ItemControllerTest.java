@@ -89,7 +89,9 @@ public class ItemControllerTest {
                                                 fieldWithPath("body.*[].count").type(JsonFieldType.NUMBER)
                                                         .description("Item 개수"),
                                                 fieldWithPath("body.*[].grade").type(JsonFieldType.STRING)
-                                                        .description("Item 등급")
+                                                        .description("Item 등급"),
+                                                fieldWithPath("body.*[].exp").type(JsonFieldType.NUMBER)
+                                                        .description("Item 경험치")
                                         )
                                 )
                                 .responseSchema(Schema.schema("나의 아이템 전체 조회 Response"))

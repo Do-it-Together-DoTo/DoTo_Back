@@ -17,6 +17,8 @@ public class ItemDto {
 
     private String grade;
 
+    private Integer exp;
+
     public static ItemDto toDto(Item item) {
         return ItemDto.builder()
                 .id(item.getItemType().getId())
@@ -24,6 +26,7 @@ public class ItemDto {
                 .img(item.getItemType().getImg())
                 .count(item.getCount())
                 .grade(item.getItemType().getGrade())
+                .exp(item.getItemType().getExp())
                 .build();
     }
 }
