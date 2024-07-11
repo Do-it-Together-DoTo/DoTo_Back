@@ -18,12 +18,10 @@ public class MemberSearchDto {
 
     private MemberRelation status;
 
-    public MemberSearchDto(MemberDto memberDto) {
-        this.memberId = memberDto.getMemberId();
-        this.nickname = memberDto.getNickname();
-        this.mainCharacterImg = memberDto.getMainCharacterImg();
-
-        RelationStatus status = memberDto.getStatus();
+    public MemberSearchDto(Long memberId, String nickname, String mainCharacterImg, RelationStatus status) {
+        this.memberId = memberId;
+        this.nickname = nickname;
+        this.mainCharacterImg = mainCharacterImg;
 
         if(status == null) {
             this.status = NOT_FRIENDS;

@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
-import site.doto.domain.member.dto.MemberDto;
+import site.doto.domain.member.dto.MemberSearchDto;
 import site.doto.domain.member.entity.Member;
 
 import java.time.LocalDateTime;
@@ -67,7 +67,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
     }
 
     @Override
-    public Slice<MemberDto> findAllBySearchWord(Long memberId, String searchWord, Long lastMemberId, Pageable pageable) {
+    public Slice<MemberSearchDto> findAllBySearchWord(Long memberId, String searchWord, Long lastMemberId, Pageable pageable) {
         JPQLQuery<Member> blocked = JPAExpressions
                 .select(relation.member)
                 .from(relation)
@@ -80,8 +80,8 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .where(relation.member.id.eq(memberId))
                 .where(relation.status.eq(BLOCKED));
 
-        List<MemberDto> members = queryFactory.select(Projections.constructor(
-                MemberDto.class, member.id, member.nickname, characterType.img, relation.status))
+        List<MemberSearchDto> members = queryFactory.select(Projections.constructor(
+                        MemberSearchDto.class, member.id, member.nickname, characterType.img, relation.status))
                 .from(member)
                 .leftJoin(member.mainCharacter, character)
                 .leftJoin(character.characterType, characterType)

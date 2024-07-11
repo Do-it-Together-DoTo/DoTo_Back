@@ -5,7 +5,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import site.doto.domain.member.dto.MemberDto;
 import site.doto.domain.member.dto.MemberSearchDto;
 import site.doto.domain.member.dto.MemberSearchReq;
 import site.doto.domain.member.dto.MemberSearchRes;
@@ -23,9 +22,9 @@ public class MemberService {
         String searchWord = memberSearchReq.getSearchWord();
         Long lastMemberId = memberSearchReq.getLastMemberId();
 
-        Slice<MemberDto> members = memberRepository.findAllBySearchWord(memberId, searchWord, lastMemberId, pageable);
+        Slice<MemberSearchDto> members = memberRepository.findAllBySearchWord(memberId, searchWord, lastMemberId, pageable);
 
-        SliceDto<MemberSearchDto> memberSearchDtoSliceDto = new SliceDto<>(members.map(MemberSearchDto::new));
+        SliceDto<MemberSearchDto> memberSearchDtoSliceDto = new SliceDto<>(members);
 
         return new MemberSearchRes(memberSearchDtoSliceDto);
     }
