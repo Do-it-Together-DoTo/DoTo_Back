@@ -2,11 +2,11 @@ package site.doto.domain.member.dto;
 
 import lombok.Data;
 
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
 
 @Data
 public class MemberSearchReq {
-    @NotNull
+    @NotBlank
     private String searchWord;
 
     private Long lastMemberId;
