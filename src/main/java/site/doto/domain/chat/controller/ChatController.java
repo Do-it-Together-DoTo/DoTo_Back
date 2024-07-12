@@ -28,7 +28,7 @@ public class ChatController {
 
         for (int i = 1; i <= 20; i++) {
             chats.add(ChatDto.builder()
-                    .chatId(40000L + i)
+                    .chatRoomId(40000L + i)
                     .contents("메세지" + i)
                     .createdDate(LocalDateTime.now())
                     .memberId((4L + i) % 5 + 1)
