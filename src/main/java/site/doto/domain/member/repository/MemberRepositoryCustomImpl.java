@@ -11,6 +11,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import site.doto.domain.member.dto.MemberSearchDto;
 import site.doto.domain.member.entity.Member;
+import site.doto.domain.relation.entity.QRelation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -68,28 +69,20 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
 
     @Override
     public Slice<MemberSearchDto> findAllBySearchWord(Long memberId, String searchWord, Long lastMemberId, Pageable pageable) {
-        JPQLQuery<Member> blocked = JPAExpressions
-                .select(relation.member)
-                .from(relation)
-                .where(relation.friend.id.eq(memberId))
-                .where(relation.status.eq(BLOCKED));
-
-        JPQLQuery<Member> blocking = JPAExpressions
-                .select(relation.friend)
-                .from(relation)
-                .where(relation.member.id.eq(memberId))
-                .where(relation.status.eq(BLOCKED));
+        QRelation r1 = new QRelation("r1");
+        QRelation r2 = new QRelation("r2");
 
         List<MemberSearchDto> members = queryFactory.select(Projections.constructor(
-                        MemberSearchDto.class, member.id, member.nickname, characterType.img, relation.status))
+                        MemberSearchDto.class, member.id, member.nickname, characterType.img, r2.status))
                 .from(member)
                 .leftJoin(member.mainCharacter, character)
                 .leftJoin(character.characterType, characterType)
-                .leftJoin(relation).on(member.id.eq(relation.friend.id))
+                .leftJoin(r1).on(member.id.eq(r1.member.id))
+                .leftJoin(r2).on(member.id.eq(r2.friend.id))
                 .where(member.id.ne(memberId))
+                .where(r1.member.id.isNull().or(r1.status.ne(BLOCKED)))
+                .where(r2.member.id.isNull().or(r2.status.ne(BLOCKED)))
                 .where(member.nickname.contains(searchWord))
-                .where(member.notIn(blocked))
-                .where(member.notIn(blocking))
                 .where(conditionId(lastMemberId))
                 .orderBy(member.id.asc())
                 .limit(pageable.getPageSize())
