@@ -134,12 +134,14 @@ public class CategoryService {
 
     private void updateIsActivated(Long memberId, Category category, Boolean isActivated) {
         if(isActivated != null) {
-            if(isActivated) {
+            if(!category.getIsActivated().equals(isActivated)) {
                 int activeCount = categoryRepository.countCategoryByMemberId(memberId);
-                validateActiveCount(activeCount);
-            }
+                if(isActivated) {
+                    validateActiveCount(activeCount);
+                } else {
+                    validateMinimumActiveCount(category, activeCount);
+                }
 
-            if(category.getIsActivated() != isActivated) {
                 Integer seq = calculateSequence(memberId, isActivated);
                 category.updateSeq(seq);
             }
@@ -180,6 +182,9 @@ public class CategoryService {
 
         validateMemberCategory(memberId, category.getMember().getId());
 
+        int activeCount = categoryRepository.countCategoryByMemberId(memberId);
+        validateMinimumActiveCount(category, activeCount);
+
         List<Betting> bettingList = bettingRepository.findBettingsByCategory(category);
 
         if(!bettingList.isEmpty()) {
@@ -191,6 +196,12 @@ public class CategoryService {
 
         todoRepository.deleteByCategoryId(categoryId);
         categoryRepository.delete(category);
+    }
+
+    private void validateMinimumActiveCount(Category category, Integer activeCount) {
+        if(category.getIsActivated() && activeCount <= 1) {
+            throw new CustomException(MINIMUM_CATEGORY_COUNT);
+        }
     }
 
     @Transactional
@@ -213,10 +224,17 @@ public class CategoryService {
             throw new CustomException(BIND_EXCEPTION);
         }
 
+        validateMinimumActiveCount(activatedList.size());
         validateActiveCount(activatedList.size()-1);
 
         updateSeq(memberId, activatedList, true);
         updateSeq(memberId, inactivatedList, false);
+    }
+
+    private void validateMinimumActiveCount(int activeCount) {
+        if(activeCount <= 0) {
+            throw new CustomException(MINIMUM_CATEGORY_COUNT);
+        }
     }
 
     private boolean duplicatedLong(List<Long> activated, List<Long> inactivated) {

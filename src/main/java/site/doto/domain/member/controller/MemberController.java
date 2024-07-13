@@ -21,6 +21,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private final MemberService memberService;
 
     private final MemberService memberService;
 
@@ -109,14 +110,7 @@ public class MemberController {
     public ResponseDto<MemberDetailsRes> memberDetails() {
         Long memberId = 1L;
 
-        MemberDetailsRes result = MemberDetailsRes.builder()
-                .nickname("회원 닉네임")
-                .description("회원 한줄소개")
-                .mainCharacterExp(30)
-                .mainCharacterLevel(3)
-                .mainCharacterImg("이미지url")
-                .coin(100)
-                .build();
+        MemberDetailsRes result = memberService.findMember(memberId);
 
         return ResponseDto.success(MEMBER_INQUIRY_OK, result);
     }

@@ -90,8 +90,8 @@ public class ChatControllerTest {
                                                         .description("성공 메시지"),
                                                 fieldWithPath("body.chats.content").type(JsonFieldType.ARRAY)
                                                         .description("채팅 목록"),
-                                                fieldWithPath("body.chats.content[].chatId").type(JsonFieldType.NUMBER)
-                                                        .description("채팅 ID"),
+                                                fieldWithPath("body.chats.content[].chatRoomId").type(JsonFieldType.NUMBER)
+                                                        .description("채팅방 ID"),
                                                 fieldWithPath("body.chats.content[].contents").type(JsonFieldType.STRING)
                                                         .description("채팅 내용"),
                                                 fieldWithPath("body.chats.content[].createdDate").type(JsonFieldType.STRING)

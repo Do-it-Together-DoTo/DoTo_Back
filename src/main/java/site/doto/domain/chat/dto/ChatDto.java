@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 @Data
 @Builder
 public class ChatDto {
-    private Long chatId;
+    private Long chatRoomId;
 
     private String contents;
 
