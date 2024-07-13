@@ -18,7 +18,8 @@ import static site.doto.global.status_code.ErrorCode.MEMBER_NOT_FOUND;
 @RequiredArgsConstructor
 public class MemberService {
     private final MemberRepository memberRepository;
-  
+
+    @Transactional(readOnly = true)
     public MemberDetailsRes findMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
