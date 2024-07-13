@@ -19,7 +19,7 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberSearchRes findMembers(Long memberId, MemberSearchReq memberSearchReq, Pageable pageable) {
-        String searchWord = memberSearchReq.getSearchWord();
+        String searchWord = memberSearchReq.getSearchWord().replace(" ", "");
         Long lastMemberId = memberSearchReq.getLastMemberId();
 
         Slice<MemberSearchDto> members = memberRepository.findAllBySearchWord(memberId, searchWord, lastMemberId, pageable);
