@@ -1,5 +1,6 @@
 package site.doto.domain.member.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.JPQLQuery;
@@ -8,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
+import site.doto.domain.member.dto.MemberSearchDto;
 import site.doto.domain.member.entity.Member;
+import site.doto.domain.relation.entity.QRelation;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -36,7 +39,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(conditionAccepted(lastFriendId, lastFriendLastUpload))
+                .where(conditionIdAndDate(lastFriendId, lastFriendLastUpload))
                 .orderBy(member.lastUpload.desc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -56,7 +59,7 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
                 .leftJoin(member.mainCharacter, character).fetchJoin()
                 .leftJoin(character.characterType, characterType).fetchJoin()
                 .where(member.in(subQuery))
-                .where(conditionBlocked(lastFriendId))
+                .where(conditionId(lastFriendId))
                 .orderBy(member.id.asc())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -64,16 +67,40 @@ public class MemberRepositoryCustomImpl implements MemberRepositoryCustom {
         return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
     }
 
-    private BooleanExpression conditionAccepted(Long lastFriendId, LocalDateTime lastFriendLastUpload) {
-        if(lastFriendLastUpload == null && lastFriendId == null) {
+    @Override
+    public Slice<MemberSearchDto> findAllBySearchWord(Long memberId, String searchWord, Long lastMemberId, Pageable pageable) {
+        QRelation r1 = new QRelation("r1");
+        QRelation r2 = new QRelation("r2");
+
+        List<MemberSearchDto> members = queryFactory.select(Projections.constructor(
+                        MemberSearchDto.class, member.id, member.nickname, characterType.img, r2.status))
+                .from(member)
+                .leftJoin(member.mainCharacter, character)
+                .leftJoin(character.characterType, characterType)
+                .leftJoin(r1).on(member.id.eq(r1.member.id))
+                .leftJoin(r2).on(member.id.eq(r2.friend.id))
+                .where(member.id.ne(memberId))
+                .where(r1.member.id.isNull().or(r1.status.ne(BLOCKED)))
+                .where(r2.member.id.isNull().or(r2.status.ne(BLOCKED)))
+                .where(member.nickname.contains(searchWord))
+                .where(conditionId(lastMemberId))
+                .orderBy(member.id.asc())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return new SliceImpl<>(members, pageable, members.size() == pageable.getPageSize());
+    }
+
+    private BooleanExpression conditionIdAndDate(Long id, LocalDateTime date) {
+        if(date == null && id == null) {
             return null;
         }
 
-        return member.lastUpload.lt(lastFriendLastUpload)
-                .or(member.lastUpload.eq(lastFriendLastUpload).and(member.id.lt(lastFriendId)));
+        return member.lastUpload.lt(date)
+                .or(member.lastUpload.eq(date).and(member.id.lt(id)));
     }
 
-    private BooleanExpression conditionBlocked(Long lastFriendId) {
-        return lastFriendId == null ? null : member.id.lt(lastFriendId);
+    private BooleanExpression conditionId(Long id) {
+        return id == null ? null : member.id.lt(id);
     }
 }

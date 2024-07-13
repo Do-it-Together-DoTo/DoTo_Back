@@ -2,15 +2,15 @@ package site.doto.domain.member.controller;
 
 import io.lettuce.core.dynamic.annotation.Param;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.member.dto.*;
-import site.doto.domain.member.enums.MemberRelation;
 import site.doto.domain.member.enums.RankingCriteria;
 import site.doto.domain.member.service.MemberService;
 import site.doto.global.dto.ResponseDto;
 
+import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +21,8 @@ import static site.doto.global.status_code.SuccessCode.*;
 @RequiredArgsConstructor
 public class MemberController {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+    private final MemberService memberService;
+
     private final MemberService memberService;
 
     @PostMapping("/signup")
@@ -73,39 +75,12 @@ public class MemberController {
     }
 
     @GetMapping("/search")
-    public ResponseDto<?> membersSearch(
-            @ModelAttribute MembersSearchReq membersSearchReq) {
-        List<MembersSearchDto> members = new ArrayList<>();
+    public ResponseDto<MemberSearchRes> membersSearch(
+            @ModelAttribute @Valid MemberSearchReq memberSearchReq,
+            @PageableDefault(size = 20) Pageable pageable) {
+        Long memberId = 1L;
 
-        for(int i = 1; i <= 5; i++) {
-            members.add(MembersSearchDto.builder()
-                    .memberId(10000L + i)
-                    .nickname("닉네임" + i)
-                    .mainCharacterImg("이미지" + i)
-                    .status(MemberRelation.FRIENDS)
-                    .build());
-        }
-
-        for(int i = 6; i <= 10; i++) {
-            members.add(MembersSearchDto.builder()
-                    .memberId(20000L + i)
-                    .nickname("닉네임" + i)
-                    .mainCharacterImg("이미지" + i)
-                    .status(MemberRelation.NOT_FRIENDS)
-                    .build());
-        }
-
-        for(int i = 11; i <= 15; i++) {
-            members.add(MembersSearchDto.builder()
-                    .memberId(30000L + i)
-                    .nickname("닉네임" + i)
-                    .mainCharacterImg("이미지" + i)
-                    .status(MemberRelation.WAITING_FRIEND_REQUEST)
-                    .build());
-        }
-
-        Slice<MembersSearchDto> membersSearchDtoSlice = new SliceImpl<>(members);
-        MembersSearchRes result = new MembersSearchRes(membersSearchDtoSlice);
+        MemberSearchRes result = memberService.findMembers(memberId, memberSearchReq, pageable);
 
         return ResponseDto.success(MEMBERS_SEARCH_OK, result);
     }
