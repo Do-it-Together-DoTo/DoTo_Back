@@ -148,6 +148,11 @@ insert into member_betting (member_id, betting_id, cost, prediction) values
                                                                         (1, 30002, 10, true), -- 나의 베팅 조회
                                                                         (1, 30003, 10, false); -- 나의 베팅 조회
 
+--memberChatRoom
+insert into member_chat_room (member_id, chat_room_id) values
+                                                            (1, 30002),
+                                                            (1, 30003);
+
 --itemType
 insert into item_type (item_type_id, name, img, price, grade, exp, description) values
                                                                                     (1, '테스트 아이템1', '테스트 아이템 이미지1', 10, '테스트 아이템 등급1', 10, '테스트 아이템 설명1'),
