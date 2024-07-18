@@ -20,10 +20,12 @@ public class Item implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("memberId")
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("itemTypeId")
+    @JoinColumn(name = "item_type_id")
     private ItemType itemType;
 
     private Integer count;
