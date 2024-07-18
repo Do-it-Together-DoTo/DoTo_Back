@@ -11,7 +11,9 @@ import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.dto.SliceDto;
 import site.doto.global.exception.CustomException;
 
-import static site.doto.global.status_code.ErrorCode.MEMBER_NOT_FOUND;
+import java.util.Optional;
+
+import static site.doto.global.status_code.ErrorCode.*;
 
 @Service
 @Transactional
@@ -37,6 +39,36 @@ public class MemberService {
         SliceDto<MemberSearchDto> memberSearchDtoSliceDto = new SliceDto<>(members);
 
         return new MemberSearchRes(memberSearchDtoSliceDto);
+    }
+
+    public MemberModifyRes modifyMember(Long memberId, MemberModifyReq memberModifyReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        updateNickname(member, memberModifyReq.getNickname().replace(" ", ""));
+        updateDescription(member, memberModifyReq.getDescription());
+
+        memberRepository.save(member);
+
+        return MemberModifyRes.toDto(member);
+    }
+
+    private void updateNickname(Member member, String nickname) {
+        Optional<Member> existingMember = memberRepository.findByNickname(nickname);
+
+        if(existingMember.isPresent()) {
+            throw new CustomException(NICKNAME_DUPLICATED);
+        }
+
+        member.updateNickname(nickname);
+    }
+
+    private void updateDescription(Member member, String description) {
+        if(description.length() > 20) {
+            throw new CustomException(BAD_REQUEST);
+        }
+
+        member.updateDescription(description);
     }
 }
 

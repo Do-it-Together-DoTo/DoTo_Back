@@ -50,4 +50,11 @@ public class Member {
         this.lastUpload = lastUpload;
     }
 
+    public void updateNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void updateDescription(String description) {
+        this.description = description;
+    }
 }
