@@ -7,8 +7,13 @@ import io.lettuce.core.dynamic.annotation.Param;
 import site.doto.domain.item.entity.Item;
 import site.doto.domain.item.entity.ItemPK;
 
+import java.util.List;
+
 public interface ItemRepository extends JpaRepository<Item, ItemPK> {
     @Modifying
     @Query("update Item i set i.count = i.count + :count where i.itemPK.memberId = :memberId and i.itemPK.itemTypeId = :itemTypeId")
     int updateItemCount(@Param("memberId") Long memberId, @Param("itemTypeId") Long itemTypeId, @Param("count") int count);
+
+    @Query("select i from Item i where i.itemPK.memberId = :memberId")
+    List<Item> findAllByMemberId(@Param("memberId") Long memberId);
 }
