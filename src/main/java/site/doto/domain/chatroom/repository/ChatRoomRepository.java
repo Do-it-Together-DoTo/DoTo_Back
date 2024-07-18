@@ -20,7 +20,7 @@ public interface ChatRoomRepository extends JpaRepository<ChatRoom, Long> {
             "join b.member m " +
             "join m.mainCharacter c " +
             "join c.characterType t " +
-            "left join MemberChatRoom mc on mc.chatRoom = cr " +
+            "join MemberChatRoom mc on mc.chatRoom = cr " +
             "where mc.member.id = :memberId")
     List<ChatRoomDto> findChatRoomById(@Param("memberId") Long memberId);
 
