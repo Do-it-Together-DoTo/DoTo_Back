@@ -1,34 +1,23 @@
 package site.doto.domain.chatroom.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.chatroom.dto.*;
+import site.doto.domain.chatroom.service.ChatRoomService;
 import site.doto.global.dto.ResponseDto;
 import site.doto.global.status_code.SuccessCode;
 
-import java.util.ArrayList;
-import java.util.List;
-
 @RestController
 @RequestMapping("/chatting")
+@RequiredArgsConstructor
 public class ChatRoomController {
+    private final ChatRoomService chatRoomService;
+
     @GetMapping
     public ResponseDto<ChatRoomListRes> chatRoomList() {
-        ChatRoomListRes result = new ChatRoomListRes();
+        Long memberId = 1L;
 
-        List<ChatRoomDto> chatRooms = new ArrayList<>();
-
-        for (int i = 1; i <= 10; i++) {
-            chatRooms.add(ChatRoomDto.builder()
-                    .chatRoomId(30000L + i)
-                    .bettingId(10000L + i)
-                    .bettingName("베팅 이름" + i)
-                    .memberId(0L + i)
-                    .memberNickname("닉네임" + i)
-                    .mainCharacterImg("이미지 주소" + i)
-                    .build());
-        }
-
-        result.setChatRooms(chatRooms);
+        ChatRoomListRes result = chatRoomService.findChatRooms(memberId);
 
         return ResponseDto.success(SuccessCode.CHATROOMS_INQUIRY_OK, result);
     }

@@ -1,10 +1,10 @@
 package site.doto.domain.chatroom.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-@Builder
+@AllArgsConstructor
 public class ChatRoomDto {
     private Long chatRoomId;
 

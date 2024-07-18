@@ -18,10 +18,12 @@ import java.io.Serializable;
 public class MemberChatRoom implements Serializable {
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name ="chat_room_id")
     private ChatRoom chatRoom;
 
 }
