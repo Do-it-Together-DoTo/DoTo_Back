@@ -32,6 +32,7 @@ public enum ErrorCode {
     NOT_FRIEND(403, "친구가 아닌 상태에서 접근할 수 없습니다."),
     FRIEND_REQUEST_MISSING(404, "유효하지 않은 요청입니다."),
     CHATROOM_NOT_FOUND(404, "존재하지 않는 채팅방입니다."),
+    CHATROOM_ALREADY_JOINING(400, "이미 참여중인 채팅방입니다."),
     BETTING_NOT_PARTICIPATION(403, "채팅방에 참여할 수 없습니다."),
     COLOR_NOT_FOUND(400, "존재하지 않는 색상입니다."),
     SCOPE_NOT_FOUND(400, "존재하지 않는 유형입니다."),
