@@ -14,6 +14,7 @@ import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
+import site.doto.domain.betting.dto.BettingJoinReq;
 
 import java.util.List;
 
@@ -28,6 +29,7 @@ import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWit
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -101,7 +103,19 @@ public class ChatRoomControllerTest {
     @DisplayName("채팅방 참여_성공")
     public void chatRoomJoin_success() throws Exception {
         //given
-        Long chatRoomId = 30001L;
+        Long bettingId = 30004L;
+        BettingJoinReq bettingAddReq = new BettingJoinReq();
+        bettingAddReq.setCost(50);
+        bettingAddReq.setPrediction(true);
+        String content = gson.toJson(bettingAddReq);
+
+        ResultActions bettingJoin = mockMvc.perform(
+                post("/betting/{bettingId}", bettingId)
+                        .header("Authorization", jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content));
+
+        Long chatRoomId = 30004L;
 
         //when
         ResultActions actions = mockMvc.perform(
@@ -144,5 +158,62 @@ public class ChatRoomControllerTest {
                                 .build()
                         ))
                 );
+    }
+
+    @Test
+    @DisplayName("채팅방 참여_존재하지 않는 채팅방")
+    public void chat_room_join_not_found() throws Exception {
+        //given
+        Long chatRoomId = 40001L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/chatting/{chatRoomId}", chatRoomId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_NOT_FOUND.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_NOT_FOUND.getMessage()));
+    }
+
+    @Test
+    @DisplayName("채팅방 참여_참여중이 아닌 베팅")
+    public void chat_room_join_betting_not_joining() throws Exception {
+        //given
+        Long chatRoomId = 30004L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/chatting/{chatRoomId}", chatRoomId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BETTING_NOT_JOINING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BETTING_NOT_JOINING.getMessage()));
+    }
+
+    @Test
+    @DisplayName("채팅방 참여_이미 참여 중인 채팅방")
+    public void chat_room_join_already_joining() throws Exception {
+        //given
+        Long chatRoomId = 30002L;
+
+        //when
+        ResultActions actions = mockMvc.perform(
+                post("/chatting/{chatRoomId}", chatRoomId)
+                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON));
+
+        //then
+        actions
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.header.httpStatusCode").value(CHATROOM_ALREADY_JOINING.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(CHATROOM_ALREADY_JOINING.getMessage()));
     }
 }
