@@ -19,21 +19,9 @@ public class ItemController {
 
     @GetMapping("/members/items")
     public ResponseDto<ItemListRes> itemList() {
-        List<ItemDto> items = new ArrayList<>();
+        Long memberId = 1L;
 
-        for(int i = 1; i <= 10; i++) {
-            items.add(ItemDto.builder()
-                    .id(10L+i)
-                    .name("아이템 이름")
-                    .img("이미지 url")
-                    .count(10+i)
-                    .grade("NORMAL")
-                    .exp(100+i*50)
-                    .build());
-        }
-
-        ItemListRes result = new ItemListRes();
-        result.setItems(items);
+        ItemListRes result = itemService.findItems(memberId);
 
         return ResponseDto.success(ITEMS_INQUIRY_OK, result);
     }

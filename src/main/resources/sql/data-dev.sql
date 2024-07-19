@@ -160,3 +160,10 @@ insert into item_type (item_type_id, name, img, price, grade, exp, description) 
                                                                                     (3, '테스트 아이템3', '테스트 아이템 이미지3', 30, '테스트 아이템 등급3', 30, '테스트 아이템 설명3'),
                                                                                     (4, '테스트 아이템4', '테스트 아이템 이미지4', 40, '테스트 아이템 등급4', 40, '테스트 아이템 설명4'),
                                                                                     (20000, '아이템 이름', '이미지 url', 10, '아이템 등급', 10, '아이템 설명');
+
+--item
+insert into item (member_id, item_type_id, count) values
+                                                    (1, 1, 1),
+                                                    (1, 2, 20),
+                                                    (1, 3, 300),
+                                                    (2, 1, 1);
