@@ -25,6 +25,10 @@ public class ChatRoomController {
     @PostMapping("/{chatRoomId}")
     public ResponseDto<?> chatRoomJoin(
             @PathVariable Long chatRoomId) {
+        Long memberId = 1L;
+
+        chatRoomService.joinChatRoom(memberId, chatRoomId);
+
         return ResponseDto.success(SuccessCode.MEMBER_CHATROOM_CREATED, null);
     }
 }
