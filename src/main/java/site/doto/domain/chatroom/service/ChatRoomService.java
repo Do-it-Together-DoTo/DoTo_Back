@@ -9,6 +9,9 @@ import site.doto.domain.chatroom.entity.ChatRoom;
 import site.doto.domain.chatroom.repository.ChatRoomRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
+import site.doto.domain.member_betting.entity.MemberBetting;
+import site.doto.domain.member_betting.entity.MemberBettingPK;
+import site.doto.domain.member_betting.repository.MemberBettingRepository;
 import site.doto.domain.member_chat_room.entity.MemberChatRoom;
 import site.doto.domain.member_chat_room.entity.MemberChatRoomPK;
 import site.doto.domain.member_chat_room.repository.MemberChatRoomRepository;
@@ -25,6 +28,7 @@ import static site.doto.global.status_code.ErrorCode.*;
 public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
+    private final MemberBettingRepository memberBettingRepository;
     private final MemberChatRoomRepository memberChatRoomRepository;
 
     @Transactional(readOnly = true)
@@ -40,6 +44,14 @@ public class ChatRoomService {
 
         ChatRoom chatRoom = chatRoomRepository.findById(chatRoomId)
                 .orElseThrow(() -> new CustomException(CHATROOM_NOT_FOUND));
+
+        MemberBettingPK memberBettingPK = new MemberBettingPK(memberId, chatRoom.getBetting().getId());
+
+        Optional<MemberBetting> memberBetting = memberBettingRepository.findById(memberBettingPK);
+
+        if (memberBetting.isEmpty()) {
+            throw new CustomException(BETTING_NOT_JOINING);
+        }
 
         MemberChatRoomPK memberChatRoomPK = new MemberChatRoomPK(memberId, chatRoomId);
 

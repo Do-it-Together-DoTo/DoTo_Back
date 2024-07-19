@@ -43,6 +43,7 @@ public enum ErrorCode {
     DELETE_NOT_ALLOWED(400, "베팅이 진행중이므로 삭제할 수 없습니다."),
     BETTING_ALREADY_HOLDING(400, "이미 개최한 베팅이 존재합니다."),
     BETTING_ALREADY_JOINING(400, "이미 참여한 베팅입니다."),
+    BETTING_NOT_JOINING(400, "참여 중인 베팅이 아닙니다."),
     BETTING_CANCEL_FAILED(400, "다른 사람이 참여한 베팅은 취소할 수 없습니다."),
     BETTING_SELF_JOIN(400, "자신이 연 베팅에는 참여할 수 없습니다."),
     BETTING_CLOSED(400, "종료된 베팅입니다."),
