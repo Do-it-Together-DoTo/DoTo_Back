@@ -1,4 +1,4 @@
-package site.doto.domain.member_chatroom.entity;
+package site.doto.domain.member_chat_room.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,13 +16,16 @@ import java.io.Serializable;
 @AllArgsConstructor
 @Builder
 public class MemberChatRoom implements Serializable {
-    @Id
+    @EmbeddedId
+    private MemberChatRoomPK memberChatRoomPK;
+
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("memberId")
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Id
     @ManyToOne(fetch = FetchType.LAZY)
+    @MapsId("chatRoomId")
     @JoinColumn(name ="chat_room_id")
     private ChatRoom chatRoom;
 
