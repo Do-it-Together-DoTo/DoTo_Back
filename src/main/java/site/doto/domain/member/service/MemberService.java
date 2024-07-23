@@ -11,6 +11,7 @@ import site.doto.domain.member.repository.MemberRepository;
 import site.doto.global.dto.SliceDto;
 import site.doto.global.exception.CustomException;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -45,7 +46,7 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-        updateNickname(member, memberModifyReq.getNickname().replace(" ", ""));
+        updateNickname(member, memberModifyReq.getNickname());
         updateDescription(member, memberModifyReq.getDescription());
 
         memberRepository.save(member);
@@ -54,9 +55,12 @@ public class MemberService {
     }
 
     private void updateNickname(Member member, String nickname) {
-        Optional<Member> existingMember = memberRepository.findByNickname(nickname);
+        if(nickname.contains(" ")) {
+            throw new CustomException(NICKNAME_WHITESPACE);
+        }
 
-        if(existingMember.isPresent()) {
+        Optional<Member> existingMember = memberRepository.findByNickname(nickname);
+        if(existingMember.isPresent() && !member.getId().equals(existingMember.get().getId())) {
             throw new CustomException(NICKNAME_DUPLICATED);
         }
 
@@ -64,11 +68,6 @@ public class MemberService {
     }
 
     private void updateDescription(Member member, String description) {
-        if(description.length() > 20) {
-            throw new CustomException(BAD_REQUEST);
-        }
-
         member.updateDescription(description);
     }
 }
-
