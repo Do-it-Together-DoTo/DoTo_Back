@@ -19,6 +19,7 @@ public enum ErrorCode {
     MEMBER_NOT_FOUND(404, "존재하지 않는 회원입니다."),
     MAIL_SEND_FAILED(500, "메일 전송에 실패했습니다."),
     NICKNAME_DUPLICATED(409, "이미 사용중인 닉네임입니다."),
+    NICKNAME_WHITESPACE(400, "닉네임에 공백이 포함될 수 없습니다."),
     EMAIL_DUPLICATED(409, "이미 사용중인 이메일입니다."),
     ITEMS_NOT_ENOUGH(400, "아이템 개수가 부족합니다."),
     COIN_NOT_ENOUGH(400, "코인이 부족합니다."),
