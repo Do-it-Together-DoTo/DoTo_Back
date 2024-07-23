@@ -261,9 +261,49 @@ class MemberControllerTest {
     @DisplayName("회원 정보 수정 - 검증 실패")
     public void member_modify_validation_fail() throws Exception {
         // given
+        MemberModifyReq memberModifyReq1 = new MemberModifyReq();
+        memberModifyReq1.setNickname("");
+        memberModifyReq1.setDescription("닉네임은 꼭 적어!");
+
+        MemberModifyReq memberModifyReq2 = new MemberModifyReq();
+        memberModifyReq2.setNickname("test_user1");
+        memberModifyReq2.setDescription("한줄소개는 20자까지.. 이거 은근 길다.. 어떻게 하면 20자를 넘길 수 있을지 고민을 해봐야 할 듯?");
+
+        String content1 = gson.toJson(memberModifyReq1);
+        String content2 = gson.toJson(memberModifyReq2);
+
+        // when
+        ResultActions actions1 = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1)
+        );
+
+        ResultActions actions2 = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2)
+        );
+
+        // then
+        actions1
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        actions2
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 닉네임 공백 포함")
+    public void member_modify_nickname_whitespace() throws Exception {
+        // given
         MemberModifyReq memberModifyReq = new MemberModifyReq();
-        memberModifyReq.setNickname("     ");
-        memberModifyReq.setDescription("닉네임이 공백이면 안 돼~");
+        memberModifyReq.setNickname("이 거 안 돼");
+        memberModifyReq.setDescription("닉네임에 공백이 포함되면 안 돼~");
 
         String content = gson.toJson(memberModifyReq);
 
@@ -277,8 +317,8 @@ class MemberControllerTest {
 
         // then
         actions
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NICKNAME_WHITESPACE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NICKNAME_WHITESPACE.getMessage()));
     }
 
     @Test
@@ -303,30 +343,6 @@ class MemberControllerTest {
         actions
                 .andExpect(jsonPath("$.header.httpStatusCode").value(NICKNAME_DUPLICATED.getHttpStatusCode()))
                 .andExpect(jsonPath("$.header.message").value(NICKNAME_DUPLICATED.getMessage()));
-    }
-
-    @Test
-    @DisplayName("회원 정보 수정 - 한줄소개 길이 초과")
-    public void member_modify_description_length() throws Exception {
-        // given
-        MemberModifyReq memberModifyReq = new MemberModifyReq();
-        memberModifyReq.setNickname("test_user1");
-        memberModifyReq.setDescription("한줄소개는 20자까지.. 이거 은근 길다.. 어떻게 하면 20자를 넘길 수 있을지 고민을 해봐야 할 듯?");
-
-        String content = gson.toJson(memberModifyReq);
-
-        // when
-        ResultActions actions = mockMvc.perform(
-                patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(content)
-        );
-
-        // then
-        actions
-                .andExpect(jsonPath("$.header.httpStatusCode").value(BAD_REQUEST.getHttpStatusCode()))
-                .andExpect(jsonPath("$.header.message").value(BAD_REQUEST.getMessage()));
     }
 
     @Test
