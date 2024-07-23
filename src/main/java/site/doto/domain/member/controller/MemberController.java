@@ -51,8 +51,11 @@ public class MemberController {
 
     @PatchMapping("/modify")
     public ResponseDto<MemberModifyRes> memberModify(
-            @RequestBody MemberModifyReq memberModifyReq) {
-        MemberModifyRes result = new MemberModifyRes("수정한 닉네임", "이건 수정안할거지롱 ㅋ");
+            @RequestBody @Valid MemberModifyReq memberModifyReq) {
+        Long memberId = 1L;
+
+        MemberModifyRes result = memberService.modifyMember(memberId, memberModifyReq);
+
         return ResponseDto.success(MEMBER_MODIFY_OK, result);
     }
 

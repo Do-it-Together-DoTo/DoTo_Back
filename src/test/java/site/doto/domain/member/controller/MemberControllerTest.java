@@ -28,6 +28,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.paramete
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static site.doto.global.status_code.ErrorCode.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @Transactional
@@ -206,7 +207,7 @@ class MemberControllerTest {
     }
 
     @Test
-    @DisplayName("회원 정보 수정_성공")
+    @DisplayName("회원 정보 수정 - 성공")
     public void member_modify_success() throws Exception {
         //given
         MemberModifyReq memberModifyReq = new MemberModifyReq();
@@ -254,6 +255,94 @@ class MemberControllerTest {
                                 .responseSchema(Schema.schema("회원 정보 수정 Response"))
                                 .build())
                 ));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 검증 실패")
+    public void member_modify_validation_fail() throws Exception {
+        // given
+        MemberModifyReq memberModifyReq1 = new MemberModifyReq();
+        memberModifyReq1.setNickname("");
+        memberModifyReq1.setDescription("닉네임은 꼭 적어!");
+
+        MemberModifyReq memberModifyReq2 = new MemberModifyReq();
+        memberModifyReq2.setNickname("test_user1");
+        memberModifyReq2.setDescription("한줄소개는 20자까지.. 이거 은근 길다.. 어떻게 하면 20자를 넘길 수 있을지 고민을 해봐야 할 듯?");
+
+        String content1 = gson.toJson(memberModifyReq1);
+        String content2 = gson.toJson(memberModifyReq2);
+
+        // when
+        ResultActions actions1 = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content1)
+        );
+
+        ResultActions actions2 = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content2)
+        );
+
+        // then
+        actions1
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+
+        actions2
+                .andExpect(jsonPath("$.header.httpStatusCode").value(BIND_EXCEPTION.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(BIND_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 닉네임 공백 포함")
+    public void member_modify_nickname_whitespace() throws Exception {
+        // given
+        MemberModifyReq memberModifyReq = new MemberModifyReq();
+        memberModifyReq.setNickname("이 거 안 돼");
+        memberModifyReq.setDescription("닉네임에 공백이 포함되면 안 돼~");
+
+        String content = gson.toJson(memberModifyReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NICKNAME_WHITESPACE.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NICKNAME_WHITESPACE.getMessage()));
+    }
+
+    @Test
+    @DisplayName("회원 정보 수정 - 닉네임 중복")
+    public void member_modify_nickname_duplicated() throws Exception {
+        // given
+        MemberModifyReq memberModifyReq = new MemberModifyReq();
+        memberModifyReq.setNickname("test_user2");
+        memberModifyReq.setDescription("닉네임이 중복이면 안 돼~");
+
+        String content = gson.toJson(memberModifyReq);
+
+        // when
+        ResultActions actions = mockMvc.perform(
+                patch("/members/modify")
+                        .header("Authorization", "Bearer " + jwtToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+        );
+
+        // then
+        actions
+                .andExpect(jsonPath("$.header.httpStatusCode").value(NICKNAME_DUPLICATED.getHttpStatusCode()))
+                .andExpect(jsonPath("$.header.message").value(NICKNAME_DUPLICATED.getMessage()));
     }
 
     @Test

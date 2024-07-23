@@ -17,4 +17,6 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     @Modifying
     @Query("update Member m set m.coin = m.coin + :coin where m.id = :memberId")
     void updateCoin(@Param("memberId") Long memberId, @Param("coin") Integer coin);
+
+    Optional<Member> findByNickname(String nickname);
 }
