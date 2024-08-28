@@ -1,11 +1,13 @@
 package site.doto.domain.todo.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import site.doto.domain.todo.entity.Todo;
 
 @Data
 @Builder
+@AllArgsConstructor
 public class TodoDetailsRes {
     private Long id;
 
