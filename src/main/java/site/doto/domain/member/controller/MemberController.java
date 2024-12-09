@@ -1,6 +1,7 @@
 package site.doto.domain.member.controller;
 
 import io.lettuce.core.dynamic.annotation.Param;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -10,7 +11,6 @@ import site.doto.domain.member.enums.RankingCriteria;
 import site.doto.domain.member.service.MemberService;
 import site.doto.global.dto.ResponseDto;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 

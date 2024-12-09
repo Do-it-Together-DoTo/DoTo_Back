@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +23,10 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -36,6 +36,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class RelationControllerTest extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
@@ -57,10 +58,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -74,9 +76,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 신청 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
@@ -108,10 +110,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -132,10 +135,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -156,10 +160,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -180,17 +185,19 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions preActions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -211,10 +218,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -235,10 +243,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -259,10 +268,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -276,9 +286,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 신청 수락 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                 .description("친구 Id")
@@ -310,10 +320,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -334,10 +345,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -358,10 +370,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -382,10 +395,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -406,10 +420,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -423,9 +438,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 신청 거절 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                         .description("친구 Id")
@@ -457,10 +472,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -481,10 +497,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -505,10 +522,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -529,10 +547,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/response")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -553,10 +572,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -570,9 +590,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 신청 취소 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                 .description("친구 Id")
@@ -604,10 +624,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -628,10 +649,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -652,10 +674,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -676,10 +699,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/request")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -697,9 +721,10 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/{friendId}", friendId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         // then
         actions
@@ -713,9 +738,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -742,9 +767,10 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/{friendId}", friendId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         // then
         actions
@@ -761,7 +787,7 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/members/friends")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("lastFriendId", "")
                         .param("lastFriendLastUpload", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -780,10 +806,10 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 상세 목록 (홈) API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
                                         parameterWithName("lastFriendLastUpload").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
@@ -829,7 +855,7 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("lastFriendId", "")
                         .param("lastFriendLastUpload", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -848,10 +874,10 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 목록 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional(),
                                         parameterWithName("lastFriendLastUpload").description("마지막 친구의 Todo 생성 시간 (Optional)").optional()
                                 )
@@ -891,7 +917,7 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("lastFriendId", String.valueOf(2L))
                         .param("lastFriendLastUpload", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -913,7 +939,7 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("lastFriendId", "")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -931,10 +957,10 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("친구 차단 목록 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("lastFriendId").description("마지막 친구 Id (Optional)").optional()
                                 )
                                 .responseFields(
@@ -977,10 +1003,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -994,9 +1021,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("유저 차단 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("friendId").type(JsonFieldType.NUMBER)
                                                 .description("유저 Id")
@@ -1028,10 +1055,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1052,10 +1080,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1076,10 +1105,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1100,10 +1130,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1117,9 +1148,9 @@ class RelationControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Friend API")
                                 .summary("유저 차단 취소 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("friendId").type(JsonFieldType.NUMBER)
@@ -1155,10 +1186,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1179,10 +1211,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -1203,10 +1236,11 @@ class RelationControllerTest extends BaseTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/friends/block")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions

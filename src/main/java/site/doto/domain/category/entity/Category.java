@@ -1,14 +1,13 @@
 package site.doto.domain.category.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.doto.domain.category.enums.Scope;
 import site.doto.domain.category.enums.Color;
+import site.doto.domain.category.enums.Scope;
 import site.doto.domain.member.entity.Member;
-
-import javax.persistence.*;
 
 @Entity
 @Getter

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,22 +20,24 @@ import site.doto.domain.member.dto.*;
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
-import static com.epages.restdocs.apispec.ResourceDocumentation.headerWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
-import static site.doto.global.status_code.SuccessCode.*;
+import static site.doto.global.status_code.SuccessCode.FRIENDS_RANKING_OK;
+import static site.doto.global.status_code.SuccessCode.MEMBERS_SEARCH_OK;
 
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class MemberControllerTest {
     private final static String jwtToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 
@@ -61,6 +64,7 @@ class MemberControllerTest {
                 post("/members/signup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -100,6 +104,7 @@ class MemberControllerTest {
                 post("/members/email")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -135,6 +140,7 @@ class MemberControllerTest {
                 post("/members/email/check")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -173,6 +179,7 @@ class MemberControllerTest {
                 post("/members/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -219,9 +226,10 @@ class MemberControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -234,9 +242,9 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("회원 정보 수정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("nickname").type(JsonFieldType.STRING).description("회원 닉네임(Optional)").optional(),
@@ -275,16 +283,18 @@ class MemberControllerTest {
         // when
         ResultActions actions1 = mockMvc.perform(
                 patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content1)
+                        .with(csrf())
         );
 
         ResultActions actions2 = mockMvc.perform(
                 patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content2)
+                        .with(csrf())
         );
 
         // then
@@ -310,9 +320,10 @@ class MemberControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -334,9 +345,10 @@ class MemberControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/members/modify")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -352,8 +364,8 @@ class MemberControllerTest {
 
         //when
         ResultActions actions = mockMvc.perform(
-                get("/members/")
-                        .header("Authorization", "Bearer " + jwtToken)
+                get("/members")
+//                        .header("Authorization", "Bearer " + jwtToken)
         );
 
         //then
@@ -366,9 +378,9 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("회원 정보 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER).description("성공 코드"),
@@ -400,9 +412,10 @@ class MemberControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/members/password/reset")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -415,9 +428,9 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("비밀번호 변경 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("currentPassword").type(JsonFieldType.STRING).description("현재 비밀번호"),
@@ -445,6 +458,7 @@ class MemberControllerTest {
                 patch("/members/password/find")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -478,7 +492,8 @@ class MemberControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/members")
-                        .header("Authorization", "Bearer " + jwtToken)
+//                        .header("Authorization", "Bearer " + jwtToken)
+                        .with(csrf())
         );
 
         //then
@@ -491,9 +506,9 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("회원 탈퇴 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .build())
                 ));
 
@@ -508,7 +523,7 @@ class MemberControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/members/search")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("searchWord", searchWord)
                         .param("lastMemberId", "")
                         .accept(MediaType.APPLICATION_JSON)
@@ -526,10 +541,10 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("유저 검색 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("searchWord").description("검색어"),
                                         parameterWithName("lastMemberId").description("마지막 유저 Id (Optional)").optional()
                                 )
@@ -573,7 +588,7 @@ class MemberControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/members/ranking")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("order", order)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -589,11 +604,11 @@ class MemberControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Member API")
                                 .summary("랭킹 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("order")
                                                 .description("랭킹 기준 : 코인 획득순(GAIN), 코인 사용순(USE)")
                                 )

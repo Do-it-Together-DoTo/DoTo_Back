@@ -4,10 +4,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
 @Data
-public class TodoCountReq {
+public class TodoChangeDoneReq {
     @NotNull
-    private Integer year;
-
-    @NotNull
-    private Integer month;
+    private Boolean isDone;
 }

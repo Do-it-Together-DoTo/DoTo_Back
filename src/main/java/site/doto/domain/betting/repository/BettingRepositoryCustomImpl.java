@@ -14,9 +14,9 @@ import java.util.List;
 import static site.doto.domain.betting.entity.QBetting.betting;
 import static site.doto.domain.character.entity.QCharacter.character;
 import static site.doto.domain.character.entity.QCharacterType.characterType;
-import static site.doto.domain.relation.entity.QRelation.relation;
 import static site.doto.domain.member.entity.QMember.member;
 import static site.doto.domain.member_betting.entity.QMemberBetting.memberBetting;
+import static site.doto.domain.relation.entity.QRelation.relation;
 import static site.doto.domain.relation.enums.RelationStatus.ACCEPTED;
 import static site.doto.domain.todo.entity.QTodo.todo;
 

@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +30,10 @@ import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.docume
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -43,6 +43,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class CategoryControllerTest extends BaseTest {
     @Autowired
     private MockMvc mockMvc;
@@ -69,10 +70,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -90,9 +92,9 @@ class CategoryControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Category API")
                                 .summary("카테고리 추가 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("contents").type(JsonFieldType.STRING)
@@ -144,10 +146,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -170,10 +173,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -196,18 +200,20 @@ class CategoryControllerTest extends BaseTest {
 
         mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -230,10 +236,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -256,10 +263,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -282,10 +290,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -302,7 +311,7 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -317,9 +326,9 @@ class CategoryControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Category API")
                                 .summary("카테고리 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -367,10 +376,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10003L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -389,9 +399,9 @@ class CategoryControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Category API")
                                 .summary("카테고리 수정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(parameterWithName("categoryId").description("카테고리 ID"))
                                 .requestFields(
                                         List.of(
@@ -444,10 +454,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10032L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -468,10 +479,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10003L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -492,10 +504,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10001L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -516,10 +529,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10001L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -548,18 +562,20 @@ class CategoryControllerTest extends BaseTest {
 
         //when
         ResultActions actions1 = mockMvc.perform(
-                post("/categories/")
-                        .header("Authorization", jwtToken)
+                post("/categories")
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content1));
+                        .content(content1)
+                        .with(csrf()));
 
         ResultActions actions2 = mockMvc.perform(
                 patch("/categories/{categoryId}", 10020L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content2));
+                        .content(content2)
+                        .with(csrf()));
 
         //then
         actions1
@@ -587,10 +603,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories/{categoryId}", 10001L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -608,8 +625,9 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/categories/{categoryId}", categoryId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -623,9 +641,9 @@ class CategoryControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Category API")
                                 .summary("카테고리 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -653,8 +671,9 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/categories/{categoryId}", categoryId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -679,8 +698,9 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/categories/{categoryId}", categoryId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -698,8 +718,9 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/categories/{categoryId}", categoryId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -731,10 +752,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -748,9 +770,9 @@ class CategoryControllerTest extends BaseTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Category API")
                                 .summary("카테고리 순서 변경 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("activated").type(JsonFieldType.ARRAY)
@@ -800,10 +822,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -832,10 +855,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -868,10 +892,11 @@ class CategoryControllerTest extends BaseTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/categories")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions

@@ -1,14 +1,11 @@
 package site.doto.domain.item.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.item.dto.*;
 import site.doto.domain.item.service.ItemService;
 import site.doto.global.dto.ResponseDto;
-
-import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.List;
 
 import static site.doto.global.status_code.SuccessCode.*;
 

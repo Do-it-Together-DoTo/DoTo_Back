@@ -41,7 +41,7 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
             "join fetch b.todo t " +
             "join fetch b.member m " +
             "join fetch m.mainCharacter c " +
-            "join fetch c.characterType t " +
+            "join fetch c.characterType ct " +
             "join MemberBetting mb " +
             "on mb.betting = b " +
             "where mb.member.id = :memberId")
@@ -61,7 +61,7 @@ public interface BettingRepository extends JpaRepository<Betting, Long>, Betting
 
     @Modifying
     @Query("update " +
-            "from Betting b " +
+            "Betting b " +
             "set b.isAchieved = :isAchieved " +
             "where b in :betting")
     void updateIsAchieved(@Param("betting") List<Betting> betting, @Param("isAchieved") Boolean isAchieved);

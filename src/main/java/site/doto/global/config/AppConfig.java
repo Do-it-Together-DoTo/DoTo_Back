@@ -2,6 +2,9 @@ package site.doto.global.config;
 
 import com.p6spy.engine.spy.P6SpyOptions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -9,10 +12,6 @@ import org.springframework.context.annotation.Configuration;
 import site.doto.global.logtracer.LogTrace;
 import site.doto.global.logtracer.LogTraceAspect;
 import site.doto.global.p6spy.P6spySqlFormatConfiguration;
-
-import javax.annotation.PostConstruct;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 @Configuration
 @RequiredArgsConstructor

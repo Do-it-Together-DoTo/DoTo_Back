@@ -1,8 +1,7 @@
 package site.doto.domain.member.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class PasswordFindReq {

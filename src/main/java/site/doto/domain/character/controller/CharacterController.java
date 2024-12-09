@@ -1,5 +1,6 @@
 package site.doto.domain.character.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.character.dto.CharacterBuyReq;
@@ -9,7 +10,6 @@ import site.doto.domain.character.dto.CharacterListRes;
 import site.doto.domain.character.service.CharacterService;
 import site.doto.global.dto.ResponseDto;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
 

@@ -1,13 +1,12 @@
 package site.doto.domain.betting.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.betting.dto.*;
 import site.doto.domain.betting.service.BettingService;
 import site.doto.global.dto.ResponseDto;
 import site.doto.global.status_code.SuccessCode;
-
-import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor

@@ -1,8 +1,7 @@
 package site.doto.domain.member.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
-
-import javax.validation.constraints.NotBlank;
 
 @Data
 public class MemberSearchReq {

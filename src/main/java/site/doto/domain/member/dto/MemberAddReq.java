@@ -1,10 +1,10 @@
 package site.doto.domain.member.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.type.MemberType;
 
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 @Data

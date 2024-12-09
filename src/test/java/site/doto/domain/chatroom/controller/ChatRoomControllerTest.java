@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,22 +21,23 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
-import static site.doto.global.status_code.SuccessCode.*;
+import static site.doto.global.status_code.SuccessCode.CHATROOMS_INQUIRY_OK;
+import static site.doto.global.status_code.SuccessCode.MEMBER_CHATROOM_CREATED;
 
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 public class ChatRoomControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +55,7 @@ public class ChatRoomControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/chatting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -68,9 +70,9 @@ public class ChatRoomControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Chatting API")
                                 .summary("참여 중인 채팅방 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -111,17 +113,19 @@ public class ChatRoomControllerTest {
 
         ResultActions bettingJoin = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         Long chatRoomId = 30004L;
 
         //when
         ResultActions actions = mockMvc.perform(
                 post("/chatting/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -135,10 +139,10 @@ public class ChatRoomControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Chatting API")
                                 .summary("채팅방 참여 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("chatRoomId")
                                                 .description("채팅방 ID")
@@ -169,8 +173,9 @@ public class ChatRoomControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/chatting/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -188,8 +193,9 @@ public class ChatRoomControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/chatting/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -207,8 +213,9 @@ public class ChatRoomControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/chatting/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions

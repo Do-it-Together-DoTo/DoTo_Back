@@ -3,16 +3,16 @@ package site.doto.domain.todo.repository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDate;
-import java.util.List;
-
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.todo.dto.TodoDetailsRes;
 import site.doto.domain.todo.entity.Todo;
 
-import static site.doto.domain.todo.entity.QTodo.todo;
+import java.time.LocalDate;
+import java.util.List;
+
 import static site.doto.domain.betting.entity.QBetting.betting;
+import static site.doto.domain.todo.entity.QTodo.todo;
+
 
 @RequiredArgsConstructor
 public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {

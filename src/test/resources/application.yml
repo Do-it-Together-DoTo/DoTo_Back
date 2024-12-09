@@ -28,7 +28,7 @@ spring:
       ddl-auto: create
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        dialect: org.hibernate.dialect.MySQLDialect
         default_batch_fetch_size: 100
     defer-datasource-initialization: true
 
@@ -38,8 +38,6 @@ spring:
       data-locations: classpath:sql/data.sql
 
   redis:
-    host: localhost
-    port: 6380
     embedded: true
 
   web:
@@ -50,6 +48,8 @@ spring:
     redis:
       repositories:
         enabled: false
+      host: localhost
+      port: 6380
 
 logging:
   level:
