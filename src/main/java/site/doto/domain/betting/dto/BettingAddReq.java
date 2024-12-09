@@ -1,13 +1,12 @@
 package site.doto.domain.betting.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.chatroom.entity.ChatRoom;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class BettingAddReq {

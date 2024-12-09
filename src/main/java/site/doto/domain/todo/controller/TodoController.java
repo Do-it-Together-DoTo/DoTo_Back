@@ -1,18 +1,17 @@
 package site.doto.domain.todo.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import site.doto.domain.todo.dto.*;
 import site.doto.domain.todo.service.TodoService;
 import site.doto.global.dto.ResponseDto;
 
-import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
 import static site.doto.domain.category.enums.Color.*;
-import static site.doto.domain.category.enums.Scope.*;
 import static site.doto.global.status_code.SuccessCode.*;
 
 @RestController
@@ -43,7 +42,7 @@ public class TodoController {
 
     @GetMapping("/{memberId}")
     public ResponseDto<TodoListRes> todoList(
-            @PathVariable long memberId,
+            @PathVariable Long memberId,
             @ModelAttribute TodoListReq todoListReq) {
         TodoListRes result = new TodoListRes();
 
@@ -112,7 +111,7 @@ public class TodoController {
 
     @PatchMapping("/{todoId}")
     public ResponseDto<TodoDetailsRes> todoModify(
-            @PathVariable long todoId,
+            @PathVariable Long todoId,
             @RequestBody TodoModifyReq todoModifyReq) {
         TodoDetailsRes result = TodoDetailsRes.builder()
                 .id(todoId)
@@ -125,17 +124,17 @@ public class TodoController {
 
     @DeleteMapping("/{todoId}")
     public ResponseDto<?> todoRemove(
-            @PathVariable long todoId) {
+            @PathVariable Long todoId) {
         return ResponseDto.success(TODO_DELETED, null);
     }
 
     @PatchMapping("/check/{todoId}")
     public ResponseDto<TodoDetailsRes> todoChangeDone(
-            @PathVariable long todoId,
-            @RequestParam("option") boolean isDone) {
+            @PathVariable Long todoId,
+            @RequestBody TodoChangeDoneReq todoChangeDoneReq) {
         Long memberId = 1L;
 
-        todoService.changeDoneTodo(memberId, todoId, isDone);
+        todoService.changeDoneTodo(memberId, todoId, todoChangeDoneReq.getIsDone());
 
         return ResponseDto.success(TODO_CHECK_OK, null);
     }

@@ -1,13 +1,13 @@
 package site.doto.domain.relation.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import site.doto.domain.relation.enums.RelationStatus;
 import site.doto.domain.member.entity.Member;
+import site.doto.domain.relation.enums.RelationStatus;
 
-import javax.persistence.*;
 import java.io.Serializable;
 
 @Entity

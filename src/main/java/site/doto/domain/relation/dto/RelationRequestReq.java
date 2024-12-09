@@ -1,8 +1,7 @@
 package site.doto.domain.relation.dto;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
-import javax.validation.constraints.NotNull;
 
 @Data
 public class RelationRequestReq {

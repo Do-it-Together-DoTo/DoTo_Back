@@ -1,13 +1,12 @@
 package site.doto.domain.item.dto;
 
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import site.doto.domain.item.entity.Item;
 import site.doto.domain.item.entity.ItemPK;
 import site.doto.domain.item.entity.ItemType;
 import site.doto.domain.member.entity.Member;
-
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 
 @Data
 public class ItemBuyReq {

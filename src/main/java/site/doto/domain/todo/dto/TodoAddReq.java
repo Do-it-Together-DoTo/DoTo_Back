@@ -1,13 +1,13 @@
 package site.doto.domain.todo.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import site.doto.domain.category.entity.Category;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Data

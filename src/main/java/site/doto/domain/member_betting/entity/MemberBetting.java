@@ -1,14 +1,12 @@
 package site.doto.domain.member_betting.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import site.doto.domain.betting.entity.Betting;
 import site.doto.domain.member.entity.Member;
-
-import javax.persistence.*;
-import java.io.Serializable;
 
 @Entity
 @Getter

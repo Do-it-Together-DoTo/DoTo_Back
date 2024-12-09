@@ -1,13 +1,13 @@
 package site.doto.global.config;
 
+import jakarta.annotation.PostConstruct;
+import jakarta.annotation.PreDestroy;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import redis.embedded.RedisServer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
 import java.io.File;
 import java.io.IOException;
 import java.util.Objects;
@@ -15,7 +15,7 @@ import java.util.Objects;
 @Configuration
 @ConditionalOnProperty(value = "spring.redis.embedded", havingValue = "true")
 public class EmbeddedRedisConfig {
-    @Value("${spring.redis.port}")
+    @Value("${spring.data.redis.port}")
     public int port;
 
     private RedisServer redisServer;

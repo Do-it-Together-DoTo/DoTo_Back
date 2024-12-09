@@ -1,5 +1,7 @@
 package site.doto.domain.category.service;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.EnumUtils;
 import org.springframework.stereotype.Service;
@@ -18,8 +20,6 @@ import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.global.exception.CustomException;
 
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;

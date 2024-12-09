@@ -3,10 +3,10 @@ package site.doto.domain.record.repository;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAUpdateClause;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import site.doto.domain.record.dto.RecordUpdateDto;
 
-import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

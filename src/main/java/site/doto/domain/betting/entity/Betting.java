@@ -1,5 +1,6 @@
 package site.doto.domain.betting.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +9,6 @@ import site.doto.domain.chatroom.entity.ChatRoom;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.todo.entity.Todo;
 
-import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity

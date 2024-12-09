@@ -1,5 +1,6 @@
 package site.doto.domain.member.entity;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -7,7 +8,6 @@ import lombok.NoArgsConstructor;
 import site.doto.domain.character.entity.Character;
 import site.doto.domain.member.type.MemberType;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
