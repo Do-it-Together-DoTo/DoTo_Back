@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +23,10 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -36,6 +36,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class BettingControllerTest {
 
     @Autowired
@@ -52,8 +53,9 @@ class BettingControllerTest {
         //given
         ResultActions remove = mockMvc.perform(
                 delete("/betting/{bettingId}", 30001L)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
 
         BettingAddReq bettingAddReq = new BettingAddReq();
@@ -64,9 +66,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -80,9 +83,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("베팅 생성 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("todoId").type(JsonFieldType.NUMBER)
                                                 .description("투두 ID"),
@@ -120,15 +123,17 @@ class BettingControllerTest {
         //when
         ResultActions notEnoughRequestFields = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content1));
+                        .content(content1)
+                        .with(csrf()));
 
         ResultActions wrongBettingName = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content2));
+                        .content(content2)
+                        .with(csrf()));
 
         //then
         notEnoughRequestFields
@@ -152,9 +157,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -175,9 +181,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -198,9 +205,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -221,9 +229,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -244,9 +253,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -267,9 +277,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -291,9 +302,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -307,9 +319,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("베팅 참여 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("bettingId").description("베팅 ID")
                                 )
@@ -366,27 +378,31 @@ class BettingControllerTest {
         //when
         ResultActions notEnoughRequestFields = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content1));
+                        .content(content1)
+                        .with(csrf()));
 
         ResultActions tooLittleBet = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content2));
+                        .content(content2)
+                        .with(csrf()));
 
         ResultActions tooMuchBet = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content3));
+                        .content(content3)
+                        .with(csrf()));
 
         ResultActions notMultipleOfFive = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content4));
+                        .content(content4)
+                        .with(csrf()));
 
         //then
         notEnoughRequestFields
@@ -423,9 +439,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -447,9 +464,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -471,9 +489,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -495,9 +514,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -519,9 +539,10 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -538,7 +559,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -553,9 +574,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("나의 베팅 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
                                                 .description("성공 코드"),
@@ -612,7 +633,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting/open")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -627,9 +648,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("오픈 베팅 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -665,7 +686,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -680,9 +701,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("베팅 단일 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("bettingId").description("베팅 ID")
                                 )
@@ -735,7 +756,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -754,7 +775,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -773,7 +794,7 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON));
 
         //then
@@ -792,8 +813,9 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -807,9 +829,9 @@ class BettingControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Betting API")
                                 .summary("베팅 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("bettingId").description("베팅 ID")
                                 )
@@ -838,8 +860,9 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions
@@ -857,8 +880,9 @@ class BettingControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/betting/{bettingId}", bettingId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         //then
         actions

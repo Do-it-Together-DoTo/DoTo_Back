@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,11 +24,10 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -37,6 +37,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 public class ItemControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +55,7 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/members/items")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -71,9 +72,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("나의 아이템 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -114,10 +115,11 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/members/items")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -132,9 +134,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("나의 아이템 사용 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("characterId").type(JsonFieldType.NUMBER)
                                                 .description("Character Id"),
@@ -161,10 +163,11 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/members/items/{itemId}", 1L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -179,9 +182,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("나의 아이템 판매 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("itemId").description("아이템 아이디")
                                 )
@@ -203,9 +206,10 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/store/items")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then
@@ -220,9 +224,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Store API")
                                 .summary("아이템 목록 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
                                                 .description("성공 코드"),
@@ -253,9 +257,10 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/store/items/{itemId}", 20000L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then
@@ -273,9 +278,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Store API")
                                 .summary("아이템 개별 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("itemId").description("아이템 아이디")
                                 )
@@ -305,9 +310,10 @@ public class ItemControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/store/items/{itemId}", 10000L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         // then
@@ -329,10 +335,11 @@ public class ItemControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 put("/store/items/{itemId}", 1L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -347,9 +354,9 @@ public class ItemControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Store API")
                                 .summary("아이템 구매 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("itemId").description("아이템 아이디")
                                 )
@@ -377,18 +384,20 @@ public class ItemControllerTest {
         // when
         ResultActions actions1 = mockMvc.perform(
                 put("/store/items/{itemId}", 1L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content1)
+                        .with(csrf())
         );
 
         ResultActions actions2 = mockMvc.perform(
                 put("/store/items/{itemId}", 1L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content2)
+                        .with(csrf())
         );
 
         // then
@@ -413,10 +422,11 @@ public class ItemControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 put("/store/items/{itemId}", 10000L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -438,10 +448,11 @@ public class ItemControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 put("/store/items/{itemId}", 1L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then

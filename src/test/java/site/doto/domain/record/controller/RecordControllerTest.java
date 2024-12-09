@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,11 +23,9 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
-import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
+import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.SuccessCode.RECORDS_INQUIRY_OK;
@@ -35,6 +34,7 @@ import static site.doto.global.status_code.SuccessCode.RECORDS_INQUIRY_OK;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class RecordControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -55,7 +55,7 @@ class RecordControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
              get("/records")
-                     .header("Authorization", jwtToken)
+//                     .header("Authorization", jwtToken)
                      .accept(MediaType.APPLICATION_JSON)
                      .contentType(MediaType.APPLICATION_JSON)
                      .params(params)
@@ -82,10 +82,10 @@ class RecordControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Record API")
                                 .summary("Record 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("year").description("연도"),
                                         parameterWithName("month").description("월")
                                 )

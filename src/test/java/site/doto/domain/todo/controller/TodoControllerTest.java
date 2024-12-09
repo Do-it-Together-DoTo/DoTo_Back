@@ -12,21 +12,23 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import site.doto.domain.todo.dto.TodoChangeDoneReq;
 
 import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.global.status_code.ErrorCode.*;
@@ -36,6 +38,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 class TodoControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -58,10 +61,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
              post("/todo")
-                     .header("Authorization", jwtToken)
+//                     .header("Authorization", jwtToken)
                      .accept(MediaType.APPLICATION_JSON)
                      .contentType(MediaType.APPLICATION_JSON)
                      .content(content)
+                     .with(csrf())
         );
 
         // then
@@ -79,9 +83,9 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 생성 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("categoryId").type(JsonFieldType.NUMBER)
@@ -128,10 +132,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -155,10 +160,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -182,10 +188,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -210,10 +217,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -238,10 +246,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -266,10 +275,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -294,10 +304,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -317,7 +328,7 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/todo")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("date", date)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -335,10 +346,10 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("나의 Todo 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("date").description("해당 날짜")
                                 )
                                 .responseFields(
@@ -381,7 +392,7 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/todo/{memberId}", memberId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("date", date)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -399,13 +410,13 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("친구 Todo 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("memberId").description("회원 Id")
                                 )
-                                .requestParameters(
+                                .queryParameters(
                                         parameterWithName("date").description("해당 날짜")
                                 )
                                 .responseFields(
@@ -448,10 +459,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/todo/{todoId}", todoId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -465,9 +477,9 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 수정 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("todoId").description("Todo Id")
                                 )
@@ -509,8 +521,9 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 delete("/todo/{todoId}", todoId)
-                        .header("Authorization", jwtToken)
-                        .accept(MediaType.APPLICATION_JSON));
+//                        .header("Authorization", jwtToken)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .with(csrf()));
 
         // then
         actions
@@ -524,9 +537,9 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 삭제 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -548,13 +561,19 @@ class TodoControllerTest {
     public void todo_change_done_success() throws Exception {
         // given
         long todoId = 20001L;
+        TodoChangeDoneReq req = new TodoChangeDoneReq();
+        req.setIsDone(true);
+
+        String content = gson.toJson(req);
 
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("option", "true"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf()));
 
         // then
         actions
@@ -568,14 +587,14 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 완료 여부 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("todoId").description("Todo Id")
                                 )
-                                .requestParameters(
-                                        parameterWithName("option").description("완료 여부")
+                                .requestFields(
+                                        fieldWithPath("isDone").description("완료 여부 (true/false)")
                                 )
                                 .responseFields(
                                         List.of(
@@ -598,13 +617,19 @@ class TodoControllerTest {
     public void todo_change_done_fail_todo_not_found() throws Exception {
         // given
         long todoId = 20080L;
+        TodoChangeDoneReq req = new TodoChangeDoneReq();
+        req.setIsDone(true);
+
+        String content = gson.toJson(req);
 
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("option", "true"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf()));
 
         actions
                 .andExpect(status().isOk())
@@ -618,13 +643,19 @@ class TodoControllerTest {
     public void todo_change_done_fail_not_my_todo() throws Exception {
         // given
         long todoId = 20002L;
+        TodoChangeDoneReq req = new TodoChangeDoneReq();
+        req.setIsDone(true);
+
+        String content = gson.toJson(req);
 
         // when
         ResultActions actions = mockMvc.perform(
                 patch("/todo/check/{todoId}", todoId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
-                        .param("option", "true"));
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content)
+                        .with(csrf()));
 
         actions
                 .andExpect(status().isOk())
@@ -646,10 +677,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo/date")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -664,9 +696,9 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 또하기 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         List.of(
                                                 fieldWithPath("id").type(JsonFieldType.NUMBER)
@@ -694,10 +726,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo/date")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -721,10 +754,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo/date")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -749,10 +783,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo/date")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -776,10 +811,11 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 post("/todo/date")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         // then
@@ -801,7 +837,7 @@ class TodoControllerTest {
         // when
         ResultActions actions = mockMvc.perform(
                 get("/todo/count")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .params(params)
         );
 
@@ -817,10 +853,10 @@ class TodoControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Todo API")
                                 .summary("Todo 개수 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
-                                .requestParameters(
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
+                                .queryParameters(
                                         parameterWithName("year").description("연도"),
                                         parameterWithName("month").description("월")
                                 )

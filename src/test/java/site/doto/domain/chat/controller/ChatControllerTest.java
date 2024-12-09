@@ -11,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +21,22 @@ import java.util.List;
 
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.post;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static site.doto.global.status_code.SuccessCode.*;
+import static site.doto.global.status_code.SuccessCode.CHATS_INQUIRY_OK;
+import static site.doto.global.status_code.SuccessCode.CHAT_CREATED;
 
 @Transactional
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 public class ChatControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -54,7 +56,7 @@ public class ChatControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/chatting/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .param("lastChatId", lastChatId)
                         .accept(MediaType.APPLICATION_JSON));
 
@@ -70,15 +72,15 @@ public class ChatControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Chatting API")
                                 .summary("채팅 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("chatRoomId")
                                                 .description("채팅방 ID")
                                 )
-                                .requestParameters(
+                                .queryParameters(
                                         parameterWithName("lastChatId")
                                                 .description("마지막 채팅 ID(Optional)").optional()
                                 )
@@ -132,10 +134,11 @@ public class ChatControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/chatting/messages/{chatRoomId}", chatRoomId)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(content));
+                        .content(content)
+                        .with(csrf()));
 
         //then
         actions
@@ -149,10 +152,10 @@ public class ChatControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Chatting API")
                                 .summary("채팅 메세지 작성 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization")
-                                                .description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization")
+//                                                .description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("contents").type(JsonFieldType.STRING)
                                                 .description("채팅 내용")

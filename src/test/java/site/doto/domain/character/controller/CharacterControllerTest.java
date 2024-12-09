@@ -1,4 +1,5 @@
 package site.doto.domain.character.controller;
+
 import com.epages.restdocs.apispec.ResourceSnippetParameters;
 import com.epages.restdocs.apispec.Schema;
 import com.google.gson.Gson;
@@ -10,6 +11,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.payload.JsonFieldType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +22,10 @@ import java.util.List;
 import static com.epages.restdocs.apispec.MockMvcRestDocumentationWrapper.document;
 import static com.epages.restdocs.apispec.ResourceDocumentation.parameterWithName;
 import static com.epages.restdocs.apispec.ResourceDocumentation.resource;
-import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.*;
 import static org.springframework.restdocs.operation.preprocess.Preprocessors.*;
-import static org.springframework.restdocs.operation.preprocess.Preprocessors.prettyPrint;
-import static org.springframework.restdocs.payload.PayloadDocumentation.*;
+import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static site.doto.domain.character.enums.Egg.EGG;
@@ -36,6 +37,7 @@ import static site.doto.global.status_code.SuccessCode.*;
 @SpringBootTest
 @AutoConfigureMockMvc
 @AutoConfigureRestDocs
+@WithMockUser(username = "test")
 public class CharacterControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -53,7 +55,7 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/members/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
         );
@@ -70,9 +72,9 @@ public class CharacterControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("나의 캐릭터 전체 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -107,9 +109,10 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 patch("/members/characters/{characterId}", 2L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then
@@ -124,9 +127,9 @@ public class CharacterControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("대표 캐릭터 변경 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("characterId").description("캐릭터 아이디")
                                 )
@@ -143,9 +146,10 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 delete("/members/characters/{characterId}", 2L)
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then
@@ -160,9 +164,9 @@ public class CharacterControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Mypage API")
                                 .summary("나의 캐릭터 판매 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .pathParameters(
                                         parameterWithName("characterId").description("캐릭터 아이디")
                                 )
@@ -179,9 +183,10 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 get("/store/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
+                        .with(csrf())
         );
 
         //then
@@ -200,9 +205,9 @@ public class CharacterControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Store API")
                                 .summary("알 정보 조회 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .responseFields(
                                         List.of(
                                                 fieldWithPath("header.httpStatusCode").type(JsonFieldType.NUMBER)
@@ -237,10 +242,11 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/store/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
@@ -255,9 +261,9 @@ public class CharacterControllerTest {
                         resource(ResourceSnippetParameters.builder()
                                 .tag("Store API")
                                 .summary("알 구매 API")
-                                .requestHeaders(
-                                        headerWithName("Authorization").description("JWT 토큰")
-                                )
+//                                .requestHeaders(
+//                                        headerWithName("Authorization").description("JWT 토큰")
+//                                )
                                 .requestFields(
                                         fieldWithPath("count").type(JsonFieldType.NUMBER)
                                                 .description("구매할 알 개수")
@@ -282,18 +288,20 @@ public class CharacterControllerTest {
         //when
         ResultActions actions1 = mockMvc.perform(
                 post("/store/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content1)
+                        .with(csrf())
         );
 
         ResultActions actions2 = mockMvc.perform(
                 post("/store/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content2)
+                        .with(csrf())
         );
 
         //then
@@ -317,10 +325,11 @@ public class CharacterControllerTest {
         //when
         ResultActions actions = mockMvc.perform(
                 post("/store/characters")
-                        .header("Authorization", jwtToken)
+//                        .header("Authorization", jwtToken)
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(content)
+                        .with(csrf())
         );
 
         //then
