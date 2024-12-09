@@ -7,15 +7,14 @@ import site.doto.domain.category.entity.Category;
 import site.doto.domain.category.repository.CategoryRepository;
 import site.doto.domain.member.entity.Member;
 import site.doto.domain.member.repository.MemberRepository;
-import site.doto.domain.todo.dto.TodoAddReq;
-import site.doto.domain.todo.dto.TodoDetailsRes;
-import site.doto.domain.todo.dto.TodoRedoReq;
+import site.doto.domain.todo.dto.*;
 import site.doto.domain.todo.entity.Todo;
 import site.doto.domain.todo.repository.TodoRepository;
 import site.doto.global.exception.CustomException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
 
 import static site.doto.global.status_code.ErrorCode.*;
@@ -105,5 +104,29 @@ public class TodoService {
         if(!isActivated) {
             throw new CustomException(CATEGORY_INACTIVATED);
         }
+    }
+
+    public MyTodoListRes findTodos(Long memberId, TodoListReq todoListReq) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+        validateDateRange(todoListReq.getDate());
+
+        MyTodoListRes result = new MyTodoListRes();
+        List<Category> categoryList;
+
+        if(todoListReq.getDate().isBefore(LocalDate.now())) {
+            categoryList = categoryRepository.findCategoriesByTodoIsPresent(memberId, todoListReq.getDate());
+        } else {
+            categoryList = categoryRepository.findCategoriesByMemberIdAndIsActivated(memberId);
+        }
+
+        for(Category category: categoryList) {
+            List<TodoDetailsRes> todoList = todoRepository.findTodoDetailsByCategory(category.getId(), todoListReq.getDate());
+            MyTodoCategoryDto todoCategoryDto = MyTodoCategoryDto.toDto(category, todoList);
+            result.getTodoList().add(todoCategoryDto);
+        }
+
+        return result;
     }
 }

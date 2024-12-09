@@ -1,11 +1,14 @@
 package site.doto.domain.todo.repository;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import site.doto.domain.category.entity.Category;
+import site.doto.domain.todo.dto.TodoDetailsRes;
 import site.doto.domain.todo.entity.Todo;
 
 import static site.doto.domain.todo.entity.QTodo.todo;
@@ -23,5 +26,15 @@ public class TodoRepositoryCustomImpl implements TodoRepositoryCustom {
                 .where(todo.category.id.eq(category.getId()))
                 .where(todo.date.goe(LocalDate.now()))
                 .fetchFirst();
+    }
+
+    @Override
+    public List<TodoDetailsRes> findTodoDetailsByCategory(Long categoryId, LocalDate date) {
+        return jpaQueryFactory.select(Projections.constructor(
+                        TodoDetailsRes.class, todo.id, todo.contents, todo.isDone))
+                .from(todo)
+                .where(todo.date.eq(date))
+                .where(todo.category.id.eq(categoryId))
+                .fetch();
     }
 }

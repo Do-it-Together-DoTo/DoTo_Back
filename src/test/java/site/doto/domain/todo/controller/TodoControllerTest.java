@@ -346,6 +346,8 @@ class TodoControllerTest {
                                                 .description("성공 코드"),
                                         fieldWithPath("header.message").type(JsonFieldType.STRING)
                                                 .description("성공 메시지"),
+                                        fieldWithPath("body.todoList").type(JsonFieldType.ARRAY)
+                                                .description("Todo 리스트 (없으면 빈 배열)").optional(),
                                         fieldWithPath("body.todoList[].categoryId").type(JsonFieldType.NUMBER)
                                                 .description("카테고리 Id"),
                                         fieldWithPath("body.todoList[].categoryContents").type(JsonFieldType.STRING)

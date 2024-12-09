@@ -34,72 +34,9 @@ public class TodoController {
     @GetMapping
     public ResponseDto<MyTodoListRes> myTodoList(
             @ModelAttribute TodoListReq todoListReq) {
-        MyTodoListRes result = new MyTodoListRes();
+        Long memberId = 1L;
 
-        // 1
-        List<TodoDetailsRes> todoDetailsResList = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            Long value = 1L + i;
-
-            todoDetailsResList.add(TodoDetailsRes.builder()
-                    .id(value)
-                    .contents("Mock Todo" + value)
-                    .isDone(false)
-                    .build());
-        }
-
-        MyTodoCategoryDto myTodoCategoryDto = MyTodoCategoryDto.builder()
-                .categoryId(1L)
-                .categoryContents("Mock Category1")
-                .categoryIsActivated(true)
-                .categoryColor(SKYBLUE)
-                .categoryScope(PUBLIC)
-                .todoDetailsResList(todoDetailsResList)
-                .build();
-        result.getTodoList().add(myTodoCategoryDto);
-
-        // 2
-        todoDetailsResList = new ArrayList<>();
-        for (int i = 3; i < 6; i++) {
-            Long value = 1L + i;
-
-            todoDetailsResList.add(TodoDetailsRes.builder()
-                    .id(value)
-                    .contents("Mock Todo" + value)
-                    .isDone(false)
-                    .build());
-        }
-        myTodoCategoryDto = MyTodoCategoryDto.builder()
-                .categoryId(2L)
-                .categoryContents("Mock Category2")
-                .categoryIsActivated(true)
-                .categoryColor(PINK)
-                .categoryScope(PRIVATE)
-                .todoDetailsResList(todoDetailsResList)
-                .build();
-
-        result.getTodoList().add(myTodoCategoryDto);
-
-        // 3
-        todoDetailsResList = new ArrayList<>();
-        for (int i = 6; i < 9; i++) {
-            Long value = 1L + i;
-
-            todoDetailsResList.add(TodoDetailsRes.builder()
-                    .id(value)
-                    .contents("Mock Todo" + value)
-                    .isDone(false)
-                    .build());
-        }
-        myTodoCategoryDto = MyTodoCategoryDto.builder()
-                .categoryId(3L)
-                .categoryContents("Mock Category3")
-                .categoryIsActivated(true)
-                .categoryColor(YELLOW)
-                .categoryScope(FRIENDS)
-                .todoDetailsResList(todoDetailsResList)
-                .build();
-        result.getTodoList().add(myTodoCategoryDto);
+        MyTodoListRes result = todoService.findTodos(memberId, todoListReq);
 
         return ResponseDto.success(TODO_INQUIRY_OK, result);
     }
